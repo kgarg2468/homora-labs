@@ -52,7 +52,7 @@ def upgrade() -> None:
         sa.Column("file_path", sa.String(1000), nullable=False),
         sa.Column("page_count", sa.Integer, nullable=True),
         sa.Column("ingestion_status", postgresql.ENUM("pending", "processing", "completed", "failed", name="ingestionstatus", create_type=False), nullable=False, server_default="pending"),
-        sa.Column("ingestion_progress", sa.Integer, default=0),
+        sa.Column("ingestion_progress", sa.Integer, server_default=sa.text("0")),
         sa.Column("category", postgresql.ENUM("lease", "appraisal", "title", "zoning", "financial", "survey", "environmental", "other", name="documentcategory", create_type=False), nullable=False, server_default="other"),
         sa.Column("error_message", sa.Text, nullable=True),
         sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.func.now()),
@@ -77,7 +77,7 @@ def upgrade() -> None:
         sa.Column("page_number", sa.Integer, nullable=True),
         sa.Column("section", sa.String(500), nullable=True),
         sa.Column("embedding", Vector(1536), nullable=True),
-        sa.Column("metadata", postgresql.JSONB, default={}),
+        sa.Column("metadata", postgresql.JSONB, server_default=sa.text("'{}'")),
         sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.func.now()),
     )
     op.create_index("idx_chunks_document_id", "chunks", ["document_id"])
@@ -101,7 +101,7 @@ def upgrade() -> None:
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True),
         sa.Column("project_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("projects.id", ondelete="CASCADE"), nullable=False),
         sa.Column("title", sa.String(500), nullable=True),
-        sa.Column("archived", sa.Boolean, default=False),
+        sa.Column("archived", sa.Boolean, server_default=sa.text("false")),
         sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.func.now()),
         sa.Column("updated_at", sa.DateTime(timezone=True), server_default=sa.func.now(), onupdate=sa.func.now()),
     )
@@ -131,8 +131,8 @@ def upgrade() -> None:
         "report_templates",
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True),
         sa.Column("name", sa.String(255), nullable=False),
-        sa.Column("sections", postgresql.JSONB, default=[]),
-        sa.Column("is_default", sa.Boolean, default=False),
+        sa.Column("sections", postgresql.JSONB, server_default=sa.text("'[]'")),
+        sa.Column("is_default", sa.Boolean, server_default=sa.text("false")),
     )
 
     # Create settings table

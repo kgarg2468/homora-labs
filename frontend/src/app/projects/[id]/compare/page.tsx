@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
@@ -38,6 +38,37 @@ export default function ComparePage() {
     );
   }
 
+  const leftPanelRef = useRef<HTMLDivElement>(null);
+  const rightPanelRef = useRef<HTMLDivElement>(null);
+  const isSyncingLeft = useRef(false);
+  const isSyncingRight = useRef(false);
+
+  const handleScroll = (source: 'left' | 'right') => {
+    if (!syncScroll) return;
+
+    const left = leftPanelRef.current;
+    const right = rightPanelRef.current;
+    if (!left || !right) return;
+
+    if (source === 'left') {
+      if (isSyncingLeft.current) {
+        isSyncingLeft.current = false;
+        return;
+      }
+      isSyncingRight.current = true;
+      const percentage = left.scrollTop / (left.scrollHeight - left.clientHeight);
+      right.scrollTop = percentage * (right.scrollHeight - right.clientHeight);
+    } else {
+      if (isSyncingRight.current) {
+        isSyncingRight.current = false;
+        return;
+      }
+      isSyncingLeft.current = true;
+      const percentage = right.scrollTop / (right.scrollHeight - right.clientHeight);
+      left.scrollTop = percentage * (left.scrollHeight - left.clientHeight);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col">
       {/* Header */}
@@ -67,13 +98,16 @@ export default function ComparePage() {
             </div>
 
             <div className="flex items-center gap-4">
-              <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
-                <input
-                  type="checkbox"
-                  checked={syncScroll}
-                  onChange={(e) => setSyncScroll(e.target.checked)}
-                  className="rounded border-slate-300 dark:border-slate-600 text-primary-600 focus:ring-primary-500"
-                />
+              <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 cursor-pointer">
+                <div className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={syncScroll}
+                    onChange={(e) => setSyncScroll(e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
+                </div>
                 Sync scroll
               </label>
               <ThemeToggle />
@@ -103,11 +137,11 @@ export default function ComparePage() {
       </div>
 
       {/* Document Viewers */}
-      <div className="flex-1 flex">
-        <div className="flex-1 border-r border-slate-200 dark:border-slate-700">
+      <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 border-r border-slate-200 dark:border-slate-700 overflow-auto" ref={leftPanelRef} onScroll={() => handleScroll('left')}>
           <DocumentPanel document={leftDoc} projectId={projectId} />
         </div>
-        <div className="flex-1">
+        <div className="flex-1 overflow-auto" ref={rightPanelRef} onScroll={() => handleScroll('right')}>
           <DocumentPanel document={rightDoc} projectId={projectId} />
         </div>
       </div>

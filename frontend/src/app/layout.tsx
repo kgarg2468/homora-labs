@@ -4,6 +4,13 @@ import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
 
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Homora Labs',
+  description: 'AI-powered real estate due diligence platform.',
+};
+
 export default function RootLayout({
   children,
 }: {

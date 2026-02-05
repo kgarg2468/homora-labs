@@ -71,34 +71,27 @@ export function Modal({
         )}
       >
         {/* Header */}
-        {title && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+          {title && (
             <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
               {title}
             </h2>
-            <button
-              onClick={onClose}
-              className="p-1 rounded-lg text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-        )}
+          )}
+          <button
+            onClick={onClose}
+            className={cn(
+              "p-1 rounded-lg text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors",
+              !title && "ml-auto"
+            )}
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
 
         {/* Body */}
         <div className={cn('flex-1 overflow-auto', !title && 'pt-4')}>
           {children}
         </div>
-
-        {/* Close button if no title */}
-        {!title && (
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 p-1 rounded-lg text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        )}
       </div>
     </div>
   );

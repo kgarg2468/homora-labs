@@ -252,7 +252,7 @@ async def chat(
         conversation_id=conversation.id,
         role=MessageRole.assistant,
         content=response_content,
-        citations=[c.model_dump() for c in citations],
+        citations=[c.model_dump(mode='json') for c in citations],
         suggested_followups=followups,
     )
     db.add(assistant_message)
@@ -376,7 +376,7 @@ Question: {query}"""
             conversation_id=conversation.id,
             role=MessageRole.assistant,
             content=full_response,
-            citations=[c.model_dump() for c in citations],
+            citations=[c.model_dump(mode='json') for c in citations],
             suggested_followups=followups,
         )
         db.add(assistant_message)
@@ -388,7 +388,7 @@ Question: {query}"""
             "type": "complete",
             "message_id": str(assistant_message.id),
             "conversation_id": str(conversation.id),
-            "citations": [c.model_dump() for c in citations],
+            "citations": [c.model_dump(mode='json') for c in citations],
             "suggested_followups": followups,
         })
     except Exception as e:
@@ -456,12 +456,15 @@ def extract_citations_from_response(
     chunks: list[RetrievedChunk],
 ) -> list[Citation]:
     """Extract citations from the response based on referenced chunks."""
+    import re
     citations = []
     seen = set()
 
     for chunk in chunks:
-        # Check if document is mentioned in response
-        if chunk.document_name in response:
+        # Check if document is mentioned in response using strict format
+        # Pattern: [Document: <name>, ...]
+        pattern = re.compile(rf"\[Document: {re.escape(chunk.document_name)}.*\]")
+        if pattern.search(response):
             key = (chunk.document_id, chunk.page_number)
             if key not in seen:
                 citations.append(

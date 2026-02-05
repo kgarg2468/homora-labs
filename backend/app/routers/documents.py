@@ -133,8 +133,18 @@ async def upload_document(
     project_docs_dir = Path(settings.documents_path) / str(project_id)
     project_docs_dir.mkdir(parents=True, exist_ok=True)
 
+    # Handle filename collisions
+    filename = file.filename
+    file_path = project_docs_dir / filename
+    if file_path.exists():
+        # Append short UUID to filename
+        stem = Path(filename).stem
+        suffix = Path(filename).suffix
+        unique_id = str(uuid.uuid4())[:8]
+        filename = f"{stem}_{unique_id}{suffix}"
+        file_path = project_docs_dir / filename
+
     # Save file
-    file_path = project_docs_dir / file.filename
     content = await file.read()
     with open(file_path, "wb") as f:
         f.write(content)
@@ -142,7 +152,7 @@ async def upload_document(
     # Create document record
     document = Document(
         project_id=project_id,
-        filename=file.filename,
+        filename=filename,
         file_type=file_type,
         file_path=str(file_path),
         ingestion_status=IngestionStatus.pending,
@@ -242,6 +252,7 @@ async def download_document(
         document.file_path,
         filename=document.filename,
         media_type=get_media_type(document),
+        content_disposition_type="inline",
     )
 
 

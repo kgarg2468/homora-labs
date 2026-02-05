@@ -84,10 +84,20 @@ async def export_project(
 
         # Add documents metadata
         docs_data = []
+        used_filenames = set()
+
         for doc in documents:
+            # Handle filename collisions in ZIP
+            filename = doc.filename
+            if filename in used_filenames:
+                stem = Path(filename).stem
+                suffix = Path(filename).suffix
+                filename = f"{stem}_{str(doc.id)[:8]}{suffix}"
+            used_filenames.add(filename)
+
             doc_data = {
                 "id": str(doc.id),
-                "filename": doc.filename,
+                "filename": filename,  # Use potentially renamed filename
                 "file_type": doc.file_type.value,
                 "category": doc.category.value,
                 "page_count": doc.page_count,
@@ -99,7 +109,7 @@ async def export_project(
             # Add actual document file if exists
             file_path = Path(doc.file_path)
             if file_path.exists():
-                zf.write(file_path, f"documents/{doc.filename}")
+                zf.write(file_path, f"documents/{filename}")
 
         zf.writestr("documents.json", json.dumps(docs_data, indent=2))
 

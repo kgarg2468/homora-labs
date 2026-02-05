@@ -98,9 +98,26 @@ export default function ProjectPage() {
     return () => unregisterAction('upload');
   }, [registerAction, unregisterAction]);
 
-  // Scroll to bottom when messages change
+  // Scroll to bottom when messages change (optimized for streaming)
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const scrollToBottom = () => {
+      if (!messagesEndRef.current) return;
+
+      const container = messagesEndRef.current.parentElement;
+      if (!container) return;
+
+      // Only auto-scroll if user is near the bottom (within 100px)
+      const isNearBottom =
+        container.scrollHeight - container.scrollTop - container.clientHeight < 100;
+
+      if (isNearBottom) {
+        requestAnimationFrame(() => {
+          messagesEndRef.current?.scrollIntoView({ behavior: 'instant' });
+        });
+      }
+    };
+
+    scrollToBottom();
   }, [messages, streamingContent]);
 
   // Handle sending a message
@@ -122,12 +139,15 @@ export default function ProjectPage() {
       // Use streaming endpoint
       let fullContent = '';
       let newConversationId = conversationId;
+      let lastEvent: StreamEvent | null = null;
 
       for await (const event of chatApi.streamMessage(
         projectId,
         content,
         conversationId || undefined
       )) {
+        lastEvent = event;
+
         if (event.type === 'error') {
           throw new Error(event.content || 'An error occurred while generating a response');
         } else if (event.type === 'token') {
@@ -150,6 +170,7 @@ export default function ProjectPage() {
           // Update conversation ID from the response
           if (event.conversation_id) {
             setConversationId(event.conversation_id);
+            newConversationId = event.conversation_id;
           }
 
           // Refresh conversation list
@@ -158,7 +179,22 @@ export default function ProjectPage() {
           });
         }
       }
+
+      // If stream ended without a complete event but we have content, save it anyway
+      if (fullContent && lastEvent?.type !== 'complete') {
+        const assistantMessage: Message = {
+          id: `incomplete-${Date.now()}`,
+          role: 'assistant',
+          content: fullContent,
+          citations: null,
+          suggested_followups: null,
+          created_at: new Date().toISOString(),
+        };
+        setMessages((prev) => [...prev, assistantMessage]);
+        setStreamingContent('');
+      }
     } catch (error) {
+      console.error('Chat stream error:', error);
       notifyError('Failed to send message');
       // Remove the temporary user message
       setMessages((prev) => prev.filter((m) => m.id !== userMessage.id));
