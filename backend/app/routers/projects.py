@@ -1,5 +1,5 @@
 import uuid
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, File, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 
@@ -194,13 +194,14 @@ async def export_project_archive(
 
 @router.post("/import", response_model=ProjectResponse)
 async def import_project_archive(
-    file: bytes,
+    file: UploadFile = File(...),
     new_name: str | None = None,
     db: AsyncSession = Depends(get_db),
 ):
     """Import a project from a ZIP archive."""
     try:
-        project_id = await import_project(db, file, new_name)
+        file_bytes = await file.read()
+        project_id = await import_project(db, file_bytes, new_name)
         return await get_project(project_id, db)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

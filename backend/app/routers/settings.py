@@ -54,13 +54,20 @@ async def get_settings_endpoint(db: AsyncSession = Depends(get_db)):
     theme = settings_dict.get("theme", SettingsModel(value={"v": "system"})).value.get("v", "system")
 
     # Get available models per provider
+    # Hardcoded fallback lists so the UI always shows model options,
+    # even before API keys are configured.
+    fallback_models = {
+        "openai": ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "gpt-4", "gpt-3.5-turbo"],
+        "anthropic": ["claude-sonnet-4-20250514", "claude-haiku-35-20241022"],
+        "ollama": ["llama3", "mistral", "codellama"],
+    }
     available_models = {}
     for provider_name in ["openai", "anthropic", "ollama"]:
         try:
             provider = get_llm_provider(provider_name)
             available_models[provider_name] = provider.get_available_models()
-        except ValueError:
-            available_models[provider_name] = []
+        except (ValueError, Exception):
+            available_models[provider_name] = fallback_models.get(provider_name, [])
 
     return SettingsResponse(
         llm=llm_settings,

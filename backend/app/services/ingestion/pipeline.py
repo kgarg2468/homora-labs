@@ -74,6 +74,15 @@ class IngestionPipeline:
                                 provider="openai",
                             )
                             text += "\n" + extracted
+                        elif isinstance(img, Path):
+                            image_data = img.read_bytes()
+                            image_ext = img.suffix.lstrip(".")
+                            extracted = await extract_text_from_image(
+                                image_data,
+                                image_ext,
+                                provider="openai",
+                            )
+                            text += "\n" + extracted
 
                 # Chunk the page text
                 page_chunks = chunk_text(text, page_number=page_content.page_number)

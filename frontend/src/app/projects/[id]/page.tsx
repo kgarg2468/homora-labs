@@ -147,14 +147,15 @@ export default function ProjectPage() {
           setMessages((prev) => [...prev, assistantMessage]);
           setStreamingContent('');
 
-          // Update conversation ID if this was a new conversation
-          if (!conversationId) {
-            // The conversation ID should be in the response
-            // For now, we'll refetch conversations
-            queryClient.invalidateQueries({
-              queryKey: ['conversations', projectId],
-            });
+          // Update conversation ID from the response
+          if (event.conversation_id) {
+            setConversationId(event.conversation_id);
           }
+
+          // Refresh conversation list
+          queryClient.invalidateQueries({
+            queryKey: ['conversations', projectId],
+          });
         }
       }
     } catch (error) {

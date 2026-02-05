@@ -186,6 +186,7 @@ Homora is a real estate intelligence assistant that provides citation-first, hal
 
 ## What's Working
 
+- Local dev environment (PostgreSQL 16 + pgvector 0.8.1 + pg_trgm via Homebrew, backend serves on :8000)
 - Full document ingestion pipeline (upload, extract, chunk, embed, categorize)
 - Chat with streaming responses, citations, and follow-up suggestions
 - Hybrid search (vector + keyword) with Reciprocal Rank Fusion
@@ -215,22 +216,50 @@ Homora is a real estate intelligence assistant that provides citation-first, hal
 
 ## Development Setup
 
-```bash
-# Backend
-cd backend
-python -m venv ../venv
-source ../venv/bin/activate
-pip install -e ".[dev]"
-python -m alembic upgrade head
-python -m uvicorn app.main:app --reload
+### Prerequisites — PostgreSQL 16 + pgvector (Homebrew)
 
-# Frontend
+```bash
+# Install PostgreSQL 16 and start the service
+brew install postgresql@16
+brew services start postgresql@16
+
+# pgvector — Homebrew's bottle targets PG 17/18, so build from source for PG 16
+git clone --branch v0.8.1 https://github.com/pgvector/pgvector.git /tmp/pgvector-build
+cd /tmp/pgvector-build
+make PG_CONFIG=/opt/homebrew/opt/postgresql@16/bin/pg_config
+make install PG_CONFIG=/opt/homebrew/opt/postgresql@16/bin/pg_config
+
+# Add PG 16 binaries to PATH (keg-only, not symlinked by default)
+export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
+
+# Create user, database, and extensions
+createuser -s homora
+psql -c "ALTER USER homora WITH PASSWORD 'homoradev';" postgres
+createdb -O homora homora
+psql -d homora -c "CREATE EXTENSION IF NOT EXISTS vector;"
+psql -d homora -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
+```
+
+### Backend
+
+```bash
+cd backend
+uv venv --python python3.13 .venv
+uv pip install -e ".[dev]"
+export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
+.venv/bin/alembic upgrade head
+.venv/bin/uvicorn app.main:app --reload
+```
+
+### Frontend
+
+```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-**Note:** Use `python -m alembic` and `python -m uvicorn` instead of bare commands to avoid PATH shadowing issues with system Python.
+**Note:** `postgresql@16` is keg-only. Add `export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"` to `~/.zshrc` for persistent access to `psql`, `createdb`, etc.
 
 ---
 
@@ -250,3 +279,4 @@ The project is approximately **90-95% functionally complete** through Phases 1-6
 
 - **Background tasks:** Uses FastAPI's built-in `BackgroundTasks` (not arq as PRD specifies) — lighter-weight, no Redis needed, but no task persistence across restarts.
 - **Sound notifications:** Uses native `Audio` API (not `use-sound` package which is installed but unused).
+- **Local dev setup:** PostgreSQL 16 via Homebrew (not Docker). pgvector must be built from source for PG 16 since Homebrew's bottle only targets PG 17/18. Python venv managed with `uv` (Python 3.13, `.venv` inside `backend/`).

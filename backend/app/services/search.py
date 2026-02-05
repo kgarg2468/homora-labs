@@ -79,15 +79,14 @@ async def search_documents(
         query = query.where(Document.created_at <= request.date_to)
 
     # Full-text search
-    search_terms = " & ".join(request.query.split())
     query = query.where(
-        text("to_tsvector('english', chunks.content) @@ to_tsquery('english', :query)")
-    ).params(query=search_terms)
+        text("to_tsvector('english', chunks.content) @@ plainto_tsquery('english', :query)")
+    ).params(query=request.query)
 
     # Add ranking
     query = query.add_columns(
-        text("ts_rank(to_tsvector('english', chunks.content), to_tsquery('english', :query)) as rank")
-    ).params(query=search_terms)
+        text("ts_rank(to_tsvector('english', chunks.content), plainto_tsquery('english', :query)) as rank")
+    ).params(query=request.query)
 
     query = query.order_by(text("rank DESC")).limit(request.limit * 2)
 
@@ -148,15 +147,14 @@ async def search_conversations(
         query = query.where(Message.created_at <= request.date_to)
 
     # Full-text search
-    search_terms = " & ".join(request.query.split())
     query = query.where(
-        text("to_tsvector('english', messages.content) @@ to_tsquery('english', :query)")
-    ).params(query=search_terms)
+        text("to_tsvector('english', messages.content) @@ plainto_tsquery('english', :query)")
+    ).params(query=request.query)
 
     # Add ranking
     query = query.add_columns(
-        text("ts_rank(to_tsvector('english', messages.content), to_tsquery('english', :query)) as rank")
-    ).params(query=search_terms)
+        text("ts_rank(to_tsvector('english', messages.content), plainto_tsquery('english', :query)) as rank")
+    ).params(query=request.query)
 
     query = query.order_by(text("rank DESC")).limit(request.limit * 2)
 

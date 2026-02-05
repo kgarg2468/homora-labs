@@ -387,6 +387,7 @@ Question: {query}"""
         yield json.dumps({
             "type": "complete",
             "message_id": str(assistant_message.id),
+            "conversation_id": str(conversation.id),
             "citations": [c.model_dump() for c in citations],
             "suggested_followups": followups,
         })

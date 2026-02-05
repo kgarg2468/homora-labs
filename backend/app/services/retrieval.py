@@ -108,9 +108,6 @@ async def keyword_search(
     document_ids: list[uuid.UUID] | None = None,
 ) -> list[RetrievedChunk]:
     """Perform keyword search using PostgreSQL full-text search."""
-    # Use to_tsquery for full-text search
-    search_query = " & ".join(query.split())
-
     sql = text("""
         SELECT
             c.id,
@@ -119,17 +116,17 @@ async def keyword_search(
             c.content,
             c.page_number,
             c.section,
-            ts_rank(to_tsvector('english', c.content), to_tsquery('english', :query)) as rank
+            ts_rank(to_tsvector('english', c.content), plainto_tsquery('english', :query)) as rank
         FROM chunks c
         JOIN documents d ON c.document_id = d.id
         WHERE d.project_id = :project_id
-        AND to_tsvector('english', c.content) @@ to_tsquery('english', :query)
+        AND to_tsvector('english', c.content) @@ plainto_tsquery('english', :query)
         ORDER BY rank DESC
         LIMIT :limit
     """)
 
     params = {
-        "query": search_query,
+        "query": query,
         "project_id": str(project_id),
         "limit": top_k,
     }

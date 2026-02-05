@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
@@ -35,13 +35,13 @@ export default function SettingsPage() {
   const [embeddingModel, setEmbeddingModel] = useState<string>('');
 
   // Initialize form when settings load
-  useState(() => {
+  useEffect(() => {
     if (settings) {
       setProvider(settings.llm.provider);
       setModel(settings.llm.model);
       setEmbeddingModel(settings.embedding.model);
     }
-  });
+  }, [settings]);
 
   const updateMutation = useMutation({
     mutationFn: settingsApi.update,
