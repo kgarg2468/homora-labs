@@ -63,27 +63,27 @@ export function SearchModal() {
   return (
     <div className="fixed inset-0 z-50">
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        className="absolute inset-0 bg-[#1C1610]/60 backdrop-blur-sm"
         onClick={() => setIsSearchOpen(false)}
       />
 
       <div className="absolute top-[20%] left-1/2 -translate-x-1/2 w-full max-w-2xl px-4">
-        <Command className="bg-white dark:bg-slate-800 rounded-xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-700">
-          <div className="flex items-center gap-3 px-4 py-3 border-b border-slate-200 dark:border-slate-700">
-            <Search className="w-5 h-5 text-slate-400" />
+        <Command className="bg-[var(--surface)] rounded-xl shadow-warm-xl overflow-hidden border border-[var(--border)]">
+          <div className="flex items-center gap-3 px-4 py-3 border-b border-[var(--border)]">
+            <Search className="w-5 h-5 text-[var(--text-muted)]" />
             <Command.Input
               value={query}
               onValueChange={setQuery}
               placeholder="Search documents and conversations..."
-              className="flex-1 bg-transparent text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none"
+              className="flex-1 bg-transparent text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none"
               autoFocus
             />
-            {isLoading && <Loader2 className="w-5 h-5 text-slate-400 animate-spin" />}
+            {isLoading && <Loader2 className="w-5 h-5 text-accent-500 animate-spin" />}
           </div>
 
           <Command.List className="max-h-80 overflow-auto p-2">
             {query.length > 0 && results.length === 0 && !isLoading && (
-              <Command.Empty className="text-center py-8 text-slate-500 dark:text-slate-400">
+              <Command.Empty className="text-center py-8 text-[var(--text-muted)]">
                 No results found
               </Command.Empty>
             )}
@@ -93,30 +93,30 @@ export function SearchModal() {
                 key={`${result.type}-${result.id}`}
                 value={result.title}
                 onSelect={() => handleSelect(result)}
-                className="flex items-start gap-3 px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 data-[selected=true]:bg-slate-100 dark:data-[selected=true]:bg-slate-700"
+                className="flex items-start gap-3 px-3 py-2 rounded-lg cursor-pointer hover:bg-[var(--surface-elevated)] data-[selected=true]:bg-[var(--surface-elevated)] transition-colors"
               >
-                <div className="p-2 bg-slate-100 dark:bg-slate-700 rounded-lg mt-0.5">
+                <div className="p-2 bg-stone-100 dark:bg-stone-900 rounded-lg mt-0.5">
                   {result.type === 'conversation' ? (
-                    <MessageSquare className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+                    <MessageSquare className="w-4 h-4 text-[var(--text-muted)]" />
                   ) : (
-                    <FileText className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+                    <FileText className="w-4 h-4 text-[var(--text-muted)]" />
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="font-medium text-slate-900 dark:text-slate-100 truncate">
+                    <span className="font-medium text-[var(--text-primary)] truncate">
                       {result.title}
                     </span>
                     {result.page_number && (
-                      <span className="text-xs text-slate-500 dark:text-slate-400">
+                      <span className="text-xs text-[var(--text-muted)]">
                         Page {result.page_number}
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 truncate">
+                  <p className="text-sm text-[var(--text-muted)] truncate">
                     {truncate(result.snippet, 100)}
                   </p>
-                  <div className="flex items-center gap-2 mt-1 text-xs text-slate-400">
+                  <div className="flex items-center gap-2 mt-1 text-xs text-[var(--text-muted)]">
                     <span>{result.project_name}</span>
                     <span>·</span>
                     <span>{formatRelativeTime(result.created_at)}</span>
@@ -126,15 +126,15 @@ export function SearchModal() {
             ))}
           </Command.List>
 
-          <div className="px-4 py-2 border-t border-slate-200 dark:border-slate-700 text-xs text-slate-500 dark:text-slate-400 flex items-center gap-4">
+          <div className="px-4 py-2 border-t border-[var(--border)] text-xs text-[var(--text-muted)] flex items-center gap-4">
             <span>
-              <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 rounded">↑↓</kbd> Navigate
+              <kbd className="px-1.5 py-0.5 font-mono bg-[var(--surface-elevated)] border border-[var(--border)] rounded-md">↑↓</kbd> Navigate
             </span>
             <span>
-              <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 rounded">↵</kbd> Select
+              <kbd className="px-1.5 py-0.5 font-mono bg-[var(--surface-elevated)] border border-[var(--border)] rounded-md">↵</kbd> Select
             </span>
             <span>
-              <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 rounded">Esc</kbd> Close
+              <kbd className="px-1.5 py-0.5 font-mono bg-[var(--surface-elevated)] border border-[var(--border)] rounded-md">Esc</kbd> Close
             </span>
           </div>
         </Command>

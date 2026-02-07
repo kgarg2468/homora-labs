@@ -23,9 +23,9 @@ export function FollowUpSuggestions({
     <div className={cn('space-y-2', className)}>
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-colors"
+        className="flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-accent-600 dark:hover:text-accent-400 transition-colors"
       >
-        <Lightbulb className="w-4 h-4" />
+        <Lightbulb className="w-4 h-4 text-accent-500" />
         <span>Suggested follow-ups</span>
         {isExpanded ? (
           <ChevronUp className="w-4 h-4" />
@@ -39,7 +39,7 @@ export function FollowUpSuggestions({
             <button
               key={i}
               onClick={() => onSelect(suggestion)}
-              className="px-3 py-1.5 text-sm bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+              className="px-3 py-1.5 text-sm bg-[var(--surface-elevated)] text-[var(--text-secondary)] rounded-lg border border-[var(--border-subtle)] hover:bg-accent-100 dark:hover:bg-accent-950/30 hover:text-accent-700 dark:hover:text-accent-400 hover:border-accent-300 dark:hover:border-accent-800 transition-all duration-200"
             >
               {suggestion}
             </button>

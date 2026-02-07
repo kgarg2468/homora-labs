@@ -103,7 +103,7 @@ export function Modal({
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fade-in"
+        className="absolute inset-0 bg-[#1C1610]/60 backdrop-blur-sm animate-fade-in"
         onClick={onClose}
       />
 
@@ -114,19 +114,19 @@ export function Modal({
         aria-modal="true"
         aria-labelledby={title ? titleId : undefined}
         className={cn(
-          'relative bg-white dark:bg-slate-800 rounded-xl shadow-2xl animate-slide-up',
-          'w-full mx-4',
+          'relative bg-[var(--surface)] rounded-xl shadow-warm-xl animate-slide-up',
+          'w-full mx-4 border border-[var(--border)]',
           sizeClasses[size],
           size === 'full' && 'h-[95vh] flex flex-col',
           className
         )}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border)]">
           {title && (
             <h2
               id={titleId}
-              className="text-lg font-semibold text-slate-900 dark:text-slate-100"
+              className="text-lg font-semibold text-[var(--text-primary)]"
             >
               {title}
             </h2>
@@ -136,7 +136,7 @@ export function Modal({
             onClick={onClose}
             aria-label="Close modal"
             className={cn(
-              "p-1 rounded-lg text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors",
+              "p-1 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-stone-100 dark:hover:bg-stone-900 transition-colors",
               !title && "ml-auto"
             )}
           >

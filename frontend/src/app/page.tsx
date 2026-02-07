@@ -114,9 +114,9 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--background)' }}>
       {/* Header */}
-      <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
+      <header className="bg-[var(--surface)]/80 backdrop-blur-md border-b border-[var(--border)] sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
@@ -128,7 +128,7 @@ export default function HomePage() {
                   className="object-contain"
                 />
               </div>
-              <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+              <h1 className="text-xl font-serif text-[var(--text-primary)]">
                 Homora
               </h1>
             </div>
@@ -136,12 +136,12 @@ export default function HomePage() {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setIsSearchOpen(true)}
-                className="flex items-center gap-2 px-3 py-2 text-sm text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+                className="flex items-center gap-2 px-3 py-2 text-sm text-[var(--text-muted)] bg-stone-100 dark:bg-stone-900 rounded-lg hover:bg-stone-200 dark:hover:bg-stone-950 transition-colors"
               >
                 <Search className="w-4 h-4" />
                 <span className="hidden sm:inline">Search</span>
                 {mounted && searchShortcut && (
-                  <kbd className="hidden sm:inline px-1.5 py-0.5 text-xs bg-white dark:bg-slate-600 rounded">
+                  <kbd className="hidden sm:inline px-1.5 py-0.5 text-[10px] font-mono bg-[var(--surface)] border border-[var(--border)] rounded-md">
                     {formatShortcut(searchShortcut)}
                   </kbd>
                 )}
@@ -171,29 +171,31 @@ export default function HomePage() {
           {/* Projects section */}
           <div className="lg:col-span-2">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+              <h2 className="text-lg font-serif text-[var(--text-primary)]">
                 Projects
               </h2>
-              <span className="text-sm text-slate-500 dark:text-slate-400">
+              <span className="text-sm text-[var(--text-muted)]">
                 {data?.total || 0} total
               </span>
             </div>
 
             {isLoading ? (
               <div className="flex items-center justify-center py-12">
-                <Loader2 className="w-8 h-8 text-primary-600 animate-spin" />
+                <Loader2 className="w-8 h-8 text-accent-500 animate-spin" />
               </div>
             ) : error ? (
-              <div className="text-center py-12 text-red-600 dark:text-red-400">
+              <div className="text-center py-12 text-[#B85450]">
                 Failed to load projects. Please try again.
               </div>
             ) : data?.projects.length === 0 ? (
-              <div className="text-center py-12 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
-                <FolderOpen className="w-12 h-12 mx-auto text-slate-400 mb-4" />
-                <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100 mb-2">
+              <div className="text-center py-12 bg-[var(--surface)] rounded-xl border border-[var(--border)]">
+                <div className="w-16 h-16 mx-auto mb-4 bg-stone-100 dark:bg-stone-900 rounded-lg flex items-center justify-center animate-breathe">
+                  <FolderOpen className="w-8 h-8 text-[var(--text-muted)]" />
+                </div>
+                <h3 className="font-serif text-2xl text-[var(--text-primary)] mb-2">
                   No projects yet
                 </h3>
-                <p className="text-slate-500 dark:text-slate-400 mb-4">
+                <p className="text-[var(--text-muted)] mb-4">
                   Create your first project to start analyzing documents
                 </p>
                 <Link href="/projects/new">
@@ -218,24 +220,24 @@ export default function HomePage() {
 
           {/* Activity sidebar */}
           <div>
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-6">
+            <h2 className="text-lg font-serif text-[var(--text-primary)] mb-6">
               Recent Activity
             </h2>
-            <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
+            <div className="bg-[var(--surface)] rounded-xl border border-[var(--border)] p-4">
               <RecentActivity activities={[]} />
             </div>
 
             {/* Quick tips */}
-            <div className="mt-6 p-4 bg-primary-50 dark:bg-primary-900/20 rounded-xl">
-              <h3 className="font-medium text-primary-900 dark:text-primary-100 mb-2">
+            <div className="mt-6 p-4 bg-accent-50/50 dark:bg-accent-950/20 rounded-xl border border-accent-200/30 dark:border-accent-800/20">
+              <h3 className="font-medium text-[var(--text-primary)] mb-2">
                 Keyboard Shortcuts
               </h3>
-              <ul className="space-y-1.5 text-sm text-primary-700 dark:text-primary-300">
+              <ul className="space-y-1.5 text-sm text-[var(--text-secondary)]">
                 {shortcuts.slice(0, 4).map((shortcut) => (
                   <li key={shortcut.action} className="flex justify-between">
                     <span>{shortcut.description}</span>
                     {mounted && (
-                      <kbd className="px-1.5 py-0.5 bg-primary-100 dark:bg-primary-800 rounded text-xs">
+                      <kbd className="px-1.5 py-0.5 font-mono bg-[var(--surface)] border border-[var(--border)] rounded-md text-xs">
                         {formatShortcut(shortcut)}
                       </kbd>
                     )}

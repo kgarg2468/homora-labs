@@ -67,12 +67,12 @@ export function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
   return (
     <Link
       href={`/projects/${project.id}`}
-      className="block p-6 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-lg transition-all group"
+      className="block p-6 bg-[var(--surface)] rounded-xl border border-[var(--border)] border-t-2 border-t-transparent hover:border-t-accent-400 hover:border-accent-400/50 hover:shadow-warm-lg hover:-translate-y-0.5 transition-all duration-300 group"
     >
       <div className="relative z-10 flex justify-end" ref={menuRef}>
         <button
           type="button"
-          className="p-1.5 -mr-1 -mt-1 rounded-lg text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+          className="p-1.5 -mr-1 -mt-1 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-stone-100 dark:hover:bg-stone-900 transition-colors"
           onClick={handleMenuToggle}
           aria-label={`Project actions for ${project.name}`}
           aria-haspopup="menu"
@@ -84,12 +84,12 @@ export function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
         {menuOpen && (
           <div
             role="menu"
-            className="absolute top-8 right-0 w-40 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-lg py-1 z-20"
+            className="absolute top-8 right-0 w-40 rounded-lg border border-[var(--border)] bg-[var(--surface)] shadow-warm-lg py-1 z-20"
           >
             <button
               type="button"
               role="menuitem"
-              className="w-full px-3 py-2 text-sm text-left text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center gap-2"
+              className="w-full px-3 py-2 text-sm text-left text-[var(--text-secondary)] hover:bg-stone-100 dark:hover:bg-stone-900 flex items-center gap-2"
               onClick={(event) => handleMenuAction(event, 'edit')}
             >
               <Pencil className="w-4 h-4" />
@@ -98,7 +98,7 @@ export function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
             <button
               type="button"
               role="menuitem"
-              className="w-full px-3 py-2 text-sm text-left text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2"
+              className="w-full px-3 py-2 text-sm text-left text-[#B85450] hover:bg-[#B85450]/5 dark:hover:bg-[#B85450]/10 flex items-center gap-2"
               onClick={(event) => handleMenuAction(event, 'delete')}
             >
               <Trash2 className="w-4 h-4" />
@@ -109,29 +109,30 @@ export function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
       </div>
 
       <div className="flex items-start justify-between mb-4">
-        <div className="p-2 bg-primary-100 dark:bg-primary-900/50 rounded-lg group-hover:bg-primary-200 dark:group-hover:bg-primary-900 transition-colors">
-          <FolderOpen className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+        <div className="p-2 bg-stone-100 dark:bg-stone-900 rounded-lg group-hover:bg-accent-100 dark:group-hover:bg-accent-950/30 transition-colors">
+          <FolderOpen className="w-6 h-6 text-[var(--text-muted)] group-hover:text-accent-600 dark:group-hover:text-accent-400 transition-colors" />
         </div>
         <Badge variant={project.role_mode === 'analytical' ? 'info' : 'default'}>
           {project.role_mode}
         </Badge>
       </div>
 
-      <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+      <h3 className="font-serif text-lg text-[var(--text-primary)] mb-2 group-hover:text-accent-600 dark:group-hover:text-accent-400 transition-colors">
         {project.name}
       </h3>
 
       {project.description && (
-        <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 line-clamp-2">
+        <p className="text-sm text-[var(--text-secondary)] mb-4 line-clamp-2">
           {project.description}
         </p>
       )}
 
-      <div className="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
+      <div className="flex items-center gap-4 text-sm text-[var(--text-muted)]">
         <div className="flex items-center gap-1.5">
           <FileText className="w-4 h-4" />
           <span>{project.document_count} documents</span>
         </div>
+        <span className="text-[var(--border)]">·</span>
         <div className="flex items-center gap-1.5">
           <Clock className="w-4 h-4" />
           <span>{formatRelativeTime(project.updated_at)}</span>

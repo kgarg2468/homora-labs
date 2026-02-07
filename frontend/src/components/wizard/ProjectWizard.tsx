@@ -109,8 +109,8 @@ export function ProjectWizard() {
                 className={cn(
                   'w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors',
                   step === s || (['upload', 'processing', 'complete'].indexOf(step) >= i)
-                    ? 'bg-zinc-700 text-white'
-                    : 'bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400'
+                    ? 'bg-accent-600 text-white'
+                    : 'bg-stone-200 dark:bg-stone-900 text-[var(--text-muted)]'
                 )}
               >
                 {i + 1}
@@ -118,10 +118,10 @@ export function ProjectWizard() {
               {i < 3 && (
                 <div
                   className={cn(
-                    'w-16 h-1 mx-1',
+                    'w-16 h-1 mx-1 rounded-full',
                     ['upload', 'processing', 'complete'].indexOf(step) > i
-                      ? 'bg-primary-600'
-                      : 'bg-slate-200 dark:bg-slate-700'
+                      ? 'bg-accent-600'
+                      : 'bg-stone-200 dark:bg-stone-900'
                   )}
                 />
               )}
@@ -132,8 +132,8 @@ export function ProjectWizard() {
 
       {/* Step: Details */}
       {step === 'details' && (
-        <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-          <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-6">
+        <div className="bg-[var(--surface)] rounded-xl p-6 shadow-warm-sm border border-[var(--border)]">
+          <h2 className="text-xl font-serif text-[var(--text-primary)] mb-6">
             Create New Project
           </h2>
 
@@ -147,11 +147,11 @@ export function ProjectWizard() {
             />
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
                 Description (optional)
               </label>
               <textarea
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:border-transparent resize-none"
+                className="w-full px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-accent-500/20 focus:border-accent-500 resize-none transition-all duration-200"
                 rows={3}
                 placeholder="Brief description of the project..."
                 value={description}
@@ -160,7 +160,7 @@ export function ProjectWizard() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
                 Response Mode
               </label>
               <div className="grid grid-cols-2 gap-3">
@@ -181,16 +181,16 @@ export function ProjectWizard() {
                     type="button"
                     onClick={() => setRoleMode(option.value)}
                     className={cn(
-                      'p-4 rounded-lg border text-left transition-colors',
+                      'p-4 rounded-lg border text-left transition-all duration-200',
                       roleMode === option.value
-                        ? 'border-slate-500 bg-slate-100 dark:bg-slate-800'
-                        : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
+                        ? 'border-accent-500 bg-accent-50 dark:bg-accent-950/20'
+                        : 'border-[var(--border)] hover:border-[var(--text-muted)]'
                     )}
                   >
-                    <div className="font-medium text-slate-900 dark:text-slate-100">
+                    <div className="font-medium text-[var(--text-primary)]">
                       {option.label}
                     </div>
-                    <div className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                    <div className="text-sm text-[var(--text-muted)] mt-1">
                       {option.description}
                     </div>
                   </button>
@@ -214,29 +214,29 @@ export function ProjectWizard() {
 
       {/* Step: Upload */}
       {step === 'upload' && (
-        <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-          <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">
+        <div className="bg-[var(--surface)] rounded-xl p-6 shadow-warm-sm border border-[var(--border)]">
+          <h2 className="text-xl font-serif text-[var(--text-primary)] mb-2">
             Upload Documents
           </h2>
-          <p className="text-slate-500 dark:text-slate-400 mb-6">
+          <p className="text-[var(--text-muted)] mb-6">
             Add the documents you want to analyze
           </p>
 
           <div
             {...getRootProps()}
             className={cn(
-              'border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors',
+              'border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all duration-200',
               isDragActive
-                ? 'border-slate-500 bg-slate-100 dark:bg-slate-800'
-                : 'border-slate-300 dark:border-slate-600 hover:border-slate-500'
+                ? 'border-accent-500 bg-accent-50/50 dark:bg-accent-950/20'
+                : 'border-[var(--border)] hover:border-accent-500'
             )}
           >
             <input {...getInputProps()} />
-            <Upload className="w-10 h-10 mx-auto text-slate-400 mb-3" />
-            <p className="text-slate-600 dark:text-slate-400">
+            <Upload className={cn('w-10 h-10 mx-auto mb-3 transition-colors', isDragActive ? 'text-accent-500' : 'text-[var(--text-muted)]')} />
+            <p className="text-[var(--text-secondary)]">
               Drag & drop files here, or click to select
             </p>
-            <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">
+            <p className="text-sm text-[var(--text-muted)] mt-1">
               PDF, DOCX, XLSX, TXT, or images
             </p>
           </div>
@@ -246,15 +246,15 @@ export function ProjectWizard() {
               {files.map((f, i) => (
                 <div
                   key={i}
-                  className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700 rounded-lg"
+                  className="flex items-center gap-3 p-3 bg-[var(--surface-elevated)] rounded-lg"
                 >
-                  <FileText className="w-5 h-5 text-slate-500" />
-                  <span className="flex-1 text-sm text-slate-700 dark:text-slate-300 truncate">
+                  <FileText className="w-5 h-5 text-[var(--text-muted)]" />
+                  <span className="flex-1 text-sm text-[var(--text-secondary)] truncate">
                     {f.file.name}
                   </span>
                   <button
                     onClick={() => removeFile(i)}
-                    className="text-slate-400 hover:text-red-500"
+                    className="text-[var(--text-muted)] hover:text-[#B85450] transition-colors"
                   >
                     ×
                   </button>
@@ -281,11 +281,11 @@ export function ProjectWizard() {
 
       {/* Step: Processing */}
       {step === 'processing' && (
-        <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-          <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">
+        <div className="bg-[var(--surface)] rounded-xl p-6 shadow-warm-sm border border-[var(--border)]">
+          <h2 className="text-xl font-serif text-[var(--text-primary)] mb-2">
             Processing Documents
           </h2>
-          <p className="text-slate-500 dark:text-slate-400 mb-6">
+          <p className="text-[var(--text-muted)] mb-6">
             Please wait while your documents are being analyzed...
           </p>
 
@@ -293,21 +293,21 @@ export function ProjectWizard() {
             {files.map((f, i) => (
               <div
                 key={i}
-                className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700 rounded-lg"
+                className="flex items-center gap-3 p-3 bg-[var(--surface-elevated)] rounded-lg"
               >
-                <FileText className="w-5 h-5 text-slate-500" />
-                <span className="flex-1 text-sm text-slate-700 dark:text-slate-300 truncate">
+                <FileText className="w-5 h-5 text-[var(--text-muted)]" />
+                <span className="flex-1 text-sm text-[var(--text-secondary)] truncate">
                   {f.file.name}
                 </span>
                 {f.error ? (
-                  <span className="flex items-center gap-1 text-sm text-red-600">
+                  <span className="flex items-center gap-1 text-sm text-[#B85450]">
                     <AlertCircle className="w-4 h-4" />
                     Failed
                   </span>
                 ) : f.document ? (
                   <span
                     className={cn(
-                      'px-2 py-0.5 text-xs font-medium rounded-full',
+                      'px-2 py-0.5 text-xs font-medium rounded-md',
                       getStatusColor(f.document.ingestion_status)
                     )}
                   >
@@ -320,7 +320,7 @@ export function ProjectWizard() {
                     )}
                   </span>
                 ) : (
-                  <Loader2 className="w-4 h-4 text-primary-600 animate-spin" />
+                  <Loader2 className="w-4 h-4 text-accent-500 animate-spin" />
                 )}
               </div>
             ))}
@@ -330,14 +330,14 @@ export function ProjectWizard() {
 
       {/* Step: Complete */}
       {step === 'complete' && (
-        <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700 text-center">
-          <div className="w-16 h-16 mx-auto mb-4 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
-            <Check className="w-8 h-8 text-green-600 dark:text-green-400" />
+        <div className="bg-[var(--surface)] rounded-xl p-6 shadow-warm-sm border border-[var(--border)] text-center">
+          <div className="w-16 h-16 mx-auto mb-4 bg-[#5E8C61]/10 rounded-full flex items-center justify-center">
+            <Check className="w-8 h-8 text-[#5E8C61]" />
           </div>
-          <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">
+          <h2 className="font-serif text-xl text-[var(--text-primary)] mb-2">
             Project Ready!
           </h2>
-          <p className="text-slate-500 dark:text-slate-400 mb-6">
+          <p className="text-[var(--text-muted)] mb-6">
             Your documents have been uploaded and are being processed.
             You can start asking questions now.
           </p>

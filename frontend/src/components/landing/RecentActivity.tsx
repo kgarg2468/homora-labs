@@ -42,7 +42,7 @@ export function RecentActivity({ activities }: RecentActivityProps) {
 
   if (activities.length === 0) {
     return (
-      <div className="text-center py-8 text-slate-500 dark:text-slate-400">
+      <div className="text-center py-8 text-[var(--text-muted)]">
         <p>No recent activity</p>
         <p className="text-sm mt-1">Create a project to get started</p>
       </div>
@@ -55,20 +55,20 @@ export function RecentActivity({ activities }: RecentActivityProps) {
         <Link
           key={activity.id}
           href={`/projects/${activity.project_id}`}
-          className="flex items-start gap-3 p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+          className="flex items-start gap-3 p-3 rounded-lg hover:bg-[var(--surface-elevated)] transition-colors"
         >
-          <div className="p-2 bg-slate-100 dark:bg-slate-700 rounded-lg text-slate-600 dark:text-slate-400">
+          <div className="p-2 bg-stone-100 dark:bg-stone-900 rounded-lg text-[var(--text-muted)]">
             {getIcon(activity.type)}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">
+            <p className="text-sm font-medium text-[var(--text-primary)] truncate">
               {activity.title}
             </p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-[var(--text-muted)]">
               {getLabel(activity.type)} in {activity.project_name}
             </p>
           </div>
-          <span className="text-xs text-slate-400 dark:text-slate-500 whitespace-nowrap">
+          <span className="text-xs text-[var(--text-muted)] whitespace-nowrap">
             {formatRelativeTime(activity.timestamp)}
           </span>
         </Link>

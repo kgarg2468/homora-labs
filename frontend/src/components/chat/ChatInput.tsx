@@ -52,12 +52,12 @@ export function ChatInput({
         disabled={isLoading}
         rows={1}
         className={cn(
-          'w-full px-4 py-3 pr-12 rounded-xl border resize-none transition-colors',
-          'bg-white dark:bg-slate-800',
-          'border-slate-300 dark:border-slate-600',
-          'text-slate-900 dark:text-slate-100',
-          'placeholder:text-slate-400 dark:placeholder:text-slate-500',
-          'focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:border-transparent',
+          'w-full px-4 py-3 pr-12 rounded-xl border resize-none transition-all duration-200',
+          'bg-[var(--background)]',
+          'border-[var(--border)]',
+          'text-[var(--text-primary)]',
+          'placeholder:text-[var(--text-muted)]',
+          'focus:outline-none focus:ring-2 focus:ring-accent-500/20 focus:border-accent-500',
           'disabled:opacity-50'
         )}
       />
@@ -65,10 +65,10 @@ export function ChatInput({
         onClick={handleSend}
         disabled={!message.trim() || isLoading}
         className={cn(
-          'absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg transition-colors',
+          'absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg transition-all duration-200',
           message.trim() && !isLoading
-            ? 'bg-zinc-700 text-white hover:bg-zinc-800'
-            : 'bg-slate-100 dark:bg-slate-700 text-slate-400'
+            ? 'bg-accent-600 text-white hover:bg-accent-700'
+            : 'bg-stone-100 dark:bg-stone-900 text-[var(--text-muted)]'
         )}
       >
         {isLoading ? (
@@ -78,9 +78,9 @@ export function ChatInput({
         )}
       </button>
 
-      <p className="mt-2 text-xs text-slate-400 dark:text-slate-500 text-center">
-        Press <kbd className="px-1 py-0.5 bg-slate-100 dark:bg-slate-700 rounded">Enter</kbd> to send,{' '}
-        <kbd className="px-1 py-0.5 bg-slate-100 dark:bg-slate-700 rounded">Shift+Enter</kbd> for new line
+      <p className="mt-2 text-[10px] font-mono text-[var(--text-muted)] text-center">
+        Press <kbd className="px-1 py-0.5 bg-[var(--surface)] border border-[var(--border)] rounded-md">Enter</kbd> to send,{' '}
+        <kbd className="px-1 py-0.5 bg-[var(--surface)] border border-[var(--border)] rounded-md">Shift+Enter</kbd> for new line
       </p>
     </div>
   );

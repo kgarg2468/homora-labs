@@ -15,19 +15,19 @@ export function DebugPanel({ debugInfo, className, showHeader = true }: DebugPan
     const [activeTab, setActiveTab] = useState<'chunks' | 'prompts'>('chunks');
 
     return (
-        <div className={cn("flex flex-col h-full bg-slate-50 dark:bg-slate-900", className)}>
+        <div className={cn("flex flex-col h-full", className)} style={{ backgroundColor: 'var(--background)' }}>
             {/* Header with stats */}
             {showHeader && (
-                <div className="flex items-center gap-4 px-4 py-2 bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 shrink-0">
-                    <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+                <div className="flex items-center gap-4 px-4 py-2 bg-[var(--surface-elevated)] border-b border-[var(--border)] shrink-0">
+                    <div className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
                         <Clock className="w-3.5 h-3.5" />
                         <span>{debugInfo.execution_time_ms.toFixed(0)}ms</span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+                    <div className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
                         <Cpu className="w-3.5 h-3.5" />
                         <span>{debugInfo.llm_model}</span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+                    <div className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
                         <FileText className="w-3.5 h-3.5" />
                         <span>{debugInfo.retrieved_chunks.length} chunks</span>
                     </div>
@@ -35,14 +35,14 @@ export function DebugPanel({ debugInfo, className, showHeader = true }: DebugPan
             )}
 
             {/* Tabs */}
-            <div className="flex border-b border-slate-200 dark:border-slate-700 shrink-0">
+            <div className="flex border-b border-[var(--border)] shrink-0">
                 <button
                     onClick={() => setActiveTab('chunks')}
                     className={cn(
                         'px-4 py-2 text-xs font-medium transition-colors flex-1 text-center',
                         activeTab === 'chunks'
-                            ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 bg-white dark:bg-slate-800'
-                            : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                            ? 'text-accent-600 dark:text-accent-400 border-b-2 border-accent-600 dark:border-accent-400 bg-[var(--surface)]'
+                            : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
                     )}
                 >
                     Retrieved Chunks
@@ -52,8 +52,8 @@ export function DebugPanel({ debugInfo, className, showHeader = true }: DebugPan
                     className={cn(
                         'px-4 py-2 text-xs font-medium transition-colors flex-1 text-center',
                         activeTab === 'prompts'
-                            ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 bg-white dark:bg-slate-800'
-                            : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                            ? 'text-accent-600 dark:text-accent-400 border-b-2 border-accent-600 dark:border-accent-400 bg-[var(--surface)]'
+                            : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
                     )}
                 >
                     Prompts
@@ -67,27 +67,27 @@ export function DebugPanel({ debugInfo, className, showHeader = true }: DebugPan
                         {debugInfo.retrieved_chunks.map((chunk, idx) => (
                             <div
                                 key={idx}
-                                className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700"
+                                className="p-3 bg-[var(--surface)] rounded-lg border border-[var(--border)]"
                             >
                                 <div className="flex items-center justify-between mb-2">
-                                    <span className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                                    <span className="text-xs font-medium text-[var(--text-secondary)]">
                                         {chunk.document_name}
-                                        {chunk.page_number && ` • p.${chunk.page_number}`}
+                                        {chunk.page_number && ` · p.${chunk.page_number}`}
                                     </span>
                                     <span
                                         className={cn(
-                                            'px-2 py-0.5 text-xs font-mono rounded-full',
+                                            'px-2 py-0.5 text-xs font-mono rounded-md',
                                             chunk.score >= 0.8
-                                                ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
+                                                ? 'bg-[#5E8C61]/10 text-[#5E8C61] dark:bg-[#5E8C61]/15 dark:text-[#7DA97F]'
                                                 : chunk.score >= 0.5
-                                                    ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300'
-                                                    : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400'
+                                                    ? 'bg-[#C4973B]/10 text-[#C4973B] dark:bg-[#C4973B]/15 dark:text-[#D4A74B]'
+                                                    : 'bg-stone-100 dark:bg-stone-900 text-[var(--text-muted)]'
                                         )}
                                     >
                                         {(chunk.score * 100).toFixed(1)}%
                                     </span>
                                 </div>
-                                <p className="text-xs text-slate-600 dark:text-slate-400 whitespace-pre-wrap">
+                                <p className="text-xs text-[var(--text-secondary)] whitespace-pre-wrap">
                                     {chunk.content}
                                 </p>
                             </div>
@@ -98,20 +98,20 @@ export function DebugPanel({ debugInfo, className, showHeader = true }: DebugPan
                 {activeTab === 'prompts' && (
                     <div className="space-y-6">
                         <div>
-                            <h4 className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2 sticky top-0 bg-slate-50 dark:bg-slate-900 py-1">
+                            <h4 className="text-xs font-semibold text-[var(--text-secondary)] mb-2 sticky top-0 py-1" style={{ backgroundColor: 'var(--background)' }}>
                                 System Prompt
                             </h4>
                             <div className="relative group">
-                                <pre className="text-xs text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-800 p-3 rounded-lg border border-slate-200 dark:border-slate-700 whitespace-pre-wrap overflow-x-auto">
+                                <pre className="text-xs text-[var(--text-secondary)] bg-[var(--surface)] p-3 rounded-lg border border-[var(--border)] whitespace-pre-wrap overflow-x-auto">
                                     {debugInfo.system_prompt}
                                 </pre>
                             </div>
                         </div>
                         <div>
-                            <h4 className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2 sticky top-0 bg-slate-50 dark:bg-slate-900 py-1">
+                            <h4 className="text-xs font-semibold text-[var(--text-secondary)] mb-2 sticky top-0 py-1" style={{ backgroundColor: 'var(--background)' }}>
                                 User Prompt (with context)
                             </h4>
-                            <pre className="text-xs text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-800 p-3 rounded-lg border border-slate-200 dark:border-slate-700 whitespace-pre-wrap overflow-x-auto">
+                            <pre className="text-xs text-[var(--text-secondary)] bg-[var(--surface)] p-3 rounded-lg border border-[var(--border)] whitespace-pre-wrap overflow-x-auto">
                                 {debugInfo.user_prompt}
                             </pre>
                         </div>

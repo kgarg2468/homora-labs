@@ -20,18 +20,18 @@ export function ThemeToggle({ showLabel = false, className }: ThemeToggleProps) 
 
   return (
     <div className={cn('flex items-center', className)}>
-      <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-lg">
+      <div className="flex items-center gap-1 p-1 bg-stone-100 dark:bg-stone-900 rounded-lg">
         {options.map(({ value, icon: Icon, label }) => (
           <button
             key={value}
             onClick={() => setTheme(value)}
             className={cn(
-              'p-2 rounded-md transition-colors',
+              'p-2 rounded-md transition-all duration-200',
               !mounted
-                ? 'text-slate-400 dark:text-slate-500'
+                ? 'text-[var(--text-muted)]'
                 : theme === value
-                  ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-600 dark:text-slate-400'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+                  ? 'bg-accent-500 shadow-warm-sm text-white'
+                  : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
             )}
             title={label}
           >
@@ -40,7 +40,7 @@ export function ThemeToggle({ showLabel = false, className }: ThemeToggleProps) 
         ))}
       </div>
       {showLabel && mounted && (
-        <span className="ml-2 text-sm text-slate-600 dark:text-slate-400 capitalize">
+        <span className="ml-2 text-sm text-[var(--text-secondary)] capitalize">
           {theme}
         </span>
       )}

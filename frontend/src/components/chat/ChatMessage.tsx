@@ -96,11 +96,11 @@ export function ChatMessage({ message, onCitationClick, onInspect }: ChatMessage
           const sectionContent = content.slice(startIdx + header.length, endIdx).trim();
 
           return (
-            <div key={key}>
-              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">
+            <div key={key} className="border-l-2 border-accent-400 pl-3">
+              <h3 className="font-serif text-sm font-semibold text-[var(--text-primary)] mb-2">
                 {header.replace(/\*\*/g, '')}
               </h3>
-              <div className="text-sm text-slate-600 dark:text-slate-400 whitespace-pre-wrap">
+              <div className="text-sm text-[var(--text-secondary)] whitespace-pre-wrap">
                 {sectionContent}
               </div>
             </div>
@@ -115,16 +115,16 @@ export function ChatMessage({ message, onCitationClick, onInspect }: ChatMessage
       className={cn(
         'flex gap-4 p-4 rounded-xl message-enter transition-colors',
         isUser
-          ? 'bg-slate-100 dark:bg-slate-800'
-          : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700'
+          ? 'bg-accent-50 dark:bg-accent-950/15 border border-accent-200/50 dark:border-accent-800/30'
+          : 'bg-[var(--surface)] border border-[var(--border)]'
       )}
     >
       <div
         className={cn(
           'w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0',
           isUser
-            ? 'bg-zinc-700 text-white'
-            : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400'
+            ? 'bg-accent-600 text-white'
+            : 'bg-[var(--surface-elevated)] text-[var(--text-muted)]'
         )}
       >
         {isUser ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
@@ -132,10 +132,10 @@ export function ChatMessage({ message, onCitationClick, onInspect }: ChatMessage
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-2">
-          <span className="font-medium text-slate-900 dark:text-slate-100">
+          <span className="font-medium text-[var(--text-primary)]">
             {isUser ? 'You' : 'Homora'}
           </span>
-          <span className="text-xs text-slate-400 dark:text-slate-500">
+          <span className="font-mono text-[11px] text-[var(--text-muted)]">
             {formatDateTime(message.created_at)}
           </span>
 
@@ -145,7 +145,7 @@ export function ChatMessage({ message, onCitationClick, onInspect }: ChatMessage
               onClick={() => onInspect(message.debug_info!)}
               className={cn(
                 'ml-auto flex items-center gap-1 px-2 py-1 text-xs rounded-md transition-colors',
-                'text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:text-blue-400 dark:hover:bg-slate-700'
+                'text-[var(--text-muted)] hover:text-accent-600 hover:bg-accent-50 dark:hover:bg-accent-950/20'
               )}
               title="Inspect RAG pipeline"
             >
@@ -156,7 +156,7 @@ export function ChatMessage({ message, onCitationClick, onInspect }: ChatMessage
         </div>
 
         {isUser ? (
-          <div className="text-slate-700 dark:text-slate-300 whitespace-pre-wrap">
+          <div className="text-[var(--text-secondary)] whitespace-pre-wrap">
             {message.content}
           </div>
         ) : (
@@ -166,4 +166,3 @@ export function ChatMessage({ message, onCitationClick, onInspect }: ChatMessage
     </div>
   );
 }
-

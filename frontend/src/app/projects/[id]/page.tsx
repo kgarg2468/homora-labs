@@ -285,32 +285,32 @@ export default function ProjectPage() {
 
   if (projectLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
-        <Loader2 className="w-8 h-8 text-primary-600 animate-spin" />
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--background)' }}>
+        <Loader2 className="w-8 h-8 text-accent-500 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="h-screen bg-slate-50 dark:bg-slate-900 flex flex-col overflow-hidden">
+    <div className="h-screen flex flex-col overflow-hidden" style={{ backgroundColor: 'var(--background)' }}>
       <PanelGroup orientation="horizontal" className="flex-1">
         {/* Left Sidebar - Documents */}
-        <Panel defaultSize="20" minSize="15" maxSize="30" className="flex flex-col border-r border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+        <Panel defaultSize="20" minSize="15" maxSize="30" className="flex flex-col border-r border-[var(--border)] bg-[var(--surface-elevated)]">
           {/* Sidebar Header */}
-          <div className="p-4 border-b border-slate-200 dark:border-slate-700">
+          <div className="p-4 border-b border-[var(--border)]">
             <Link
               href="/"
-              className="flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 mb-4"
+              className="flex items-center gap-2 text-[var(--text-muted)] hover:text-accent-600 dark:hover:text-accent-400 mb-4 transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
               <span className="text-sm">Back to Projects</span>
             </Link>
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-slate-100 dark:bg-slate-700 rounded-lg">
-                <Building2 className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+              <div className="p-2 bg-stone-100 dark:bg-stone-900 rounded-lg">
+                <Building2 className="w-5 h-5 text-[var(--text-muted)]" />
               </div>
               <div className="flex-1 min-w-0">
-                <h1 className="font-semibold text-slate-900 dark:text-slate-100 truncate">
+                <h1 className="font-serif text-[var(--text-primary)] truncate">
                   {project?.name}
                 </h1>
                 <Badge size="sm">{project?.role_mode}</Badge>
@@ -321,10 +321,10 @@ export default function ProjectPage() {
           {/* Documents Section */}
           <div className="flex-1 overflow-auto p-4">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm font-medium text-slate-700 dark:text-slate-300">
+              <h2 className="uppercase text-[11px] tracking-widest font-medium text-[var(--text-muted)]">
                 Documents
               </h2>
-              <span className="text-xs text-slate-500">
+              <span className="text-xs text-[var(--text-muted)]">
                 {documentsData?.total || 0}
               </span>
             </div>
@@ -356,10 +356,10 @@ export default function ProjectPage() {
           </div>
 
           {/* Sidebar Footer */}
-          <div className="p-4 border-t border-slate-200 dark:border-slate-700">
+          <div className="p-4 border-t border-[var(--border)]">
             <Link
               href={`/projects/${projectId}/compare`}
-              className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
+              className="flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-accent-600 dark:hover:text-accent-400 transition-colors"
             >
               <GitCompare className="w-4 h-4" />
               Compare Documents
@@ -367,48 +367,48 @@ export default function ProjectPage() {
           </div>
         </Panel>
 
-        <PanelResizeHandle className="w-1 bg-slate-200 dark:bg-slate-700 hover:bg-blue-500 transition-colors cursor-col-resize" />
+        <PanelResizeHandle className="w-1 bg-[var(--border)] hover:bg-accent-500 transition-colors cursor-col-resize" />
 
         {/* Main Content - Chat */}
         <Panel defaultSize={isDebugPanelOpen ? "60" : "80"} className="flex flex-col">
           {/* Top Bar */}
-          <header className="h-14 px-4 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-between">
+          <header className="h-14 px-4 border-b border-[var(--border)] bg-[var(--surface)]/80 backdrop-blur-md flex items-center justify-between">
             <div className="flex items-center gap-4">
               {/* Conversation selector */}
               <div className="relative">
                 <button
                   onClick={() => setShowConversations(!showConversations)}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-900 transition-colors"
                 >
-                  <MessageSquare className="w-4 h-4 text-slate-500" />
-                  <span className="text-sm text-slate-700 dark:text-slate-300">
+                  <MessageSquare className="w-4 h-4 text-[var(--text-muted)]" />
+                  <span className="text-sm text-[var(--text-secondary)]">
                     {conversationId ? 'Current Session' : 'New Conversation'}
                   </span>
-                  <ChevronDown className="w-4 h-4 text-slate-400" />
+                  <ChevronDown className="w-4 h-4 text-[var(--text-muted)]" />
                 </button>
 
                 {showConversations && (
-                  <div className="absolute top-full left-0 mt-1 w-64 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 py-2 z-10">
+                  <div className="absolute top-full left-0 mt-1 w-64 bg-[var(--surface)] rounded-lg shadow-warm-lg border border-[var(--border)] py-2 z-10">
                     <button
                       onClick={startNewConversation}
-                      className="w-full px-4 py-2 text-sm text-left text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-2"
+                      className="w-full px-4 py-2 text-sm text-left text-accent-600 dark:text-accent-400 hover:bg-stone-100 dark:hover:bg-stone-900 flex items-center gap-2 transition-colors"
                     >
                       <Plus className="w-4 h-4" />
                       New Conversation
                     </button>
-                    <div className="border-t border-slate-200 dark:border-slate-700 my-1" />
+                    <div className="border-t border-[var(--border)] my-1" />
                     {conversationsData?.conversations.map((conv) => (
                       <button
                         key={conv.id}
                         onClick={() => loadConversation(conv)}
                         className={cn(
-                          'w-full px-4 py-2 text-sm text-left hover:bg-slate-50 dark:hover:bg-slate-700',
+                          'w-full px-4 py-2 text-sm text-left hover:bg-stone-100 dark:hover:bg-stone-900 transition-colors',
                           conv.id === conversationId
-                            ? 'bg-slate-100 dark:bg-slate-800'
+                            ? 'bg-accent-50 dark:bg-accent-950/20'
                             : ''
                         )}
                       >
-                        <div className="font-medium text-slate-700 dark:text-slate-300 truncate">
+                        <div className="font-medium text-[var(--text-secondary)] truncate">
                           {conv.title || 'Untitled'}
                         </div>
                       </button>
@@ -433,13 +433,13 @@ export default function ProjectPage() {
             {messages.length === 0 && !isStreaming ? (
               <div className="h-full flex items-center justify-center">
                 <div className="text-center max-w-md">
-                  <div className="w-16 h-16 mx-auto mb-4 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center">
-                    <MessageSquare className="w-8 h-8 text-slate-600 dark:text-slate-400" />
+                  <div className="w-16 h-16 mx-auto mb-4 bg-accent-100 dark:bg-accent-950/20 rounded-lg flex items-center justify-center">
+                    <MessageSquare className="w-8 h-8 text-accent-500" />
                   </div>
-                  <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">
+                  <h2 className="font-serif text-2xl text-[var(--text-primary)] mb-2">
                     Ask a Question
                   </h2>
-                  <p className="text-slate-500 dark:text-slate-400">
+                  <p className="text-[var(--text-muted)] text-base">
                     Start by asking a question about your documents. Homora will
                     analyze them and provide answers with citations.
                   </p>
@@ -458,11 +458,11 @@ export default function ProjectPage() {
 
                 {/* Streaming message */}
                 {isStreaming && streamingContent && (
-                  <div className="flex gap-4 p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-100 dark:bg-slate-700">
-                      <Loader2 className="w-4 h-4 text-primary-600 animate-spin" />
+                  <div className="flex gap-4 p-4 bg-[var(--surface)] rounded-xl border border-[var(--border)]">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[var(--surface-elevated)]">
+                      <Loader2 className="w-4 h-4 text-accent-500 animate-spin" />
                     </div>
-                    <div className="flex-1 prose text-slate-700 dark:text-slate-300 whitespace-pre-wrap">
+                    <div className="flex-1 prose whitespace-pre-wrap">
                       {streamingContent}
                     </div>
                   </div>
@@ -470,9 +470,9 @@ export default function ProjectPage() {
 
                 {/* Typing indicator */}
                 {isStreaming && !streamingContent && (
-                  <div className="flex gap-4 p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-100 dark:bg-slate-700">
-                      <Loader2 className="w-4 h-4 text-primary-600 animate-spin" />
+                  <div className="flex gap-4 p-4 bg-[var(--surface)] rounded-xl border border-[var(--border)]">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[var(--surface-elevated)]">
+                      <Loader2 className="w-4 h-4 text-accent-500 animate-spin" />
                     </div>
                     <div className="typing-indicator pt-3">
                       <span />
@@ -500,7 +500,7 @@ export default function ProjectPage() {
           )}
 
           {/* Chat Input */}
-          <div className="p-4 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+          <div className="p-4 border-t border-[var(--border)] bg-[var(--surface)]">
             <div className="max-w-3xl mx-auto">
               <ChatInput
                 onSend={handleSendMessage}
@@ -513,9 +513,9 @@ export default function ProjectPage() {
         {/* Right Sidebar - Debug Info */}
         {isDebugPanelOpen && activeDebugInfo && (
           <>
-            <PanelResizeHandle className="w-1 bg-slate-200 dark:bg-slate-700 hover:bg-blue-500 transition-colors cursor-col-resize" />
+            <PanelResizeHandle className="w-1 bg-[var(--border)] hover:bg-accent-500 transition-colors cursor-col-resize" />
             <Panel defaultSize="20" minSize="20" maxSize="50">
-              <DebugPanel debugInfo={activeDebugInfo} className="h-full border-l border-slate-200 dark:border-slate-700" />
+              <DebugPanel debugInfo={activeDebugInfo} className="h-full border-l border-[var(--border)]" />
             </Panel>
           </>
         )}

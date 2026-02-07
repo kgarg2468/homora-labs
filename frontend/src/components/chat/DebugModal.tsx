@@ -31,7 +31,7 @@ export function DebugModal({
             <div className="flex flex-col h-[70vh]">
                 <div className="flex justify-end px-4 pb-2">
                     <Button
-                        variant="outline"
+                        variant="ghost"
                         size="sm"
                         onClick={() => {
                             onClose();
@@ -44,7 +44,7 @@ export function DebugModal({
                     </Button>
                 </div>
 
-                <div className="flex-1 border rounded-lg overflow-hidden border-slate-200 dark:border-slate-700">
+                <div className="flex-1 border rounded-lg overflow-hidden border-[var(--border)]">
                     <DebugPanel debugInfo={debugInfo} showHeader={true} />
                 </div>
             </div>

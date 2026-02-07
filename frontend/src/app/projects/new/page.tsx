@@ -7,25 +7,25 @@ import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 export default function NewProjectPage() {
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--background)' }}>
       {/* Header */}
-      <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
+      <header className="bg-[var(--surface)]/80 backdrop-blur-md border-b border-[var(--border)] sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-4">
               <Link
                 href="/"
-                className="flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
+                className="flex items-center gap-2 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
               >
                 <ArrowLeft className="w-5 h-5" />
                 <span className="hidden sm:inline">Back</span>
               </Link>
-              <div className="h-6 w-px bg-slate-200 dark:bg-slate-700" />
+              <div className="h-6 w-px bg-[var(--border)]" />
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-slate-100 dark:bg-slate-700 rounded-lg">
-                  <Building2 className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+                <div className="p-2 bg-stone-100 dark:bg-stone-900 rounded-lg">
+                  <Building2 className="w-5 h-5 text-[var(--text-muted)]" />
                 </div>
-                <h1 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                <h1 className="text-lg font-serif text-[var(--text-primary)]">
                   New Project
                 </h1>
               </div>

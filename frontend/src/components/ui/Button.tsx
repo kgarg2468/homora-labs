@@ -28,19 +28,19 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+      'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-500/20 disabled:opacity-50 disabled:cursor-not-allowed';
 
     const variants = {
       primary:
-        'bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500 dark:bg-primary-500 dark:hover:bg-primary-600',
+        'bg-accent-600 text-white hover:bg-accent-700 shadow-warm-sm hover:shadow-warm-md',
       secondary:
-        'bg-slate-100 text-slate-900 hover:bg-slate-200 focus:ring-slate-500 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600',
+        'bg-stone-100 dark:bg-stone-900 text-stone-500 dark:text-[var(--text-secondary)] hover:bg-stone-200 dark:hover:bg-stone-950',
       ghost:
-        'text-slate-700 hover:bg-slate-100 focus:ring-slate-500 dark:text-slate-300 dark:hover:bg-slate-800',
+        'text-[var(--text-secondary)] hover:bg-stone-100 dark:hover:bg-stone-900',
       danger:
-        'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 dark:bg-red-500 dark:hover:bg-red-600',
+        'bg-[#B85450] text-white hover:bg-[#A34845] shadow-warm-sm',
       outline:
-        'border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 focus:ring-slate-500',
+        'border border-[var(--border)] text-[var(--text-secondary)] hover:bg-stone-100 dark:hover:bg-stone-900',
     };
 
     const sizes = {
@@ -57,7 +57,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {isLoading ? (
-          <Loader2 className="w-4 h-4 animate-spin" />
+          <Loader2 className="w-4 h-4 animate-spin text-accent-300" />
         ) : (
           leftIcon
         )}

@@ -17,22 +17,22 @@ export function Badge({
   className,
 }: BadgeProps) {
   const variants = {
-    default: 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300',
-    success: 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
-    warning: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300',
-    error: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
-    info: 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300',
+    default: 'bg-stone-100 dark:bg-stone-900 text-[var(--text-secondary)]',
+    success: 'bg-[#5E8C61]/10 text-[#5E8C61] dark:bg-[#5E8C61]/15 dark:text-[#7DA97F]',
+    warning: 'bg-[#C4973B]/10 text-[#C4973B] dark:bg-[#C4973B]/15 dark:text-[#D4A74B]',
+    error: 'bg-[#B85450]/10 text-[#B85450] dark:bg-[#B85450]/15 dark:text-[#C87470]',
+    info: 'bg-[#5B7B9A]/10 text-[#5B7B9A] dark:bg-[#5B7B9A]/15 dark:text-[#7B9BBA]',
   };
 
   const sizes = {
-    sm: 'px-2 py-0.5 text-xs',
-    md: 'px-2.5 py-1 text-sm',
+    sm: 'px-2 py-0.5 text-[11px]',
+    md: 'px-2.5 py-1 text-xs',
   };
 
   return (
     <span
       className={cn(
-        'inline-flex items-center font-medium rounded-full',
+        'inline-flex items-center font-mono font-medium rounded-md tracking-wide uppercase',
         variants[variant],
         sizes[size],
         className
