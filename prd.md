@@ -82,7 +82,7 @@ Recommended documents or clarifications to improve confidence.
 | **Large documents** | Support 500+ pages; chunked upload, resumable processing, progress tracking |
 | **UI theme** | System-aware toggle (follows OS preference, manual override available) |
 | **Conflict handling** | Ask user for clarification when documents contain conflicting information |
-| **Embeddings** | OpenAI text-embedding-3-small (default) |
+| **Embeddings** | OpenAI text-embedding-3-large (3072 dimensions) |
 | **Chat history** | Session-based with archive; past sessions searchable but not auto-included in context |
 | **Export** | Full diligence report as PDF with customizable sections |
 | **Search** | Full search across documents + conversations with filters (project, date, doc type) |
@@ -90,7 +90,7 @@ Recommended documents or clarifications to improve confidence.
 | **Backup** | Export/import projects as portable archives |
 | **Scale target** | Medium: 10-20 projects, ~200 documents |
 | **Keyboard shortcuts** | Full shortcuts (Cmd+K search, Cmd+N new project, Cmd+U upload, etc.) |
-| **Chunk size** | Small (~300 tokens) for precise retrieval |
+| **Chunk size** | ~800 tokens with 150 token overlap for better context |
 | **Table handling** | Convert tables to markdown format |
 | **Language** | English only |
 | **Chat input** | Multi-line with Shift+Enter for new lines, Enter to send |
@@ -161,7 +161,7 @@ Recommended documents or clarifications to improve confidence.
 | id | uuid | Primary key |
 | project_id | uuid | FK → projects |
 | filename | string | Original filename |
-| file_type | enum | pdf, docx, xlsx, image |
+| file_type | enum | pdf, docx, xlsx, image, txt |
 | file_path | string | Storage path |
 | page_count | int | Number of pages |
 | ingestion_status | enum | pending, processing, completed, failed |
@@ -185,7 +185,7 @@ Recommended documents or clarifications to improve confidence.
 | content | text | Extracted text |
 | page_number | int | Source page |
 | section | string | Detected section heading |
-| embedding | vector[1536] | pgvector embedding |
+| embedding | vector[3072] | pgvector embedding (text-embedding-3-large) |
 | metadata | jsonb | Additional metadata |
 
 **conversations**
@@ -207,6 +207,7 @@ Recommended documents or clarifications to improve confidence.
 | content | text | Message content |
 | citations | jsonb | [{document_id, page, section}] |
 | suggested_followups | jsonb | ["q1", "q2", "q3"] |
+| debug_info | jsonb | Retrieval debug metadata (chunks, scores, timing) |
 | created_at | timestamp | |
 
 **report_templates**
@@ -258,10 +259,11 @@ Recommended documents or clarifications to improve confidence.
    - DOCX extraction (python-docx)
    - XLSX → Markdown tables (openpyxl)
    - Image/scanned → Vision model OCR
-4. Text chunking (~300 tokens, 75 token overlap)
-5. Auto-categorization of document types (lease, appraisal, title, etc.)
-6. Background processing with progress tracking
-7. Embedding generation and storage (OpenAI text-embedding-3-small)
+4. Plain text extraction
+5. Text chunking (~800 tokens, 150 token overlap)
+6. Auto-categorization of document types (lease, appraisal, title, etc.)
+7. Background processing with progress tracking (FastAPI BackgroundTasks)
+8. Embedding generation and storage (OpenAI text-embedding-3-large, 3072 dimensions)
 
 **Acceptance Criteria:**
 - Upload 10-page PDF, verify chunks in DB with correct page numbers
@@ -277,10 +279,10 @@ Recommended documents or clarifications to improve confidence.
 **Objective:** Build the retrieval and response generation system.
 
 **Deliverables:**
-1. Hybrid retrieval:
-   - Vector similarity search (pgvector cosine distance)
-   - Keyword search (pg_trgm for exact terms)
-   - Result combination and reranking
+1. Hybrid retrieval (top-40 chunks):
+   - Vector similarity search (pgvector cosine distance, 70% weight)
+   - Keyword search (pg_trgm for exact terms, 30% weight)
+   - Reciprocal Rank Fusion for result combination
 2. LLM provider abstraction:
    - OpenAI provider
    - Anthropic provider
@@ -489,10 +491,8 @@ homora-labs/
 │   │   │   ├── search.py
 │   │   │   ├── reports.py
 │   │   │   └── settings.py
-│   │   ├── prompts/
-│   │   │   └── system.py
-│   │   └── workers/
-│   │       └── ingestion.py
+│   │   └── prompts/
+│   │       └── system.py
 │   └── tests/
 ├── frontend/
 │   ├── package.json
@@ -544,7 +544,7 @@ homora-labs/
 | python-multipart | File uploads |
 | sse-starlette | Streaming responses |
 | weasyprint | PDF report generation |
-| FastAPI BackgroundTasks | Background task processing (arq was originally planned but not used) |
+| FastAPI BackgroundTasks | Background task processing |
 | cryptography | API key encryption |
 
 ### Frontend
@@ -559,7 +559,7 @@ homora-labs/
 | next-themes | Dark mode |
 | sonner | Toast notifications |
 | cmdk | Command palette |
-| Native Audio API | Audio notifications (use-sound installed but native Audio API used instead) |
+| Native Audio API | Audio notifications |
 
 ---
 
@@ -631,7 +631,7 @@ homora-labs/
 
 | Term | Definition |
 |------|------------|
-| **Chunk** | A segment of text (~300 tokens) extracted from a document for embedding |
+| **Chunk** | A segment of text (~800 tokens) extracted from a document for embedding |
 | **Citation** | Reference to source: document name, page number, section |
 | **Embedding** | Vector representation of text for semantic search |
 | **Hybrid Retrieval** | Combining vector similarity and keyword search |

@@ -1,0 +1,185 @@
+COMMERCIAL LEASE AGREEMENT
+
+PARTIES AND PREMISES
+--------------------
+This Commercial Lease Agreement ("Agreement") is entered into as of January 15, 2024, by and between:
+LANDLORD: Westfield Commercial Properties LLC, a Delaware limited liability company, with its principal office at 2500 Sand Hill Road, Suite 400, Menlo Park, CA 94025 ("Landlord")
+TENANT: Meridian Tech Solutions Inc., a California corporation, with its principal office at 1800 Gateway Drive, San Mateo, CA 94404 ("Tenant")
+
+PREMISES: The Landlord hereby leases to the Tenant approximately 24,500 rentable square feet of office space located on the 3rd and 4th floors of the building commonly known as "Gateway Tower" situated at 1850 Gateway Drive, San Mateo, CA 94404 (the "Building"). The premises are more particularly described in Exhibit A attached hereto.
+
+BUILDING SPECIFICATIONS: Gateway Tower is a Class A, 12-story office building containing approximately 285,000 rentable square feet, constructed in 2018. The building is LEED Gold certified and features a fitness center, conference facilities, and structured parking.
+
+ARTICLE 1 - TERM
+----------------
+1.1 Initial Term: The initial term of this Lease shall be for a period of seven (7) years and three (3) months, commencing on April 1, 2024 ("Commencement Date") and expiring on June 30, 2031 ("Expiration Date"), unless sooner terminated or extended in accordance with the terms hereof.
+
+1.2 Early Access: Tenant shall have early access to the Premises beginning February 15, 2024 for purposes of installing furniture, fixtures, and equipment (FF&E), telecommunications infrastructure, and conducting employee orientation. No rent shall be due during the early access period.
+
+1.3 Renewal Options: Tenant shall have two (2) consecutive options to extend the Term for additional periods of five (5) years each (each, an "Extension Term"), upon written notice to Landlord no less than twelve (12) months and no more than eighteen (18) months prior to the then-current Expiration Date 
+
+1.4 Right of First Refusal: Tenant shall have a right of first refusal on the 5th floor (approximately 23,750 RSF) if such space becomes available during the initial Term. Landlord must provide written notice to Tenant within ten (10) business days of receiving a bona fide offer from a third party.
+
+ARTICLE 2 - RENT
+----------------
+2.1 Base Rent: Tenant agrees to pay Landlord base rent according to the following schedule:
+
+Lease Year 1 (Apr 2024 - Mar 2025): $78.00 per RSF per annum ($159,250.00 monthly)
+Lease Year 2 (Apr 2025 - Mar 2026): $80.34 per RSF per annum ($164,028.75 monthly)
+Lease Year 3 (Apr 2026 - Mar 2027): $82.75 per RSF per annum ($168,906.25 monthly)
+Lease Year 4 (Apr 2027 - Mar 2028): $85.23 per RSF per annum ($173,907.19 monthly)
+Lease Year 5 (Apr 2028 - Mar 2029): $87.79 per RSF per annum ($179,034.40 monthly)
+Lease Year 6 (Apr 2029 - Mar 2030): $90.42 per RSF per annum ($184,294.38 monthly)
+Lease Year 7 (Apr 2030 - Jun 2031): $93.13 per RSF per annum ($189,702.81 monthly)
+
+The base rent escalation is calculated at 3% annually.
+
+2.2 Rent Abatement: Tenant shall receive a rent abatement for the first four (4) months of the initial Term (April - July 2024). During the abatement period, Tenant shall not be obligated to pay Base Rent but shall remain responsible for all Additional Rent, including Operating Expenses and utilities.
+
+2.3 Additional Rent - Operating Expenses: In addition to Base Rent, Tenant shall pay as Additional Rent Tenant's Pro Rata Share (8.60%) of Operating Expenses in excess of the Base Year (calendar year 2024) Operating Expenses. Operating Expenses include but are not limited to:
+- Real property taxes and assessments
+- Insurance premiums (property, liability, earthquake)
+- Common area maintenance and repairs
+- Janitorial services for common areas
+- Security services
+- Property management fees (capped at 3% of gross revenues)
+- Landscaping and exterior maintenance
+
+2024 Base Year Operating Expenses are estimated at $18.50 per RSF.
+
+2.4 Tenant Electricity: Tenant shall pay for electricity consumed within the Premises as measured by a sub-meter installed at Landlord's expense. Current electricity rate is $0.22 per kilowatt-hour. Tenant's estimated monthly electricity cost is $4,500-$6,200 depending on usage.
+
+ARTICLE 3 - SECURITY DEPOSIT
+----------------------------
+3.1 Amount: Upon execution of this Lease, Tenant shall deposit with Landlord a security deposit in the amount of $637,000.00 (equivalent to four months' Base Rent at the Year 1 rate).
+
+3.2 Letter of Credit Option: In lieu of a cash security deposit, Tenant may provide an irrevocable standby letter of credit from a financial institution acceptable to Landlord in the amount stated above.
+
+3.3 Reduction: Provided Tenant is not then in default, the security deposit shall be reduced by $159,250.00 (one month's rent) on each of the second, third, and fourth anniversaries of the Commencement Date.
+
+ARTICLE 4 - TENANT IMPROVEMENTS
+-------------------------------
+4.1 Tenant Improvement Allowance: Landlord shall provide Tenant with a tenant improvement allowance ("TI Allowance") of $85.00 per rentable square foot, totaling $2,082,500.00, to be applied toward the cost of designing and constructing tenant improvements to the Premises.
+
+4.2 Excess Costs: Any tenant improvement costs in excess of the TI Allowance shall be borne solely by Tenant and paid within thirty (30) days of invoice.
+
+4.3 Unused Allowance: Up to $10.00 per RSF ($245,000) of any unused TI Allowance may be applied toward Tenant's moving expenses, furniture purchases, or rent credits, at Tenant's election.
+
+4.4 Construction Timeline: Tenant improvements must be substantially completed within 120 days of Landlord's delivery of the Premises in "warm shell" condition. Delays caused by Landlord shall extend this timeline day-for-day.
+
+ARTICLE 5 - USE AND OCCUPANCY
+-----------------------------
+5.1 Permitted Use: The Premises shall be used solely for general office purposes, including but not limited to software development, technology research, administrative functions, and ancillary uses customary to technology companies.
+
+5.2 Prohibited Uses: Tenant shall not use or permit the Premises to be used for:
+- Retail sales to the general public
+- Manufacturing or industrial processes
+- Storage of hazardous materials (except standard office chemicals in de minimis quantities)
+- Any use that would increase insurance premiums or violate building codes
+
+5.3 Compliance: Tenant shall comply with all applicable laws, ordinances, codes, and regulations regarding its use of the Premises, including ADA requirements.
+
+ARTICLE 6 - PARKING
+-------------------
+6.1 Allocated Spaces: Tenant shall have the right to use ninety-eight (98) unreserved parking spaces in the building's parking structure at the monthly rate of $200.00 per space ($19,600.00 total monthly). This represents a ratio of 4.0 spaces per 1,000 RSF.
+
+6.2 Reserved Spaces: Additionally, Tenant may designate up to ten (10) spaces as reserved executive parking at $350.00 per space per month.
+
+6.3 Electric Vehicle Charging: Landlord shall provide eight (8) electric vehicle charging stations for Tenant's use at no additional charge for the first 24 months. Thereafter, usage shall be billed at $0.35 per kilowatt-hour.
+
+ARTICLE 7 - ASSIGNMENT AND SUBLETTING
+-------------------------------------
+7.1 Consent Required: Tenant shall not assign this Lease or sublet all or any portion of the Premises without the prior written consent of Landlord, which consent shall not be unreasonably withheld, conditioned, or delayed.
+
+7.2 Recapture Right: If Tenant proposes to assign or sublet more than 50% of the Premises, Landlord shall have the right (exercisable within thirty days of receiving Tenant's notice) to terminate this Lease as to the space proposed to be assigned or sublet.
+
+7.3 Profit Sharing: In the event of a permitted sublease or assignment at a rental rate exceeding Tenant's then-current obligations under this Lease, such excess shall be split 50/50 between Landlord and Tenant after deducting Tenant's reasonable transaction costs.
+
+ARTICLE 8 - MAINTENANCE AND REPAIRS
+-----------------------------------
+8.1 Landlord Responsibilities:
+- Building structure, exterior walls, and roof
+- Common areas, lobbies, elevators, and restrooms outside the Premises
+- Building HVAC systems serving common areas
+- Fire and life safety systems
+- Exterior landscaping and parking structures
+
+8.2 Tenant Responsibilities:
+- Interior of Premises, including walls, ceilings, and flooring
+- HVAC distribution within Premises (supplemental units)
+- Plumbing fixtures within Premises
+- All alterations and improvements made by Tenant
+- Replacement of light bulbs and ballasts within Premises
+
+ARTICLE 9 - INSURANCE
+---------------------
+9.1 Tenant's Insurance: Tenant shall maintain throughout the Term:
+- Commercial General Liability: $2,000,000 per occurrence / $5,000,000 aggregate
+- Property Insurance: Full replacement cost of Tenant's personal property and improvements
+- Workers' Compensation: Statutory limits
+- Business Interruption: Minimum 12 months coverage
+
+9.2 Landlord as Additional Insured: Tenant's liability policies shall name Landlord, its property manager, and lender(s) as additional insureds.
+
+9.3 Waiver of Subrogation: Both parties waive any rights of recovery against the other for losses covered by insurance maintained pursuant to this Lease.
+
+ARTICLE 10 - DEFAULT AND REMEDIES
+---------------------------------
+10.1 Events of Default by Tenant:
+- Failure to pay rent within ten (10) days of due date
+- Failure to cure other breaches within thirty (30) days of written notice
+- Bankruptcy filing or assignment for benefit of creditors
+- Abandonment of the Premises
+
+10.2 Landlord Remedies: Upon Tenant default, Landlord may:
+- Terminate this Lease and recover damages
+- Continue the Lease in effect and recover rent as it becomes due
+- Re-enter and relet the Premises on Tenant's behalf
+
+10.3 Cure Period: Notwithstanding the above, if a non-monetary default cannot reasonably be cured within thirty days, Tenant shall have such additional time as reasonably necessary provided Tenant commences cure within the thirty-day period and diligently prosecutes completion.
+
+ARTICLE 11 - BROKERS
+--------------------
+11.1 Broker Representation: Landlord and Tenant acknowledge that the following brokers represented them in this transaction:
+- Landlord's Broker: CBRE, Inc. (Commission: 4% of aggregate base rent)
+- Tenant's Broker: JLL (Commission: 2% of aggregate base rent)
+
+11.2 Total Broker Compensation: Landlord shall pay a total broker commission of $809,982.00 (6% of Year 1-7 base rent), split 67%/33% between Landlord's and Tenant's brokers respectively.
+
+ARTICLE 12 - MISCELLANEOUS
+--------------------------
+12.1 Notices: All notices shall be in writing and delivered by hand, overnight courier, or certified mail to the addresses set forth above.
+
+12.2 Governing Law: This Lease shall be governed by the laws of the State of California.
+
+12.3 Entire Agreement: This Lease, together with all Exhibits attached hereto, constitutes the entire agreement between the parties.
+
+12.4 Amendments: No modification of this Lease shall be binding unless in writing and signed by both parties.
+
+12.5 Tenant's Financial Statements: Tenant represents that its audited financial statements for FY 2023 are accurate and complete. Tenant shall provide annual financial statements within 90 days of fiscal year end.
+
+12.6 Landlord's Representations: Landlord represents that it has authority to enter into this Lease and that as of the date hereof, there are no pending condemnation proceedings affecting the Building.
+
+EXHIBITS
+--------
+Exhibit A - Floor Plans and Premises Description
+Exhibit B - Building Rules and Regulations  
+Exhibit C - Tenant Improvement Work Letter
+Exhibit D - Commencement Date Memorandum Form
+Exhibit E - Form of SNDA (Subordination, Non-Disturbance, and Attornment Agreement)
+
+SIGNATURES
+----------
+IN WITNESS WHEREOF, the parties have executed this Lease as of the date first written above.
+
+LANDLORD: Westfield Commercial Properties LLC
+By: _________________________________
+Name: Robert Chen
+Title: Managing Director
+Date: January 15, 2024
+
+TENANT: Meridian Tech Solutions Inc.
+By: _________________________________
+Name: Sarah Mitchell
+Title: Chief Financial Officer  
+Date: January 15, 2024

@@ -14,6 +14,7 @@ class FileType(str, PyEnum):
     docx = "docx"
     xlsx = "xlsx"
     image = "image"
+    txt = "txt"
 
 
 class IngestionStatus(str, PyEnum):

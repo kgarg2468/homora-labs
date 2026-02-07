@@ -1,0 +1,301 @@
+PHASE I ENVIRONMENTAL SITE ASSESSMENT
+=====================================
+
+Project Number: ESA-2024-0847
+Date of Report: February 28, 2024
+
+PREPARED FOR:
+Pacific Coast Capital Partners LLC
+4500 MacArthur Boulevard, Suite 350
+Newport Beach, CA 92660
+
+PREPARED BY:
+Terraverde Environmental Consultants, Inc.
+1200 Industrial Way, Suite 500
+Sacramento, CA 95814
+
+SUBJECT PROPERTY:
+Gateway Tower
+1850 Gateway Drive
+San Mateo, CA 94404
+APN: 042-451-230
+
+EXECUTIVE SUMMARY
+==================
+Terraverde Environmental Consultants, Inc. (Terraverde) has completed a Phase I Environmental Site Assessment (ESA) of the subject property in accordance with ASTM Standard Practice E1527-21. This assessment was performed on behalf of Pacific Coast Capital Partners LLC in connection with the potential acquisition of the property.
+
+Based on our investigation, we have identified the following findings:
+
+RECOGNIZED ENVIRONMENTAL CONDITIONS (RECs):
+1. Former Dry Cleaning Operation (1965-1987): Historical records indicate that a dry cleaning facility operated at the adjacent property (1860 Gateway Drive) from 1965 to 1987. Tetrachloroethylene (PCE) contamination was documented in soil and groundwater at that site. The plume migration analysis suggests the contamination may extend beneath the southeastern portion of the subject property. Phase II investigation is recommended.
+
+2. Underground Storage Tank (UST): Records indicate a 1,000-gallon heating oil UST was installed on the subject property in 1972 and reportedly removed in 1994. Closure documentation could not be located. Tank location was identified as the northeast corner of the current parking structure footprint.
+
+CONTROLLED RECOGNIZED ENVIRONMENTAL CONDITIONS (CRECs):
+1. Regional Groundwater Contamination: The property is located within the jurisdictional boundaries of the Middlefield-Ellis-Whisman (MEW) Superfund Study Area. While the subject property is not a responsible party, groundwater beneath the site may be impacted by the regional trichloroethylene (TCE) plume originating from former semiconductor manufacturing facilities located approximately 0.8 miles north of the property.
+
+HISTORICAL RECs (HRECs):
+1. Former Gasoline Service Station: A gasoline station operated at 1870 Gateway Drive (now a landscaped area) from 1952 to 1978. The site received regulatory closure in 2003 following successful remediation.
+
+DE MINIMIS CONDITIONS:
+1. Two 55-gallon drums of waste oil were observed in the building's maintenance area. Drums were properly labeled but secondary containment was inadequate.
+2. Minor staining observed on concrete flooring in the parking structure (likely automotive fluids).
+
+SECTION 1 - INTRODUCTION
+=========================
+1.1 PURPOSE
+This Phase I ESA was conducted to identify recognized environmental conditions (RECs), controlled RECs, and historical RECs in connection with the subject property, as defined by ASTM Standard Practice E1527-21.
+
+1.2 SCOPE OF SERVICES
+The scope of this assessment included:
+- Review of historical records (aerial photographs, fire insurance maps, city directories)
+- Review of regulatory database records (EDR Radius Map Report)
+- Review of previous environmental reports for the subject property
+- Site reconnaissance conducted on February 15, 2024
+- Interviews with current property owner and manager
+- Review of local, state, and federal agency files
+
+1.3 SIGNIFICANT ASSUMPTIONS
+This assessment assumes that:
+- Information provided by the client, property owner, and regulatory agencies is accurate
+- Conditions observed during the site visit are representative of typical site conditions
+- No access limitations substantially affected our ability to evaluate the property
+
+1.4 LIMITATIONS AND EXCEPTIONS
+Terraverde was unable to obtain the following records:
+- Building permits for construction prior to 1975 (records destroyed in municipal fire)
+- UST removal documentation from 1994
+- Interview with former dry cleaning operator (deceased)
+
+SECTION 2 - SITE DESCRIPTION
+=============================
+2.1 LOCATION AND LEGAL DESCRIPTION
+The subject property is located at 1850 Gateway Drive, San Mateo, CA 94404. The Assessor's Parcel Number is 042-451-230. The property comprises approximately 2.45 acres (106,722 square feet) within a mixed commercial/office park development.
+
+2.2 SITE IMPROVEMENTS
+Current improvements include:
+- Gateway Tower: 12-story Class A office building (285,000 RSF), constructed in 2018
+- Four-level parking structure with 950 spaces
+- Landscaped plaza and outdoor amenity areas
+- Emergency generator (2,000 kW diesel) with 3,000-gallon aboveground storage tank (AST)
+
+2.3 CURRENT SITE OPERATIONS
+The building is currently occupied by various office tenants including technology companies, financial services firms, and professional services. No manufacturing, industrial processes, or hazardous materials storage (beyond typical office chemicals) occurs at the site.
+
+Building systems include:
+- Central chilled water/hot water HVAC system
+- Emergency diesel generator with UL-listed double-wall AST
+- Building maintenance operations (typical cleaning supplies, HVAC refrigerants)
+
+2.4 ADJOINING PROPERTIES
+North: Four-story office building (1820 Gateway Drive) - technology company headquarters
+East: Public roadway (Gateway Drive), across which is a retail shopping center
+South: Three-story office building (1860 Gateway Drive) - FORMER DRY CLEANER SITE
+West: City park with recreational facilities
+
+SECTION 3 - RECORDS REVIEW
+===========================
+3.1 REGULATORY DATABASE REVIEW
+A regulatory database search was obtained from Environmental Data Resources, Inc. (EDR) on February 10, 2024. The following databases were reviewed:
+
+FEDERAL DATABASES:
+- NPL (National Priorities List): No listings within 1.0 mile
+- CERCLIS: No listings within 0.5 mile
+- RCRA TSD: No listings within 0.5 mile  
+- RCRA LQG: 1 listing at 0.4 miles (semiconductor manufacturer - closed 2001)
+- RCRA SQG: 3 listings within 0.25 miles (office buildings - typical office waste)
+- UST/LUST: 4 listings within 0.5 miles (see Section 3.2)
+
+STATE DATABASES:
+- Cal Sites: 1 listing at 0.05 miles (1860 Gateway Drive - OPEN case)
+- GeoTracker: 3 listings within 0.5 miles
+- SWIS: No listings within 0.5 miles
+- EnviroStor: 1 listing at 0.8 miles (MEW Superfund site)
+
+3.2 LEAKING UNDERGROUND STORAGE TANK (LUST) SITES
+The following LUST sites were identified in proximity to the subject property:
+
+Site 1: 1870 Gateway Drive (Former Shell Station)
+Distance: 0.03 miles southwest
+Case Status: CLOSED (2003)
+Contaminants: BTEX in soil and groundwater
+Max groundwater concentration: Benzene 450 µg/L (1986)
+Remediation: Soil excavation (1,200 cubic yards), groundwater monitoring
+Regulatory agency: San Mateo County Health Department
+Case closure obtained August 2003 following three years of non-detect groundwater samples.
+
+Site 2: 1860 Gateway Drive (Former Martinizing Dry Cleaners)
+Distance: 0.05 miles south (ADJACENT)
+Case Status: OPEN - Land Use Restrictions in place
+Contaminants: PCE and degradation products in soil and groundwater
+Max soil concentration: PCE 8,500 µg/kg at 12 feet bgs
+Max groundwater concentration: PCE 1,200 µg/L (1998)
+Current groundwater concentration: PCE 85 µg/L (November 2023)
+Remediation: Soil vapor extraction (SVE) operated 1999-2008
+Current status: Monitored Natural Attenuation with institutional controls
+Plume extent: Extends northeast from source area approximately 450 feet
+
+CRITICAL FINDING: Groundwater contamination plume modeling by the Regional Water Quality Control Board indicates the PCE plume from this site may extend beneath the southeastern corner of the subject property. The estimated PCE concentration in this area is 15-40 µg/L based on interpolation from monitoring wells. The Maximum Contaminant Level (MCL) for PCE is 5 µg/L.
+
+Site 3: 2100 Gateway Drive (Former Exxon Station)
+Distance: 0.35 miles north
+Case Status: CLOSED (2010)
+No impact to subject property due to distance and groundwater flow direction.
+
+Site 4: 1950 Gateway Drive (Former Self-Service Car Wash)
+Distance: 0.15 miles northeast
+Case Status: CLOSED (2015)
+No impact to subject property due to downgradient location.
+
+3.3 HISTORICAL LAND USE
+Based on review of available records, the subject property's historical land use is as follows:
+
+1940s-1950s: Agricultural (orchards)
+1960s: Undeveloped land
+1970-1985: Light industrial warehouse (electronics assembly)
+1986-2000: Two-story office building
+2001-2016: Vacant land (buildings demolished 2001)
+2017-2018: Construction of current improvements
+2018-Present: Class A office building
+
+3.4 SANBORN FIRE INSURANCE MAPS
+Sanborn maps were reviewed for the years 1950, 1965, 1976, and 1989.
+
+1950: Subject property shown as orchards. No structures.
+1965: Subject property shows warehouse building with notation "ELECTRONICS ASSEMBLY." Adjacent property (1860 Gateway Dr) shows "MARTINIZING DRY CLEANERS - 1 STORY."
+1976: Similar to 1965. Subject property warehouse now shows "GENERAL STORAGE." UST symbol present in northeast corner with notation "1000G HO" (heating oil).
+1989: Subject property shows office building. No UST symbols present.
+
+3.5 AERIAL PHOTOGRAPH REVIEW
+Historical aerial photographs were reviewed for 1946, 1956, 1968, 1974, 1982, 1993, 2000, 2010, and 2020.
+
+Key observations:
+- 1968: Warehouse on subject property, dry cleaner visible on adjacent southern parcel
+- 1974: Possible tank field visible in northeast corner of subject property
+- 1993: Possible backfill area visible in northeast corner (consistent with UST removal)
+- 2000: Subject property cleared, adjacent property shows remediation equipment
+
+SECTION 4 - SITE RECONNAISSANCE
+================================
+4.1 METHODOLOGY
+A site reconnaissance was conducted on February 15, 2024 by Senior Environmental Scientist Jennifer Martinez, P.G. CEG, and Staff Geologist David Kim. Weather conditions were clear with temperatures of approximately 58°F.
+
+4.2 EXTERIOR OBSERVATIONS
+Building Perimeter:
+- Well-maintained landscaping with no evidence of stressed vegetation
+- No evidence of staining, distressed soil, or unauthorized dumping
+- Storm drains appear properly maintained
+- Emergency generator AST in excellent condition with intact secondary containment
+
+Parking Structure:
+- Minor automotive fluid staining observed on Level 1 near elevator core (approximately 50 SF area)
+- Staining appears consistent with typical parking structure use
+- No evidence of bulk petroleum storage or spills
+
+Grounds:
+- City records indicate former gas station site (1870 Gateway Dr) is now landscaped park area
+- No vent pipes, fill ports, or evidence of former UST observed in parking area or landscaping
+- Southeast corner adjacent to 1860 Gateway Drive shows no visible evidence of contamination
+
+4.3 INTERIOR OBSERVATIONS
+Building Mechanical Areas:
+- Maintenance room on ground floor contains two 55-gallon drums labeled "WASTE OIL - FOR RECYCLING"
+- Drums stored on concrete without secondary containment
+- Small quantities of cleaning supplies and maintenance chemicals properly stored
+- No evidence of releases or staining
+
+Tenant Spaces (representative sampling):
+- Typical office uses observed
+- No evidence of manufacturing, laboratories, or hazardous materials storage
+- Server rooms with standard UPS battery backup systems
+
+4.4 INTERVIEWS
+Property Manager (James Wilson, Gateway Property Management):
+- No knowledge of historical environmental issues on subject property
+- Confirmed emergency generator AST is tested monthly with no reported releases
+- Waste oil from maintenance operations collected quarterly by licensed hauler
+- Not aware of any contamination from adjacent properties
+
+Building Engineer (Robert Hernandez):
+- 8 years on-site experience
+- No knowledge of UST on property
+- Confirmed all floor drains connect to sanitary sewer (verified by building plans)
+- HVAC uses R-410A refrigerant with approximately 1,500 lbs total system charge
+
+SECTION 5 - FINDINGS AND CONCLUSIONS
+=====================================
+5.1 RECOGNIZED ENVIRONMENTAL CONDITIONS (RECs)
+The following RECs were identified:
+
+REC 1: ADJACENT DRY CLEANER CONTAMINATION
+The former Martinizing Dry Cleaners at 1860 Gateway Drive operated from 1965-1987 and is an open contamination case with the Regional Water Quality Control Board. PCE contamination in groundwater has been documented to extend northeast from the source area. Based on plume modeling and the relative positions of existing monitoring wells, there is a reasonable probability that contaminated groundwater extends beneath the southeastern portion of the subject property.
+
+Recommendation: Phase II investigation consisting of the installation of groundwater monitoring wells on the subject property to delineate the extent of the PCE plume.
+
+Estimated Cost: $35,000-$50,000 for two monitoring wells and initial sampling.
+
+REC 2: UNDOCUMENTED UST CLOSURE
+Historical records indicate a 1,000-gallon heating oil UST was present on the subject property from approximately 1972 until at least 1976. Visual evidence suggests possible removal circa 1994; however, no closure documentation could be located. The former tank location appears to be beneath the current parking structure.
+
+Recommendation: Submit inquiry to San Mateo County regarding possible closure records. If no records are found, consider Phase II investigation if future construction or excavation is planned in the northeast parking area.
+
+Estimated Cost: $15,000-$25,000 for soil borings if required.
+
+5.2 CONTROLLED RECOGNIZED ENVIRONMENTAL CONDITIONS (CRECs)
+CREC 1: REGIONAL TCE PLUME (MEW SUPERFUND)
+The property is located within the jurisdictional boundary of the Middlefield-Ellis-Whisman Superfund Study Area. While the subject property is not a responsible party, regional groundwater monitoring indicates TCE impacts may exist in deep groundwater beneath the site. Current land use restrictions prohibit the installation of drinking water wells in this area.
+
+This CREC does not require further assessment but should be disclosed to prospective purchasers and considered in property due diligence.
+
+5.3 HISTORICAL RECOGNIZED ENVIRONMENTAL CONDITIONS (HRECs)
+HREC 1: FORMER GAS STATION (1870 GATEWAY DRIVE)
+The former Shell gasoline station that operated adjacent to the subject property from 1952-1978 received regulatory closure in 2003. Based on the distance, documented plume extent, and regulatory closure, this site is not expected to impact the subject property.
+
+5.4 DE MINIMIS CONDITIONS
+The following de minimis conditions were observed:
+- Waste oil drums without secondary containment (maintenance room)
+- Minor automotive staining in parking structure
+
+These conditions do not rise to the level of RECs but should be addressed through improved housekeeping practices.
+
+5.5 DATA GAPS
+The following data gaps were identified:
+- UST closure documentation (1994)
+- Pre-1975 building permits
+- Interview with former dry cleaning operator
+
+These data gaps do not substantially affect our ability to render an opinion but are noted for completeness.
+
+5.6 OPINION
+Based on our assessment, we have identified two RECs associated with the subject property. The more significant concern is the potential extension of PCE-contaminated groundwater from the adjacent former dry cleaner site. We recommend Phase II investigation to characterize this potential liability.
+
+SECTION 6 - SIGNATURES AND QUALIFICATIONS
+==========================================
+This Phase I Environmental Site Assessment was conducted under the supervision of:
+
+Jennifer Martinez, P.G., CEG
+Senior Environmental Scientist
+Professional Geologist No. 8547
+Certified Engineering Geologist No. 2891
+
+David Kim
+Staff Geologist
+
+This report was reviewed and approved by:
+
+Dr. Richard Thompson, P.E.
+Principal Engineer
+Professional Engineer No. 67892
+
+Report Date: February 28, 2024
+
+APPENDICES
+==========
+Appendix A - Site Location Map
+Appendix B - Site Plan
+Appendix C - Historical Aerial Photographs
+Appendix D - Sanborn Fire Insurance Maps
+Appendix E - EDR Radius Map Report
+Appendix F - Regulatory Agency Correspondence
+Appendix G - Site Photographs
+Appendix H - Qualifications of Environmental Professionals

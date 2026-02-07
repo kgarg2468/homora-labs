@@ -94,7 +94,9 @@ async def vector_search(
             content=row.content,
             page_number=row.page_number,
             section=row.section,
-            score=1 - row.distance,  # Convert distance to similarity
+            # Cosine distance ranges 0-2, convert to similarity 0-1
+            # distance=0 → similarity=1, distance=2 → similarity=0
+            score=max(0, 1 - row.distance / 2),
         )
         for row in rows
     ]

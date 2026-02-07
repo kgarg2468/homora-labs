@@ -62,6 +62,7 @@ export function ProjectWizard() {
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
       'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.tiff'],
+      'text/plain': ['.txt'],
     },
     onDrop: (acceptedFiles) => {
       const newFiles = acceptedFiles.map((file) => ({ file }));
@@ -236,7 +237,7 @@ export function ProjectWizard() {
               Drag & drop files here, or click to select
             </p>
             <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">
-              PDF, DOCX, XLSX, or images
+              PDF, DOCX, XLSX, TXT, or images
             </p>
           </div>
 

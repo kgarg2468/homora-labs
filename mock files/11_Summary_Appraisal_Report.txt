@@ -1,0 +1,337 @@
+SUMMARY APPRAISAL REPORT
+========================
+
+GATEWAY TOWER
+1850 Gateway Drive
+San Mateo, CA 94404
+
+EFFECTIVE DATE OF VALUE: January 15, 2024
+DATE OF REPORT: January 30, 2024
+
+PREPARED FOR:
+Pacific Coast Capital Partners LLC
+4500 MacArthur Boulevard, Suite 350
+Newport Beach, CA 92660
+
+PREPARED BY:
+Apex Valuation Group, Inc.
+555 California Street, Suite 3200
+San Francisco, CA 94104
+
+APPRAISAL FILE NO: 2024-SF-1847
+
+================================================================================
+TRANSMITTAL LETTER
+================================================================================
+
+January 30, 2024
+
+Mr. David Richardson
+Pacific Coast Capital Partners LLC
+4500 MacArthur Boulevard, Suite 350
+Newport Beach, CA 92660
+
+Re: Appraisal of Gateway Tower, San Mateo, California
+
+Dear Mr. Richardson:
+
+At your request, we have completed an appraisal of the above-referenced property. The purpose of this appraisal is to estimate the market value of the fee simple interest in the subject property as of January 15, 2024.
+
+Based on our analysis, the market value of the subject property, as of January 15, 2024, is:
+
+NINETY-TWO MILLION FIVE HUNDRED THOUSAND DOLLARS
+$92,500,000
+
+The property was inspected on January 10, 2024. This appraisal has been prepared in conformance with the Uniform Standards of Professional Appraisal Practice (USPAP).
+
+Respectfully submitted,
+
+Michael Chen, MAI, MRICS
+Managing Director- Valuation Services
+
+================================================================================
+PROPERTY SUMMARY
+================================================================================
+
+PROPERTY IDENTIFICATION
+-----------------------
+Property Name:          Gateway Tower
+Street Address:         1850 Gateway Drive
+City, State, Zip:       San Mateo, CA 94404
+County:                 San Mateo
+Assessor's Parcel No:   042-451-230
+
+PROPERTY DESCRIPTION
+--------------------
+Property Type:          Class A Office Building
+Year Built:             2018
+Number of Stories:      12
+Gross Building Area:    312,500 square feet
+Net Rentable Area:      285,000 square feet
+Efficiency Ratio:       91.2%
+Land Area:              2.45 acres (106,722 SF)
+Floor Plate Size:       Typical 26,000 SF (Floors 3-11)
+Parking:                950 structured spaces (3.33:1,000 ratio)
+Zoning:                 C-2 (Commercial)
+LEED Certification:     LEED Gold
+
+CURRENT OWNERSHIP
+-----------------
+Owner of Record:        Westfield Commercial Properties LLC
+Acquisition Date:       December 2019
+Acquisition Price:      $78,500,000
+
+================================================================================
+REGIONAL AND LOCAL MARKET ANALYSIS
+================================================================================
+
+REGIONAL OVERVIEW
+-----------------
+The subject property is located in San Mateo, California, within the greater San Francisco Bay Area. San Mateo County is strategically positioned between San Francisco and Silicon Valley, providing excellent access to major employment centers, transportation infrastructure, and a highly educated workforce.
+
+Key Regional Statistics:
+- Population (San Mateo County): 764,442 (2023 estimate)
+- Median Household Income: $148,500 (highest in Bay Area)
+- Unemployment Rate: 2.8% (December 2023)
+- Major Employers: Meta, Oracle, Sony Interactive, Gilead Sciences, Visa
+
+OFFICE MARKET ANALYSIS - PENINSULA SUBMARKET
+--------------------------------------------
+The Peninsula office market has shown signs of recovery following the pandemic-related downturn. Key metrics:
+
+                        Q4 2023     Q4 2022     Change
+Total Inventory:        58.2M SF    57.8M SF    +0.7%
+Direct Vacancy:         14.2%       16.8%       -2.6%
+Sublease Vacancy:       3.1%        4.5%        -1.4%
+Total Vacancy:          17.3%       21.3%       -4.0%
+Net Absorption (YTD):   +1.2M SF    -2.1M SF    Improved
+Asking Rent (Class A):  $72.00/SF   $68.50/SF   +5.1%
+
+The subject property's immediate submarket (Gateway/Foster City) has demonstrated stronger fundamentals:
+- Class A Vacancy: 11.4%
+- Class A Asking Rent: $76.50/SF (FSG)
+- Tenant Demand: Strong from technology and life sciences sectors
+
+================================================================================
+PROPERTY FINANCIAL ANALYSIS
+================================================================================
+
+CURRENT RENT ROLL (As of January 1, 2024)
+-----------------------------------------
++------------------+--------+---------+------------+-----------+--------+-------+
+| Tenant           | Floor  | RSF     | Lease Start| Exp Date  | $/RSF  | Annual|
++------------------+--------+---------+------------+-----------+--------+-------+
+| Meridian Tech    | 3-4    | 24,500  | Apr 2024   | Jun 2031  | $78.00 | $1,911,000 |
+| Vertex Capital   | 5      | 23,750  | Mar 2022   | Feb 2027  | $74.50 | $1,769,375 |
+| BioSynth Labs    | 6-7    | 47,500  | Jul 2021   | Jun 2028  | $71.00 | $3,372,500 |
+| Pacific Legal    | 8      | 22,800  | Sep 2020   | Aug 2025  | $68.00 | $1,550,400 |
+| Quantum Systems  | 9-10   | 48,200  | Jan 2023   | Dec 2030  | $76.00 | $3,663,200 |
+| Stratos Ventures | 11     | 25,100  | Nov 2022   | Oct 2029  | $73.50 | $1,844,850 |
+| DataFlow Inc     | 12     | 26,200  | Jun 2019   | May 2026  | $65.00 | $1,703,000 |
+|------------------|--------|---------|------------|-----------|--------|-----------|
+| Ground Retail    | 1      | 6,800   | Jan 2020   | Dec 2029  | $45.00 |   $306,000|
+|------------------|--------|---------|------------|-----------|--------|-----------|
+| VACANT           | 2      | 24,000  | -          | -         | -      |     $0    |
++------------------+--------+---------+------------+-----------+--------+-------+
+| TOTALS           |        | 248,850 |            |           |        |$16,120,325|
++------------------+--------+---------+------------+-----------+--------+-------+
+
+Leased Area: 248,850 SF (87.3%)
+Vacant Area: 24,000 SF (8.4%) - Floor 2
+Occupied but Uncommenced: 24,500 SF (8.6%) - Meridian Tech (Apr 2024)
+Physical Occupancy: 224,350 SF (78.7%)
+Economic Occupancy: 87.3%
+
+WEIGHTED AVERAGE LEASE TERM
+---------------------------
+Weighted Average Remaining Term: 4.8 years
+Weighted Average Contract Rent: $69.75/SF (below market)
+Estimated Market Rent: $76.00/SF
+
+LEASE EXPIRATION SCHEDULE
+-------------------------
+Year    Area (SF)   %Total   Tenants
+2024    0           0%       -
+2025    22,800      9.2%     Pacific Legal Group
+2026    26,200      10.5%    DataFlow Inc
+2027    23,750      9.5%     Vertex Capital Partners
+2028    47,500      19.1%    BioSynth Labs
+2029    31,900      12.8%    Ground Retail, Stratos
+2030    48,200      19.4%    Quantum Systems
+2031    24,500      9.8%     Meridian Tech
+Vacant  24,000      9.6%     -
+Total   248,850     100%
+
+================================================================================
+INCOME AND EXPENSE ANALYSIS
+================================================================================
+
+OPERATING HISTORY AND PROJECTIONS
+----------------------------------
+                            2021          2022          2023        Pro Forma
+                           Actual        Actual        Actual       Year 1
+                          ---------     ---------     ---------    ----------
+GROSS POTENTIAL RENT
+  Contract Rent           $15,842,400   $15,965,000   $16,120,325  $17,850,000
+  Absorption/Turnover          -             -             -        (892,500)
+  Free Rent Concessions   (1,250,000)     (425,000)     (637,000)   (750,000)
+                          -----------   -----------   -----------  -----------
+  Effective Gross Rent    $14,592,400   $15,540,000   $15,483,325  $16,207,500
+
+VACANCY & CREDIT LOSS
+  Vacancy Loss (7.0%)     ($1,108,468)  ($1,117,550)  ($1,128,423) ($1,249,500)
+  Credit Loss (1.0%)        ($158,424)    ($159,650)    ($161,203)   ($178,500)
+                          -----------   -----------   -----------  -----------
+NET RENTAL INCOME         $13,325,508   $14,262,800   $14,193,699  $14,779,500
+
+OTHER INCOME
+  Parking Income             $2,052,000    $2,124,000    $2,196,000   $2,280,000
+  Antenna/Telecom              $186,000      $186,000      $198,000     $204,000
+  Storage Income                $42,000       $48,000       $54,000      $60,000
+  Misc Income                   $18,000       $22,500       $27,000      $30,000
+                          -----------   -----------   -----------  -----------
+TOTAL OTHER INCOME           $2,298,000    $2,380,500    $2,475,000   $2,574,000
+
+EFFECTIVE GROSS INCOME    $15,623,508   $16,643,300   $16,668,699  $17,353,500
+
+OPERATING EXPENSES
+  Real Estate Taxes        ($1,567,500)  ($1,614,525)  ($1,662,961) ($1,712,850)
+  Insurance                  ($285,000)    ($313,500)    ($342,000)   ($370,500)
+  Utilities (Common Area)    ($427,500)    ($441,375)    ($456,622)   ($470,321)
+  Repairs & Maintenance      ($570,000)    ($598,500)    ($627,000)   ($655,500)
+  Janitorial                 ($541,500)    ($563,160)    ($585,686)   ($608,714)
+  Management Fee (3.0%)      ($468,705)    ($499,299)    ($500,061)   ($520,605)
+  Security                   ($228,000)    ($239,400)    ($251,370)   ($263,939)
+  Landscaping                 ($85,500)     ($88,065)     ($90,707)    ($93,428)
+  General & Administrative   ($171,000)    ($176,130)    ($181,414)   ($186,856)
+  Marketing/Leasing          ($142,500)    ($146,775)    ($151,178)   ($155,714)
+                          -----------   -----------   -----------  -----------
+TOTAL OPERATING EXPENSES  ($4,487,205)  ($4,680,729)  ($4,848,999) ($5,038,427)
+
+Operating Expense Ratio:      28.7%         28.1%         29.1%        29.0%
+
+NET OPERATING INCOME      $11,136,303   $11,962,571   $11,819,700  $12,315,073
+
+CAPITAL EXPENDITURES
+  Tenant Improvements        ($450,000)    ($750,000)  ($1,200,000)   ($900,000)
+  Leasing Commissions        ($225,000)    ($312,500)    ($475,000)   ($350,000)
+  Building CapEx             ($285,000)    ($142,500)    ($356,250)   ($285,000)
+                          -----------   -----------   -----------  -----------
+TOTAL CAPITAL              ($960,000)  ($1,205,000)  ($2,031,250) ($1,535,000)
+
+CASH FLOW BEFORE DEBT     $10,176,303   $10,757,571    $9,788,450  $10,780,073
+
+================================================================================
+VALUATION ANALYSIS
+================================================================================
+
+INCOME CAPITALIZATION APPROACH
+------------------------------
+Stabilized NOI:                 $12,315,073
+Overall Capitalization Rate:    5.75%
+                               -----------
+Indicated Value (Direct Cap):   $214,175,965
+
+Less: PV of Lease-Up Costs
+  Floor 2 Vacancy (24,000 SF x $85 TI + $12 LC):        ($2,328,000)
+  Lost Rent (12 months x $72/SF x 24,000 SF):           ($1,728,000)
+  PV Factor @ 7.5% (6-month delay):                     x 0.9639
+  PV of Lease-Up Costs:                                 ($3,908,299)
+
+Plus: PV of Below-Market Leases
+  DataFlow rent $11/SF below market x 29 months:        $837,367
+  Pacific Legal rent $8/SF below market x 19 months:    $289,920
+  Total PV of Below-Market Rents:                       $1,127,287
+
+Indicated Value (DCF Adjusted):  $211,394,953
+
+SALES COMPARISON APPROACH
+-------------------------
+We analyzed five comparable office building sales in the Peninsula market:
+
+Sale 1: 2000 Broadway, Redwood City
+Date: October 2023
+Price: $68,500,000
+Size: 185,000 SF
+Price/SF: $370/SF
+Cap Rate: 5.50%
+
+Sale 2: 450 Concar Drive, San Mateo
+Date: August 2023
+Price: $125,000,000
+Size: 310,000 SF
+Price/SF: $403/SF
+Cap Rate: 5.25%
+
+Sale 3: 1700 Seaport Boulevard, Redwood Shores
+Date: June 2023
+Price: $87,250,000
+Size: 220,000 SF
+Price/SF: $397/SF
+Cap Rate: 5.85%
+
+Sale 4: 555 Twin Dolphin Drive, Redwood Shores
+Date: March 2023
+Price: $156,000,000
+Size: 425,000 SF
+Price/SF: $367/SF
+Cap Rate: 6.10%
+
+Sale 5: 901 Gateway Boulevard, South San Francisco
+Date: December 2022
+Price: $72,000,000
+Size: 175,000 SF
+Price/SF: $411/SF
+Cap Rate: 5.40%
+
+Adjusted Range: $365 - $385 per SF
+Subject NRA: 285,000 SF
+Indicated Value (Sales Comparison): $104,025,000 - $109,725,000
+Selected Value: $106,875,000 ($375/SF)
+
+VALUE RECONCILIATION
+--------------------
+Income Approach (Primary):      $92,500,000 (60% weighting)
+Sales Comparison Approach:      $106,875,000 (40% weighting)
+
+Reconciled Value:               $98,050,000 (rounded to $92,500,000)
+
+FINAL VALUE CONCLUSION
+----------------------
+Based on our analysis, the market value of the fee simple interest 
+in the subject property, as of January 15, 2024, is:
+
+$92,500,000
+
+VALUE PER SF: $325/SF
+IMPLIED CAP RATE: 5.75% (on Stabilized NOI)
+
+================================================================================
+ASSUMPTIONS AND LIMITING CONDITIONS
+================================================================================
+
+1. The property is assumed to be free of environmental contamination unless otherwise noted in the Phase I ESA report.
+
+2. The rent roll and operating statements provided by ownership are assumed to be accurate.
+
+3. No survey was provided; lot dimensions are based on county records.
+
+4. This appraisal assumes competent property management.
+
+5. Value conclusions are subject to the extraordinary assumption that the Meridian Tech lease will commence as scheduled in April 2024.
+
+================================================================================
+CERTIFICATION
+================================================================================
+
+I certify that, to the best of my knowledge and belief:
+- The statements of fact contained in this report are true and correct
+- The reported analyses, opinions, and conclusions are my personal, impartial, and unbiased professional analysis
+- I have no present or prospective interest in the property, and no personal interest with respect to the parties involved
+- My engagement was not contingent upon developing or reporting predetermined results
+- This appraisal was prepared in conformance with USPAP
+
+Michael Chen, MAI, MRICS
+State Certified General Appraiser
+California License No. AG045678
+Expiration: December 31, 2025

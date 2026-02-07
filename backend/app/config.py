@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     # Default LLM settings
     default_llm_provider: Literal["openai", "anthropic", "ollama"] = "openai"
     default_chat_model: str = "gpt-4o"
-    default_embedding_model: str = "text-embedding-3-small"
+    default_embedding_model: str = "text-embedding-3-large"
 
     # Document storage
     documents_path: str = "./documents"
@@ -33,12 +33,12 @@ class Settings(BaseSettings):
     secret_key: str = "dev-secret-key-change-in-production"
 
     # Embedding settings
-    embedding_dimension: int = 1536
-    chunk_size: int = 300  # tokens
-    chunk_overlap: int = 75  # tokens
+    embedding_dimension: int = 3072  # text-embedding-3-large dimension
+    chunk_size: int = 800  # tokens (larger chunks for better context)
+    chunk_overlap: int = 150  # tokens
 
     # Retrieval settings
-    retrieval_top_k: int = 15
+    retrieval_top_k: int = 40  # more context for GPT-4o
 
 
 @lru_cache

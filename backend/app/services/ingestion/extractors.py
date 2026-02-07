@@ -34,6 +34,9 @@ async def extract_text_from_file(
             yield page
     elif file_type == FileType.image:
         yield PageContent(text="", page_number=1, has_images=True, images=[path])
+    elif file_type == FileType.txt:
+        async for page in extract_txt(path):
+            yield page
 
 
 async def extract_pdf(path: Path) -> AsyncGenerator[PageContent, None]:
@@ -129,6 +132,14 @@ def convert_sheet_to_markdown(sheet, sheet_name: str) -> str:
     return "\n".join(lines)
 
 
+async def extract_txt(path: Path) -> AsyncGenerator[PageContent, None]:
+    """Extract text from TXT file."""
+    with open(path, "r", encoding="utf-8", errors="replace") as f:
+        text = f.read()
+    # TXT files are treated as single page
+    yield PageContent(text=text, page_number=1)
+
+
 def get_page_count(file_path: str, file_type: FileType) -> int | None:
     """Get page count for a file."""
     path = Path(file_path)
@@ -144,6 +155,8 @@ def get_page_count(file_path: str, file_type: FileType) -> int | None:
     elif file_type == FileType.docx:
         return 1  # DOCX doesn't have clear page boundaries
     elif file_type == FileType.image:
+        return 1
+    elif file_type == FileType.txt:
         return 1
 
     return None

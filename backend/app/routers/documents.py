@@ -26,6 +26,7 @@ MIME_TYPE_MAP = {
     FileType.pdf: "application/pdf",
     FileType.docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     FileType.xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    FileType.txt: "text/plain",
 }
 
 IMAGE_MIME_MAP = {
@@ -57,6 +58,8 @@ def get_file_type(filename: str) -> FileType:
         return FileType.xlsx
     elif ext in ("png", "jpg", "jpeg", "gif", "tiff", "bmp"):
         return FileType.image
+    elif ext == "txt":
+        return FileType.txt
     else:
         raise ValueError(f"Unsupported file type: {ext}")
 
