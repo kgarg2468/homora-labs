@@ -95,8 +95,8 @@ export default function SettingsPage() {
                 <ArrowLeft className="w-5 h-5" />
               </Link>
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-primary-100 dark:bg-primary-900/50 rounded-lg">
-                  <Building2 className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                <div className="p-2 bg-slate-100 dark:bg-slate-700 rounded-lg">
+                  <Building2 className="w-5 h-5 text-slate-600 dark:text-slate-400" />
                 </div>
                 <h1 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                   Settings
@@ -151,7 +151,7 @@ export default function SettingsPage() {
                       className={cn(
                         'p-3 rounded-lg border text-sm font-medium transition-colors',
                         (provider || settings.llm.provider) === p
-                          ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
+                          ? 'border-slate-500 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
                           : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
                       )}
                     >
@@ -168,7 +168,7 @@ export default function SettingsPage() {
                 <select
                   value={model || settings?.llm.model}
                   onChange={(e) => setModel(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-zinc-500"
                 >
                   {settings?.available_models[provider || settings.llm.provider]?.map(
                     (m) => (

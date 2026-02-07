@@ -22,8 +22,8 @@ export default function NewProjectPage() {
               </Link>
               <div className="h-6 w-px bg-slate-200 dark:bg-slate-700" />
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-primary-100 dark:bg-primary-900/50 rounded-lg">
-                  <Building2 className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                <div className="p-2 bg-slate-100 dark:bg-slate-700 rounded-lg">
+                  <Building2 className="w-5 h-5 text-slate-600 dark:text-slate-400" />
                 </div>
                 <h1 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                   New Project

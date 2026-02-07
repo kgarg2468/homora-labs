@@ -2,8 +2,8 @@
 
 ## Overview
 
-**Total bugs found:** 13 (4 critical, 5 medium, 4 minor)
-**Bugs fixed:** 6 (4 critical, 2 medium)
+**Total bugs found:** 17 (4 critical, 7 medium, 6 minor)
+**Bugs fixed:** 15 (4 critical, 6 medium, 5 minor)
 
 ---
 
@@ -24,18 +24,22 @@
 |---|-----|---------|--------|
 | 6 | **Keyword search crashes on special characters.** `" & ".join(query.split())` passes unsanitized input to `to_tsquery`. Queries with `&`, `\|`, `!`, `:`, `*`, `(`, `)` cause PostgreSQL syntax errors. | `retrieval.py:112` | Fixed |
 | 7 | **Same tsquery injection in global search.** Same unsanitized `to_tsquery` pattern. | `services/search.py:82,151` | Fixed |
-| 8 | `extract_citations_from_response` uses naive substring match (`chunk.document_name in response`). False positives when filename contains common words. | `routers/chat.py:463` | Open |
+| 8 | `extract_citations_from_response` uses naive substring match (`chunk.document_name in response`). False positives when filename contains common words. | `routers/chat.py:463` | Fixed |
 | 13 | **Settings GET shows empty model lists** when API keys aren't configured (initial state). `get_llm_provider()` raises ValueError for missing keys; caught and returns `[]`. | `routers/settings.py:58-63` | Fixed |
+| 14 | **Chat responses disappear with UUID serialization error.** Citations contain UUID objects that aren't JSON-serializable when saving to JSONB column, causing DB insert to fail and trigger error handler that removes messages. | `routers/chat.py:255,378,389` | Fixed |
+| 15 | **Chat streaming causes UI lag.** `scrollIntoView({ behavior: 'smooth' })` called on every token creates animation queue buildup. | `projects/[id]/page.tsx:101-104` | Fixed |
+| 17 | **Docker Compose file missing.** `README.md` and setup instructions reference `docker-compose.yml`, but no compose file exists in repo. This blocks local setup as documented. | `README.md` | Open |
 
 ### Minor
 
 | # | Bug | File(s) | Status |
 |---|-----|---------|--------|
-| 1 | `default=` (Python-side) used instead of `server_default=` for several columns in migration. | `001_initial_schema.py:55,104,135,80` | Open |
-| 2 | No metadata/title export in root layout. | `frontend/src/app/layout.tsx` | Open |
-| 5 | File overwrite on duplicate filename upload -- no UUID/timestamp suffix. | `routers/documents.py:137` | Open |
-| 11 | Compare page `syncScroll` checkbox exists but synchronized scrolling is not implemented. | `compare/page.tsx:19,74` | Open |
-| 12 | Export ZIP can have filename collisions -- two documents with same filename overwrite each other in the archive. | `services/export.py:102` | Open |
+| 1 | `default=` (Python-side) used instead of `server_default=` for several columns in migration. | `001_initial_schema.py:55,104,135,80` | Fixed |
+| 2 | No metadata/title export in root layout. | `frontend/src/app/layout.tsx` | Fixed |
+| 5 | File overwrite on duplicate filename upload -- no UUID/timestamp suffix. | `routers/documents.py:137` | Fixed |
+| 11 | Compare page `syncScroll` checkbox exists but synchronized scrolling is not implemented. | `compare/page.tsx:19,74` | Fixed |
+| 12 | Export ZIP can have filename collisions -- two documents with same filename overwrite each other in the archive. | `services/export.py:102` | Fixed |
+| 16 | Duplicate X close buttons appear in modals when title prop is provided. | `components/ui/Modal.tsx:74-101` | Fixed |
 
 ---
 
@@ -85,14 +89,82 @@
 - Added a `fallback_models` dictionary with hardcoded model lists for each provider (openai, anthropic, ollama).
 - Changed the `except ValueError` to `except (ValueError, Exception)` so any provider initialization failure falls through to the fallback list instead of returning an empty array.
 
+### 7. Fix #1 -- Migration default vs server_default
+
+**File:** `backend/alembic/versions/001_initial_schema.py`
+
+- Changed `default=` to `server_default=` for `ingestion_progress`, `metadata`, `archived`, `sections`, and `is_default` columns to ensure database-level defaults.
+
+### 8. Fix #2 -- Root layout missing metadata
+
+**File:** `frontend/src/app/layout.tsx`
+
+- Added `Metadata` import from `next`.
+- Exported `metadata` object with title and description for SEO.
+
+### 9. Fix #5 -- File upload collisions
+
+**File:** `backend/app/routers/documents.py`
+
+- Added collision detection in `upload_document`.
+- Appends 8-character UUID suffix to duplicate filenames (e.g., `file_a1b2c3d4.pdf`).
+
+### 10. Fix #8 -- Citation false-positive matching
+
+**File:** `backend/app/routers/chat.py`
+
+- Changed from substring matching to strict regex: `re.compile(rf"\[Document: {re.escape(chunk.document_name)}.*\]")` to match only proper `[Document: ...]` citation format.
+
+### 11. Fix #11 -- Sync scroll implementation
+
+**File:** `frontend/src/app/projects/[id]/compare/page.tsx`
+
+- Implemented `handleScroll` with refs and percentage-based scrolling.
+- Added toggle switch styling.
+- Fixed document panel height from `min-h-full` to `h-full`.
+
+### 12. Fix #12 -- Export ZIP collisions
+
+**File:** `backend/app/services/export.py`
+
+- Added filename tracking with `used_filenames` set.
+- Appends document ID suffix to duplicate filenames in ZIP.
+- Updates `documents.json` with renamed filenames.
+
+### 13. Fix #14 -- Chat response disappearing
+
+**File:** `backend/app/routers/chat.py`
+
+- Changed `c.model_dump()` to `c.model_dump(mode='json')` for citations in both streaming and non-streaming endpoints.
+- Ensures UUIDs are serialized to strings for JSONB storage.
+
+### 14. Fix #15 -- Chat streaming lag
+
+**File:** `frontend/src/app/projects/[id]/page.tsx`
+
+- Optimized scroll with `requestAnimationFrame` and conditional scrolling (only when near bottom).
+- Changed from `behavior: 'smooth'` to `behavior: 'instant'` to prevent animation queue buildup.
+
+### 15. Fix #16 -- Duplicate modal close buttons
+
+**File:** `frontend/src/components/ui/Modal.tsx`
+
+- Refactored header to always render, with title optional.
+- Single close button now uses `ml-auto` when no title.
+- Removed duplicate conditional close button.
+
+### 16. New feature -- Collapsible follow-ups
+
+**File:** `frontend/src/components/chat/FollowUpSuggestions.tsx`
+
+- Added `useState` for `isExpanded` toggle.
+- Converted header to button with chevron icons.
+- Suggestions now collapsed by default.
+
 ---
 
 ## Remaining Open Items
 
 | Priority | Bug # | Description |
 |----------|-------|-------------|
-| Nice to fix | 5, 12 | Filename collisions on upload and export (add UUID suffix) |
-| Nice to fix | 8 | Citation false-positive matching (parse `[Document: ...]` format instead of substring) |
-| Nice to fix | 11 | Sync scroll checkbox is a no-op on compare page |
-| Non-blocking | 1 | Migration uses `default=` instead of `server_default=` |
-| Non-blocking | 2 | Root layout missing metadata/title export |
+| Medium | 17 | Missing `docker-compose.yml` referenced by README/setup instructions |

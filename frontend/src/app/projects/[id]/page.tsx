@@ -53,9 +53,14 @@ export default function ProjectPage() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const uploadRef = useRef<HTMLInputElement>(null);
+  const notFoundRedirectedRef = useRef(false);
 
   // Queries
-  const { data: project, isLoading: projectLoading } = useQuery({
+  const {
+    data: project,
+    isLoading: projectLoading,
+    error: projectError,
+  } = useQuery({
     queryKey: ['project', projectId],
     queryFn: () => projectsApi.get(projectId),
   });
@@ -97,6 +102,21 @@ export default function ProjectPage() {
     registerAction('upload', () => uploadRef.current?.click());
     return () => unregisterAction('upload');
   }, [registerAction, unregisterAction]);
+
+  // Redirect when a project no longer exists (for example, deleted in another tab)
+  useEffect(() => {
+    if (!projectError || notFoundRedirectedRef.current) return;
+
+    const message = projectError instanceof Error ? projectError.message : '';
+    const isNotFound =
+      message.includes('Project not found') || message.includes('API error: 404');
+
+    if (!isNotFound) return;
+
+    notFoundRedirectedRef.current = true;
+    notifyError('Project not found or was deleted');
+    router.replace('/');
+  }, [projectError, notifyError, router]);
 
   // Scroll to bottom when messages change (optimized for streaming)
   useEffect(() => {
@@ -263,8 +283,8 @@ export default function ProjectPage() {
             <span className="text-sm">Back to Projects</span>
           </Link>
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-primary-100 dark:bg-primary-900/50 rounded-lg">
-              <Building2 className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+            <div className="p-2 bg-slate-100 dark:bg-slate-700 rounded-lg">
+              <Building2 className="w-5 h-5 text-slate-600 dark:text-slate-400" />
             </div>
             <div className="flex-1 min-w-0">
               <h1 className="font-semibold text-slate-900 dark:text-slate-100 truncate">
@@ -346,7 +366,7 @@ export default function ProjectPage() {
                 <div className="absolute top-full left-0 mt-1 w-64 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 py-2 z-10">
                   <button
                     onClick={startNewConversation}
-                    className="w-full px-4 py-2 text-sm text-left text-primary-600 dark:text-primary-400 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-2"
+                    className="w-full px-4 py-2 text-sm text-left text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-2"
                   >
                     <Plus className="w-4 h-4" />
                     New Conversation
@@ -359,7 +379,7 @@ export default function ProjectPage() {
                       className={cn(
                         'w-full px-4 py-2 text-sm text-left hover:bg-slate-50 dark:hover:bg-slate-700',
                         conv.id === conversationId
-                          ? 'bg-primary-50 dark:bg-primary-900/20'
+                          ? 'bg-slate-100 dark:bg-slate-800'
                           : ''
                       )}
                     >
@@ -388,8 +408,8 @@ export default function ProjectPage() {
           {messages.length === 0 && !isStreaming ? (
             <div className="h-full flex items-center justify-center">
               <div className="text-center max-w-md">
-                <div className="w-16 h-16 mx-auto mb-4 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center">
-                  <MessageSquare className="w-8 h-8 text-primary-600 dark:text-primary-400" />
+                <div className="w-16 h-16 mx-auto mb-4 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center">
+                  <MessageSquare className="w-8 h-8 text-slate-600 dark:text-slate-400" />
                 </div>
                 <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">
                   Ask a Question

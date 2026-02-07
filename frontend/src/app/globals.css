@@ -10,7 +10,7 @@
     --card-foreground: 15 23 42;
     --popover: 255 255 255;
     --popover-foreground: 15 23 42;
-    --primary: 37 99 235;
+    --primary: 113 113 122;
     --primary-foreground: 255 255 255;
     --secondary: 241 245 249;
     --secondary-foreground: 15 23 42;
@@ -22,7 +22,7 @@
     --destructive-foreground: 255 255 255;
     --border: 226 232 240;
     --input: 226 232 240;
-    --ring: 37 99 235;
+    --ring: 113 113 122;
   }
 
   .dark {
@@ -32,7 +32,7 @@
     --card-foreground: 248 250 252;
     --popover: 30 41 59;
     --popover-foreground: 248 250 252;
-    --primary: 96 165 250;
+    --primary: 161 161 170;
     --primary-foreground: 15 23 42;
     --secondary: 51 65 85;
     --secondary-foreground: 248 250 252;
@@ -44,7 +44,7 @@
     --destructive-foreground: 255 255 255;
     --border: 51 65 85;
     --input: 51 65 85;
-    --ring: 96 165 250;
+    --ring: 161 161 170;
   }
 }
 
@@ -52,6 +52,7 @@
   * {
     @apply border-slate-200 dark:border-slate-700;
   }
+
   body {
     @apply bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100;
   }
@@ -115,6 +116,7 @@
     opacity: 0;
     transform: translateY(8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -144,9 +146,13 @@
 }
 
 @keyframes bounce {
-  0%, 80%, 100% {
+
+  0%,
+  80%,
+  100% {
     transform: scale(0);
   }
+
   40% {
     transform: scale(1);
   }

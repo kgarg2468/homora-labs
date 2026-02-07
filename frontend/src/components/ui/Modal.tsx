@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useCallback, ReactNode } from 'react';
+import { useEffect, useCallback, ReactNode, useId, useRef } from 'react';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -21,26 +21,73 @@ export function Modal({
   className,
   size = 'md',
 }: ModalProps) {
-  const handleEscape = useCallback(
-    (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
-    },
-    [onClose]
-  );
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const titleId = useId();
 
   useEffect(() => {
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'hidden';
-    }
+    if (!isOpen) return;
+
+    const previousActiveElement = document.activeElement as HTMLElement | null;
+    document.body.style.overflow = 'hidden';
+
+    const focusableSelector =
+      'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+    const focusFirstElement = () => {
+      const autoFocusElement = dialogRef.current?.querySelector<HTMLElement>('[autofocus]');
+      if (autoFocusElement) {
+        autoFocusElement.focus();
+        return;
+      }
+
+      const focusableElements = dialogRef.current?.querySelectorAll<HTMLElement>(
+        focusableSelector
+      );
+      const firstFocusable = focusableElements?.[0];
+      if (firstFocusable) {
+        firstFocusable.focus();
+      } else {
+        closeButtonRef.current?.focus();
+      }
+    };
+
+    focusFirstElement();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+        return;
+      }
+
+      if (event.key !== 'Tab') return;
+
+      const focusableElements = dialogRef.current?.querySelectorAll<HTMLElement>(
+        focusableSelector
+      );
+      if (!focusableElements || focusableElements.length === 0) return;
+
+      const firstFocusable = focusableElements[0];
+      const lastFocusable = focusableElements[focusableElements.length - 1];
+      const activeElement = document.activeElement as HTMLElement | null;
+
+      if (event.shiftKey && activeElement === firstFocusable) {
+        event.preventDefault();
+        lastFocusable.focus();
+      } else if (!event.shiftKey && activeElement === lastFocusable) {
+        event.preventDefault();
+        firstFocusable.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = '';
+      previousActiveElement?.focus();
     };
-  }, [isOpen, handleEscape]);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -62,6 +109,10 @@ export function Modal({
 
       {/* Modal content */}
       <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={title ? titleId : undefined}
         className={cn(
           'relative bg-white dark:bg-slate-800 rounded-xl shadow-2xl animate-slide-up',
           'w-full mx-4',
@@ -73,12 +124,17 @@ export function Modal({
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700">
           {title && (
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+            <h2
+              id={titleId}
+              className="text-lg font-semibold text-slate-900 dark:text-slate-100"
+            >
               {title}
             </h2>
           )}
           <button
+            ref={closeButtonRef}
             onClick={onClose}
+            aria-label="Close modal"
             className={cn(
               "p-1 rounded-lg text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors",
               !title && "ml-auto"

@@ -113,7 +113,7 @@ export function ChatMessage({ message, onCitationClick }: ChatMessageProps) {
       className={cn(
         'flex gap-4 p-4 rounded-xl message-enter',
         isUser
-          ? 'bg-primary-50 dark:bg-primary-900/20'
+          ? 'bg-slate-100 dark:bg-slate-800'
           : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700'
       )}
     >
@@ -121,7 +121,7 @@ export function ChatMessage({ message, onCitationClick }: ChatMessageProps) {
         className={cn(
           'w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0',
           isUser
-            ? 'bg-primary-600 text-white'
+            ? 'bg-zinc-700 text-white'
             : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400'
         )}
       >

@@ -83,8 +83,8 @@ export default function ComparePage() {
                 <ArrowLeft className="w-5 h-5" />
               </Link>
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-primary-100 dark:bg-primary-900/50 rounded-lg">
-                  <Building2 className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                <div className="p-2 bg-slate-100 dark:bg-slate-700 rounded-lg">
+                  <Building2 className="w-5 h-5 text-slate-600 dark:text-slate-400" />
                 </div>
                 <div>
                   <h1 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
@@ -106,7 +106,7 @@ export default function ComparePage() {
                     onChange={(e) => setSyncScroll(e.target.checked)}
                     className="sr-only peer"
                   />
-                  <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
+                  <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-zinc-700"></div>
                 </div>
                 Sync scroll
               </label>
@@ -192,7 +192,7 @@ function DocumentSelector({
               }}
               className={cn(
                 'w-full px-3 py-2 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-700',
-                selected?.id === doc.id && 'bg-primary-50 dark:bg-primary-900/20'
+                selected?.id === doc.id && 'bg-slate-100 dark:bg-slate-800'
               )}
             >
               {doc.filename}
@@ -244,7 +244,7 @@ function DocumentPanel({
             <a
               href={fileUrl}
               download
-              className="text-primary-600 dark:text-primary-400 hover:underline mt-2 inline-block"
+              className="text-slate-600 dark:text-slate-400 hover:underline mt-2 inline-block"
             >
               Download file
             </a>

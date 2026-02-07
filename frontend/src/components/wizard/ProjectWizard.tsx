@@ -108,7 +108,7 @@ export function ProjectWizard() {
                 className={cn(
                   'w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors',
                   step === s || (['upload', 'processing', 'complete'].indexOf(step) >= i)
-                    ? 'bg-primary-600 text-white'
+                    ? 'bg-zinc-700 text-white'
                     : 'bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400'
                 )}
               >
@@ -150,7 +150,7 @@ export function ProjectWizard() {
                 Description (optional)
               </label>
               <textarea
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:border-transparent resize-none"
                 rows={3}
                 placeholder="Brief description of the project..."
                 value={description}
@@ -182,7 +182,7 @@ export function ProjectWizard() {
                     className={cn(
                       'p-4 rounded-lg border text-left transition-colors',
                       roleMode === option.value
-                        ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
+                        ? 'border-slate-500 bg-slate-100 dark:bg-slate-800'
                         : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
                     )}
                   >
@@ -226,8 +226,8 @@ export function ProjectWizard() {
             className={cn(
               'border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors',
               isDragActive
-                ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
-                : 'border-slate-300 dark:border-slate-600 hover:border-primary-500'
+                ? 'border-slate-500 bg-slate-100 dark:bg-slate-800'
+                : 'border-slate-300 dark:border-slate-600 hover:border-slate-500'
             )}
           >
             <input {...getInputProps()} />

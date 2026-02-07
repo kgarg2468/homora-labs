@@ -57,7 +57,7 @@ export function ChatInput({
           'border-slate-300 dark:border-slate-600',
           'text-slate-900 dark:text-slate-100',
           'placeholder:text-slate-400 dark:placeholder:text-slate-500',
-          'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent',
+          'focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:border-transparent',
           'disabled:opacity-50'
         )}
       />
@@ -67,7 +67,7 @@ export function ChatInput({
         className={cn(
           'absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg transition-colors',
           message.trim() && !isLoading
-            ? 'bg-primary-600 text-white hover:bg-primary-700'
+            ? 'bg-zinc-700 text-white hover:bg-zinc-800'
             : 'bg-slate-100 dark:bg-slate-700 text-slate-400'
         )}
       >

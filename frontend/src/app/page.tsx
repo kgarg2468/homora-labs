@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Plus,
   Search,
@@ -18,11 +18,21 @@ import { SearchModal } from '@/components/search/SearchModal';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { Button } from '@/components/ui/Button';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
+import { useNotifications } from '@/hooks/useNotifications';
+import { EditProjectModal } from '@/components/projects/EditProjectModal';
+import { DeleteProjectModal } from '@/components/projects/DeleteProjectModal';
 import { formatShortcut, shortcuts } from '@/lib/shortcuts';
+import type { Project, RoleMode } from '@/lib/types';
 
 export default function HomePage() {
+  const queryClient = useQueryClient();
   const [mounted, setMounted] = useState(false);
+  const [projectToEdit, setProjectToEdit] = useState<Project | null>(null);
+  const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
+  const [editError, setEditError] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const { setIsSearchOpen } = useKeyboardShortcuts();
+  const { notifySuccess, notifyError } = useNotifications();
   const searchShortcut = shortcuts.find((s) => s.action === 'search');
 
   useEffect(() => {
@@ -33,6 +43,74 @@ export default function HomePage() {
     queryKey: ['projects'],
     queryFn: projectsApi.list,
   });
+
+  const updateProjectMutation = useMutation({
+    mutationFn: ({
+      id,
+      payload,
+    }: {
+      id: string;
+      payload: { name: string; description: string; role_mode: RoleMode };
+    }) => projectsApi.update(id, payload),
+    onSuccess: () => {
+      setProjectToEdit(null);
+      setEditError(null);
+      notifySuccess('Project updated');
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+    },
+    onError: (error) => {
+      const message = error instanceof Error ? error.message : 'Failed to update project';
+      setEditError(message);
+      notifyError(message);
+    },
+  });
+
+  const deleteProjectMutation = useMutation({
+    mutationFn: (id: string) => projectsApi.delete(id),
+    onSuccess: () => {
+      setProjectToDelete(null);
+      setDeleteError(null);
+      notifySuccess('Project deleted');
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+    },
+    onError: (error) => {
+      const message = error instanceof Error ? error.message : 'Failed to delete project';
+      setDeleteError(message);
+      notifyError(message);
+    },
+  });
+
+  const handleOpenEditModal = (project: Project) => {
+    setEditError(null);
+    setProjectToEdit(project);
+  };
+
+  const handleOpenDeleteModal = (project: Project) => {
+    setDeleteError(null);
+    setProjectToDelete(project);
+  };
+
+  const handleCloseEditModal = () => {
+    if (updateProjectMutation.isPending) return;
+    setEditError(null);
+    setProjectToEdit(null);
+  };
+
+  const handleCloseDeleteModal = () => {
+    if (deleteProjectMutation.isPending) return;
+    setDeleteError(null);
+    setProjectToDelete(null);
+  };
+
+  const handleEditSubmit = (payload: { name: string; description: string; role_mode: RoleMode }) => {
+    if (!projectToEdit) return;
+    updateProjectMutation.mutate({ id: projectToEdit.id, payload });
+  };
+
+  const handleDeleteConfirm = () => {
+    if (!projectToDelete) return;
+    deleteProjectMutation.mutate(projectToDelete.id);
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -121,7 +199,12 @@ export default function HomePage() {
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {data?.projects.map((project) => (
-                  <ProjectCard key={project.id} project={project} />
+                  <ProjectCard
+                    key={project.id}
+                    project={project}
+                    onEdit={handleOpenEditModal}
+                    onDelete={handleOpenDeleteModal}
+                  />
                 ))}
               </div>
             )}
@@ -159,6 +242,22 @@ export default function HomePage() {
       </main>
 
       <SearchModal />
+      <EditProjectModal
+        isOpen={Boolean(projectToEdit)}
+        project={projectToEdit}
+        isSubmitting={updateProjectMutation.isPending}
+        apiError={editError}
+        onClose={handleCloseEditModal}
+        onSubmit={handleEditSubmit}
+      />
+      <DeleteProjectModal
+        isOpen={Boolean(projectToDelete)}
+        project={projectToDelete}
+        isDeleting={deleteProjectMutation.isPending}
+        apiError={deleteError}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleDeleteConfirm}
+      />
     </div>
   );
 }

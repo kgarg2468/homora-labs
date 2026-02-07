@@ -9,6 +9,9 @@ import { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Homora Labs',
   description: 'AI-powered real estate due diligence platform.',
+  icons: {
+    icon: '/logo.png',
+  },
 };
 
 export default function RootLayout({

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
@@ -21,7 +21,7 @@ import { Badge } from '@/components/ui/Badge';
 import type { SearchResult } from '@/lib/types';
 import { formatRelativeTime, truncate, getCategoryColor } from '@/lib/utils';
 
-export default function SearchPage() {
+function SearchPageContent() {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get('q') || '';
 
@@ -62,8 +62,8 @@ export default function SearchPage() {
                 <ArrowLeft className="w-5 h-5" />
               </Link>
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-primary-100 dark:bg-primary-900/50 rounded-lg">
-                  <Building2 className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                <div className="p-2 bg-slate-100 dark:bg-slate-700 rounded-lg">
+                  <Building2 className="w-5 h-5 text-slate-600 dark:text-slate-400" />
                 </div>
                 <h1 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                   Search
@@ -105,11 +105,10 @@ export default function SearchPage() {
                 key={type}
                 type="button"
                 onClick={() => setSearchType(type)}
-                className={`px-3 py-1 text-sm rounded-full transition-colors ${
-                  searchType === type
-                    ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300'
-                    : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
-                }`}
+                className={`px-3 py-1 text-sm rounded-full transition-colors ${searchType === type
+                  ? 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                  : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
+                  }`}
               >
                 {type.charAt(0).toUpperCase() + type.slice(1)}
               </button>
@@ -135,7 +134,7 @@ export default function SearchPage() {
                     ? `/projects/${result.project_id}?conversation=${result.id}`
                     : `/projects/${result.project_id}?document=${result.document_id}`
                 }
-                className="block p-4 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-primary-500 transition-colors"
+                className="block p-4 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 transition-colors"
               >
                 <div className="flex items-start gap-3">
                   <div className="p-2 bg-slate-100 dark:bg-slate-700 rounded-lg">
@@ -192,5 +191,17 @@ export default function SearchPage() {
         )}
       </main>
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
+        <div className="text-slate-500">Loading...</div>
+      </div>
+    }>
+      <SearchPageContent />
+    </Suspense>
   );
 }

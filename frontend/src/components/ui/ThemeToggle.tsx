@@ -30,7 +30,7 @@ export function ThemeToggle({ showLabel = false, className }: ThemeToggleProps) 
               !mounted
                 ? 'text-slate-400 dark:text-slate-500'
                 : theme === value
-                  ? 'bg-white dark:bg-slate-700 shadow-sm text-primary-600 dark:text-primary-400'
+                  ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-600 dark:text-slate-400'
                   : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
             )}
             title={label}
