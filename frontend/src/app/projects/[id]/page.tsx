@@ -181,6 +181,7 @@ export default function ProjectPage() {
             content: fullContent,
             citations: event.citations,
             suggested_followups: event.suggested_followups,
+            debug_info: event.debug_info,
             created_at: new Date().toISOString(),
           };
 

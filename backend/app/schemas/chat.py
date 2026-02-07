@@ -13,6 +13,24 @@ class Citation(BaseModel):
     section: str | None = None
 
 
+class RetrievedChunkInfo(BaseModel):
+    """A chunk retrieved during RAG search, exposed for transparency."""
+    document_name: str
+    page_number: int | None = None
+    section: str | None = None
+    content: str
+    score: float
+
+
+class DebugInfo(BaseModel):
+    """Debug information exposing the RAG pipeline for transparency."""
+    retrieved_chunks: list[RetrievedChunkInfo]
+    execution_time_ms: float
+    llm_model: str
+    system_prompt: str
+    user_prompt: str
+
+
 class ChatRequest(BaseModel):
     message: str = Field(..., min_length=1)
     conversation_id: UUID | None = None
@@ -24,6 +42,7 @@ class MessageResponse(BaseModel):
     content: str
     citations: list[Citation] | None = None
     suggested_followups: list[str] | None = None
+    debug_info: DebugInfo | None = None
     created_at: datetime
 
     model_config = {"from_attributes": True}

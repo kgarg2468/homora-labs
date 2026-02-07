@@ -24,7 +24,6 @@ Homora is a real estate intelligence assistant that provides citation-first, hal
 - [x] FastAPI skeleton with health check and CORS
 - [x] Next.js project with Tailwind CSS and dark mode
 - [x] Environment configuration via pydantic-settings
-- [ ] Docker Compose configuration (referenced in README but file not present)
 
 ## Phase 2: Core Backend - COMPLETE
 
@@ -203,7 +202,6 @@ Homora is a real estate intelligence assistant that provides citation-first, hal
 
 ## What's Not Yet Implemented
 
-- Docker Compose file for one-command local setup
 - .env.example template file (referenced in README but missing)
 - Programmatic conflict detection engine (currently relies on LLM prompt reasoning)
 - Notification sound asset (`/notification.mp3` missing from `frontend/public/`)
@@ -267,7 +265,7 @@ npm run dev
 
 The project is approximately **90-95% functionally complete** through Phases 1-6. Remaining work centers on:
 
-1. Docker Compose + .env.example for one-command setup
+1. .env.example template
 2. Notification sound asset
 3. Programmatic conflict detection engine
 4. Comprehensive test suite (integration, E2E, frontend)

@@ -8,7 +8,7 @@ Homora is a private, local-first real estate intelligence assistant that answers
 - Citation-first responses with document, page, and section references
 - Zero hallucination policy — only answers from provided documents
 - Project-based workspaces for organizing deals
-- Fully local deployment via Docker Compose
+- Fully local deployment (PostgreSQL, Python, Node.js)
 - Multi-provider LLM support (OpenAI, Anthropic, Ollama)
 
 ---
@@ -137,7 +137,7 @@ Recommended documents or clarifications to improve confidence.
 | Database | PostgreSQL 16 + pgvector + pg_trgm |
 | LLM Providers | OpenAI, Anthropic, Ollama (switchable) |
 | OCR | Vision models (GPT-4o, Claude Vision) |
-| Deployment | Docker Compose (fully local) |
+| Deployment | Local (Shell) |
 
 ---
 
@@ -232,14 +232,14 @@ Recommended documents or clarifications to improve confidence.
 **Objective:** Set up project infrastructure and basic scaffolding.
 
 **Deliverables:**
-1. Docker Compose configuration (PostgreSQL + pgvector, FastAPI, Next.js)
+1. Local environment configuration (PostgreSQL + pgvector, FastAPI, Next.js)
 2. PostgreSQL schema with Alembic migrations
 3. FastAPI skeleton with health check endpoint
 4. Next.js project with Tailwind CSS and dark mode support
 5. Basic project structure following the architecture
 
 **Acceptance Criteria:**
-- `docker-compose up` starts all services
+- Local services start successfully
 - `curl localhost:8000/health` returns 200
 - Frontend loads at `localhost:3000`
 - Database migrations run successfully
@@ -441,11 +441,9 @@ Recommended documents or clarifications to improve confidence.
 
 ```
 homora-labs/
-├── docker-compose.yml
 ├── .env.example
 ├── prd.md
 ├── backend/
-│   ├── Dockerfile
 │   ├── pyproject.toml
 │   ├── alembic/
 │   ├── app/
@@ -497,7 +495,6 @@ homora-labs/
 │   │       └── ingestion.py
 │   └── tests/
 ├── frontend/
-│   ├── Dockerfile
 │   ├── package.json
 │   ├── next.config.js
 │   ├── tailwind.config.js
@@ -569,7 +566,7 @@ homora-labs/
 ## Verification Checklist
 
 ### Foundation
-- [ ] `docker-compose up` starts all services
+- [ ] Local services start successfully
 - [ ] Database tables created via migrations
 - [ ] `curl localhost:8000/health` returns 200
 - [ ] Frontend loads at `localhost:3000`

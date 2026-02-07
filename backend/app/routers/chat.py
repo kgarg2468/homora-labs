@@ -1,5 +1,6 @@
 import uuid
 import json
+import time
 from typing import AsyncGenerator
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -19,6 +20,8 @@ from app.schemas.chat import (
     ConversationResponse,
     ConversationListResponse,
     Citation,
+    DebugInfo,
+    RetrievedChunkInfo,
 )
 from app.services.retrieval import hybrid_search, format_context_for_llm, RetrievedChunk
 from app.services.llm import get_llm_provider
@@ -327,6 +330,8 @@ async def stream_response(
 ) -> AsyncGenerator[str, None]:
     """Stream the response tokens."""
     try:
+        start_time = time.time()
+
         # Retrieve relevant chunks
         chunks = await hybrid_search(db, query, project.id)
 
@@ -340,9 +345,10 @@ async def stream_response(
         provider_name, api_key = await get_llm_config(db)
         provider = get_llm_provider(provider_name, api_key=api_key)
 
-        # Build messages
+        # Build messages and capture prompts for debug
+        system_prompt = get_system_prompt(project.role_mode.value)
         messages = [
-            {"role": "system", "content": get_system_prompt(project.role_mode.value)},
+            {"role": "system", "content": system_prompt},
         ]
 
         # Add history
@@ -350,13 +356,14 @@ async def stream_response(
             messages.append({"role": msg.role.value, "content": msg.content})
 
         # Add context and query
-        messages.append({
-            "role": "user",
-            "content": f"""Based on the following documents:
+        user_prompt = f"""Based on the following documents:
 
 {context}
 
 Question: {query}"""
+        messages.append({
+            "role": "user",
+            "content": user_prompt
         })
 
         # Stream response
@@ -371,6 +378,25 @@ Question: {query}"""
         # Generate follow-ups
         followups = await generate_followups(db, query, full_response, chunks)
 
+        # Build debug info
+        execution_time_ms = (time.time() - start_time) * 1000
+        debug_info = DebugInfo(
+            retrieved_chunks=[
+                RetrievedChunkInfo(
+                    document_name=c.document_name,
+                    page_number=c.page_number,
+                    section=c.section,
+                    content=c.content[:500],  # Truncate for UI
+                    score=c.score,
+                )
+                for c in chunks
+            ],
+            execution_time_ms=execution_time_ms,
+            llm_model=provider.model_name if hasattr(provider, 'model_name') else provider_name,
+            system_prompt=system_prompt,
+            user_prompt=user_prompt,
+        )
+
         # Save assistant message
         assistant_message = Message(
             conversation_id=conversation.id,
@@ -378,6 +404,7 @@ Question: {query}"""
             content=full_response,
             citations=[c.model_dump(mode='json') for c in citations],
             suggested_followups=followups,
+            debug_info=debug_info.model_dump(mode='json'),
         )
         db.add(assistant_message)
         await db.commit()
@@ -390,6 +417,7 @@ Question: {query}"""
             "conversation_id": str(conversation.id),
             "citations": [c.model_dump(mode='json') for c in citations],
             "suggested_followups": followups,
+            "debug_info": debug_info.model_dump(mode='json'),
         })
     except Exception as e:
         yield json.dumps({"type": "error", "content": str(e)})

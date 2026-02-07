@@ -20,37 +20,64 @@ Homora is a private, local-first real estate intelligence assistant that answers
 
 ### Prerequisites
 
-- Docker and Docker Compose
-- OpenAI API key (or Anthropic/Ollama)
+- PostgreSQL 16+ with `pgvector` extension (via Homebrew on macOS)
+- Python 3.11+
+- Node.js 18+
 
 ### Setup
 
-1. Clone the repository and navigate to the project directory:
+1. **Install System Dependencies (macOS)**:
 
 ```bash
-cd homora-labs
+# Install PostgreSQL 16 and start service
+brew install postgresql@16
+brew services start postgresql@16
+
+# Install pgvector (build from source if bottle not available for PG16, or use brew if updated)
+# Often simply:
+brew install pgvector
+
+# Create database and user
+createuser -s homora
+psql -c "ALTER USER homora WITH PASSWORD 'homoradev';" postgres
+createdb -O homora homora
+psql -d homora -c "CREATE EXTENSION IF NOT EXISTS vector;"
+psql -d homora -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
 ```
 
-2. Copy the environment file and configure your API keys:
+2. **Backend Setup**:
 
 ```bash
+cd backend
+# Create virtual environment
+python3 -m venv .venv
+source .venv/bin/activate
+
+# Install dependencies (using pip or uv)
+pip install -e ".[dev]"
+
+# Configure Environment
 cp .env.example .env
-# Edit .env with your API keys
+# Edit .env with your API keys and DB credentials (DB_PASSWORD=homoradev)
+
+# Run Migrations
+alembic upgrade head
+
+# Start Backend
+python -m uvicorn app.main:app --reload
 ```
 
-3. Start all services:
+3. **Frontend Setup**:
+
+Open a new terminal:
 
 ```bash
-docker-compose up -d
+cd frontend
+npm install
+npm run dev
 ```
 
-4. Wait for services to start, then run database migrations:
-
-```bash
-docker-compose exec backend alembic upgrade head
-```
-
-5. Access the application:
+4. **Access the Application**:
    - Frontend: http://localhost:3000
    - Backend API: http://localhost:8000
    - API Docs: http://localhost:8000/docs
@@ -86,16 +113,14 @@ docker-compose exec backend alembic upgrade head
 | Database | PostgreSQL 16 + pgvector |
 | LLM Providers | OpenAI, Anthropic, Ollama (switchable) |
 | OCR | Vision models (GPT-4o, Claude Vision) |
-| Deployment | Docker Compose (fully local) |
+| Deployment | Local (Shell) |
 
 ## Project Structure
 
 ```
 homora-labs/
-├── docker-compose.yml
 ├── .env.example
 ├── backend/
-│   ├── Dockerfile
 │   ├── pyproject.toml
 │   ├── alembic/                 # DB migrations
 │   ├── app/
@@ -109,7 +134,6 @@ homora-labs/
 │   │   └── prompts/             # LLM prompts
 │   └── tests/
 ├── frontend/
-│   ├── Dockerfile
 │   ├── package.json
 │   ├── src/
 │   │   ├── app/                 # Next.js pages
@@ -179,12 +203,13 @@ homora-labs/
 ## Development
 
 ### Backend
-
-```bash
 cd backend
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -e ".[dev]"
+# Ensure pgvector is available
+alembic upgrade head
 python -m uvicorn app.main:app --reload
-```
 
 ### Frontend
 
