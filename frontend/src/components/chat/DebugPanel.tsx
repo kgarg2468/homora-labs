@@ -13,6 +13,13 @@ interface DebugPanelProps {
 
 export function DebugPanel({ debugInfo, className, showHeader = true }: DebugPanelProps) {
     const [activeTab, setActiveTab] = useState<'chunks' | 'prompts'>('chunks');
+    const supportLabel = (value?: number | null) => {
+        if (value === null || value === undefined) return 'Support N/A';
+        const pct = (value * 100).toFixed(0);
+        if (value >= 0.75) return `Support High (${pct}%)`;
+        if (value >= 0.55) return `Support Medium (${pct}%)`;
+        return `Support Low (${pct}%)`;
+    };
 
     return (
         <div className={cn("flex flex-col h-full", className)} style={{ backgroundColor: 'var(--background)' }}>
@@ -74,17 +81,32 @@ export function DebugPanel({ debugInfo, className, showHeader = true }: DebugPan
                                         {chunk.document_name}
                                         {chunk.page_number && ` · p.${chunk.page_number}`}
                                     </span>
-                                    <span
-                                        className={cn(
-                                            'px-2 py-0.5 text-xs font-mono rounded-md',
-                                            chunk.score >= 0.8
-                                                ? 'bg-[#5E8C61]/10 text-[#5E8C61] dark:bg-[#5E8C61]/15 dark:text-[#7DA97F]'
-                                                : chunk.score >= 0.5
-                                                    ? 'bg-[#C4973B]/10 text-[#C4973B] dark:bg-[#C4973B]/15 dark:text-[#D4A74B]'
-                                                    : 'bg-stone-100 dark:bg-stone-900 text-[var(--text-muted)]'
+                                    <div className="flex items-center gap-2">
+                                        {chunk.retrieval_rank && (
+                                            <span className="px-2 py-0.5 text-xs font-mono rounded-md bg-stone-100 dark:bg-stone-900 text-[var(--text-muted)]">
+                                                #{chunk.retrieval_rank}
+                                            </span>
                                         )}
-                                    >
-                                        {(chunk.score * 100).toFixed(1)}%
+                                        <span
+                                            className={cn(
+                                                'px-2 py-0.5 text-xs font-mono rounded-md',
+                                                (chunk.answer_support ?? 0) >= 0.75
+                                                    ? 'bg-[#5E8C61]/10 text-[#5E8C61] dark:bg-[#5E8C61]/15 dark:text-[#7DA97F]'
+                                                    : (chunk.answer_support ?? 0) >= 0.55
+                                                        ? 'bg-[#C4973B]/10 text-[#C4973B] dark:bg-[#C4973B]/15 dark:text-[#D4A74B]'
+                                                        : 'bg-stone-100 dark:bg-stone-900 text-[var(--text-muted)]'
+                                            )}
+                                        >
+                                            {supportLabel(chunk.answer_support)}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-2 mb-2">
+                                    <span className="px-2 py-0.5 text-xs rounded-md bg-[var(--surface-elevated)] text-[var(--text-muted)]">
+                                        Retrieval: {chunk.retrieval_relevance != null ? `${(chunk.retrieval_relevance * 100).toFixed(0)}%` : 'N/A'}
+                                    </span>
+                                    <span className="px-2 py-0.5 text-xs rounded-md bg-[var(--surface-elevated)] text-[var(--text-muted)]">
+                                        Cited: {chunk.cited_in_answer ? 'Yes' : 'No'}
                                     </span>
                                 </div>
                                 <p className="text-xs text-[var(--text-secondary)] whitespace-pre-wrap">

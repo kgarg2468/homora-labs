@@ -1,6 +1,8 @@
 import uuid
 import json
 import time
+import math
+import re
 from typing import AsyncGenerator
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -24,6 +26,7 @@ from app.schemas.chat import (
     RetrievedChunkInfo,
 )
 from app.services.retrieval import hybrid_search, format_context_for_llm, RetrievedChunk
+from app.services.embeddings import generate_embeddings
 from app.services.llm import get_llm_provider
 from app.prompts.system import get_system_prompt, get_followup_generation_prompt
 from app.models.settings import Settings as SettingsModel
@@ -374,6 +377,7 @@ Question: {query}"""
 
         # Parse citations from response
         citations = extract_citations_from_response(full_response, chunks)
+        await annotate_chunks_with_support(chunks, full_response, citations)
 
         # Generate follow-ups
         followups = await generate_followups(db, query, full_response, chunks)
@@ -388,6 +392,10 @@ Question: {query}"""
                     section=c.section,
                     content=c.content[:500],  # Truncate for UI
                     score=c.score,
+                    retrieval_relevance=c.retrieval_relevance,
+                    answer_support=c.answer_support,
+                    retrieval_rank=c.retrieval_rank,
+                    cited_in_answer=c.cited_in_answer,
                 )
                 for c in chunks
             ],
@@ -475,6 +483,7 @@ Question: {query}"""
 
     # Extract citations
     citations = extract_citations_from_response(response.content, chunks)
+    await annotate_chunks_with_support(chunks, response.content, citations)
 
     return response.content, citations
 
@@ -484,7 +493,6 @@ def extract_citations_from_response(
     chunks: list[RetrievedChunk],
 ) -> list[Citation]:
     """Extract citations from the response based on referenced chunks."""
-    import re
     citations = []
     seen = set()
 
@@ -506,6 +514,54 @@ def extract_citations_from_response(
                 seen.add(key)
 
     return citations
+
+
+def _cosine_similarity(a: list[float], b: list[float]) -> float:
+    """Compute cosine similarity for two equal-length vectors."""
+    if not a or not b or len(a) != len(b):
+        return 0.0
+    dot = sum(x * y for x, y in zip(a, b))
+    norm_a = math.sqrt(sum(x * x for x in a))
+    norm_b = math.sqrt(sum(y * y for y in b))
+    if norm_a == 0 or norm_b == 0:
+        return 0.0
+    return dot / (norm_a * norm_b)
+
+
+def _lexical_support_score(response: str, content: str) -> float:
+    """Fallback overlap score when embedding-based support cannot be computed."""
+    response_tokens = set(re.findall(r"\b[a-z0-9]{3,}\b", response.lower()))
+    content_tokens = set(re.findall(r"\b[a-z0-9]{3,}\b", content.lower()))
+    if not response_tokens or not content_tokens:
+        return 0.0
+    overlap = len(response_tokens & content_tokens)
+    return min(1.0, overlap / len(response_tokens))
+
+
+async def annotate_chunks_with_support(
+    chunks: list[RetrievedChunk],
+    response: str,
+    citations: list[Citation],
+) -> None:
+    """Populate chunk-level support signals for Inspect UI."""
+    citation_keys = {(c.document_id, c.page) for c in citations}
+    for chunk in chunks:
+        chunk.cited_in_answer = (chunk.document_id, chunk.page_number) in citation_keys
+
+    if not chunks:
+        return
+
+    chunk_texts = [chunk.content[:1500] for chunk in chunks]
+    try:
+        vectors = await generate_embeddings([response[:3000], *chunk_texts])
+        response_vec = vectors[0]
+        chunk_vecs = vectors[1:]
+        for chunk, chunk_vec in zip(chunks, chunk_vecs):
+            support = _cosine_similarity(response_vec, chunk_vec)
+            chunk.answer_support = max(0.0, min(1.0, support))
+    except Exception:
+        for chunk in chunks:
+            chunk.answer_support = _lexical_support_score(response, chunk.content)
 
 
 async def generate_followups(

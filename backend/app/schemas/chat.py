@@ -20,6 +20,10 @@ class RetrievedChunkInfo(BaseModel):
     section: str | None = None
     content: str
     score: float
+    retrieval_relevance: float | None = None
+    answer_support: float | None = None
+    retrieval_rank: int | None = None
+    cited_in_answer: bool = False
 
 
 class DebugInfo(BaseModel):

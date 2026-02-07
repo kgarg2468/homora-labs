@@ -22,6 +22,10 @@ class RetrievedChunk:
     page_number: int | None
     section: str | None
     score: float
+    retrieval_relevance: float | None = None
+    retrieval_rank: int | None = None
+    answer_support: float | None = None
+    cited_in_answer: bool = False
 
 
 async def hybrid_search(
@@ -97,6 +101,7 @@ async def vector_search(
             # Cosine distance ranges 0-2, convert to similarity 0-1
             # distance=0 → similarity=1, distance=2 → similarity=0
             score=max(0, 1 - row.distance / 2),
+            retrieval_relevance=max(0, 1 - row.distance / 2),
         )
         for row in rows
     ]
@@ -168,22 +173,30 @@ def merge_results(
     for rank, chunk in enumerate(vector_results):
         rrf_score = 1 / (rank + 60)  # k=60 is a common choice
         scores[chunk.chunk_id] = scores.get(chunk.chunk_id, 0) + vector_weight * rrf_score
-        chunks[chunk.chunk_id] = chunk
+        if chunk.chunk_id not in chunks:
+            chunks[chunk.chunk_id] = chunk
+        elif (
+            chunk.retrieval_relevance is not None
+            and chunks[chunk.chunk_id].retrieval_relevance is None
+        ):
+            chunks[chunk.chunk_id].retrieval_relevance = chunk.retrieval_relevance
 
     # Score keyword results
     for rank, chunk in enumerate(keyword_results):
         rrf_score = 1 / (rank + 60)
         scores[chunk.chunk_id] = scores.get(chunk.chunk_id, 0) + keyword_weight * rrf_score
-        chunks[chunk.chunk_id] = chunk
+        if chunk.chunk_id not in chunks:
+            chunks[chunk.chunk_id] = chunk
 
     # Sort by combined score
     sorted_ids = sorted(scores.keys(), key=lambda x: scores[x], reverse=True)
 
     # Update chunk scores and return top_k
     results = []
-    for chunk_id in sorted_ids[:top_k]:
+    for idx, chunk_id in enumerate(sorted_ids[:top_k], start=1):
         chunk = chunks[chunk_id]
         chunk.score = scores[chunk_id]
+        chunk.retrieval_rank = idx
         results.append(chunk)
 
     return results
