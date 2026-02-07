@@ -30,8 +30,11 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useNotifications } from '@/hooks/useNotifications';
-import type { Message, Citation, Document, Conversation, StreamEvent } from '@/lib/types';
+import type { Message, Citation, Document, Conversation, StreamEvent, DebugInfo } from '@/lib/types';
 import { cn } from '@/lib/utils';
+import { Panel, Group as PanelGroup, Separator as PanelResizeHandle } from 'react-resizable-panels';
+import { DebugModal } from '@/components/chat/DebugModal';
+import { DebugPanel } from '@/components/chat/DebugPanel';
 
 export default function ProjectPage() {
   const params = useParams();
@@ -50,6 +53,11 @@ export default function ProjectPage() {
   const [viewerOpen, setViewerOpen] = useState(false);
   const [viewerPage, setViewerPage] = useState(1);
   const [showConversations, setShowConversations] = useState(false);
+
+  // Debug UI State
+  const [inspectingDebugInfo, setInspectingDebugInfo] = useState<DebugInfo | null>(null);
+  const [isDebugPanelOpen, setIsDebugPanelOpen] = useState(false);
+  const [activeDebugInfo, setActiveDebugInfo] = useState<DebugInfo | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const uploadRef = useRef<HTMLInputElement>(null);
@@ -262,6 +270,19 @@ export default function ProjectPage() {
     .reverse()
     .find((m) => m.role === 'assistant');
 
+  // Debug handlers
+  const handleInspect = (debugInfo: DebugInfo) => {
+    setInspectingDebugInfo(debugInfo);
+  };
+
+  const handleOpenInSidebar = () => {
+    if (inspectingDebugInfo) {
+      setActiveDebugInfo(inspectingDebugInfo);
+      setIsDebugPanelOpen(true);
+      setInspectingDebugInfo(null); // Close modal
+    }
+  };
+
   if (projectLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
@@ -271,219 +292,243 @@ export default function ProjectPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex">
-      {/* Left Sidebar - Documents */}
-      <aside className="w-72 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col">
-        {/* Sidebar Header */}
-        <div className="p-4 border-b border-slate-200 dark:border-slate-700">
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 mb-4"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span className="text-sm">Back to Projects</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-slate-100 dark:bg-slate-700 rounded-lg">
-              <Building2 className="w-5 h-5 text-slate-600 dark:text-slate-400" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h1 className="font-semibold text-slate-900 dark:text-slate-100 truncate">
-                {project?.name}
-              </h1>
-              <Badge size="sm">{project?.role_mode}</Badge>
-            </div>
-          </div>
-        </div>
-
-        {/* Documents Section */}
-        <div className="flex-1 overflow-auto p-4">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-medium text-slate-700 dark:text-slate-300">
-              Documents
-            </h2>
-            <span className="text-xs text-slate-500">
-              {documentsData?.total || 0}
-            </span>
-          </div>
-
-          <UploadZone
-            onUpload={handleUpload}
-            isUploading={uploadMutation.isPending}
-            compact
-          />
-
-          <div className="mt-4">
-            <DocumentList
-              documents={documentsData?.documents || []}
-              selectedId={selectedDocument?.id}
-              onSelect={(doc) => {
-                setSelectedDocument(doc);
-                setViewerOpen(true);
-              }}
-              onDelete={(doc) => deleteMutation.mutate(doc)}
-              onReprocess={(doc) =>
-                documentsApi.reprocess(projectId, doc.id).then(() => {
-                  queryClient.invalidateQueries({
-                    queryKey: ['documents', projectId],
-                  });
-                })
-              }
-            />
-          </div>
-        </div>
-
-        {/* Sidebar Footer */}
-        <div className="p-4 border-t border-slate-200 dark:border-slate-700">
-          <Link
-            href={`/projects/${projectId}/compare`}
-            className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
-          >
-            <GitCompare className="w-4 h-4" />
-            Compare Documents
-          </Link>
-        </div>
-      </aside>
-
-      {/* Main Content - Chat */}
-      <main className="flex-1 flex flex-col">
-        {/* Top Bar */}
-        <header className="h-14 px-4 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            {/* Conversation selector */}
-            <div className="relative">
-              <button
-                onClick={() => setShowConversations(!showConversations)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700"
-              >
-                <MessageSquare className="w-4 h-4 text-slate-500" />
-                <span className="text-sm text-slate-700 dark:text-slate-300">
-                  {conversationId ? 'Current Session' : 'New Conversation'}
-                </span>
-                <ChevronDown className="w-4 h-4 text-slate-400" />
-              </button>
-
-              {showConversations && (
-                <div className="absolute top-full left-0 mt-1 w-64 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 py-2 z-10">
-                  <button
-                    onClick={startNewConversation}
-                    className="w-full px-4 py-2 text-sm text-left text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-2"
-                  >
-                    <Plus className="w-4 h-4" />
-                    New Conversation
-                  </button>
-                  <div className="border-t border-slate-200 dark:border-slate-700 my-1" />
-                  {conversationsData?.conversations.map((conv) => (
-                    <button
-                      key={conv.id}
-                      onClick={() => loadConversation(conv)}
-                      className={cn(
-                        'w-full px-4 py-2 text-sm text-left hover:bg-slate-50 dark:hover:bg-slate-700',
-                        conv.id === conversationId
-                          ? 'bg-slate-100 dark:bg-slate-800'
-                          : ''
-                      )}
-                    >
-                      <div className="font-medium text-slate-700 dark:text-slate-300 truncate">
-                        {conv.title || 'Untitled'}
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-            <Link href="/settings">
-              <Button variant="ghost" size="sm">
-                <Settings className="w-4 h-4" />
-              </Button>
+    <div className="h-screen bg-slate-50 dark:bg-slate-900 flex flex-col overflow-hidden">
+      <PanelGroup orientation="horizontal" className="flex-1">
+        {/* Left Sidebar - Documents */}
+        <Panel defaultSize="20" minSize="15" maxSize="30" className="flex flex-col border-r border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+          {/* Sidebar Header */}
+          <div className="p-4 border-b border-slate-200 dark:border-slate-700">
+            <Link
+              href="/"
+              className="flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 mb-4"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span className="text-sm">Back to Projects</span>
             </Link>
-          </div>
-        </header>
-
-        {/* Chat Messages */}
-        <div className="flex-1 overflow-auto p-4">
-          {messages.length === 0 && !isStreaming ? (
-            <div className="h-full flex items-center justify-center">
-              <div className="text-center max-w-md">
-                <div className="w-16 h-16 mx-auto mb-4 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center">
-                  <MessageSquare className="w-8 h-8 text-slate-600 dark:text-slate-400" />
-                </div>
-                <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">
-                  Ask a Question
-                </h2>
-                <p className="text-slate-500 dark:text-slate-400">
-                  Start by asking a question about your documents. Homora will
-                  analyze them and provide answers with citations.
-                </p>
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-slate-100 dark:bg-slate-700 rounded-lg">
+                <Building2 className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h1 className="font-semibold text-slate-900 dark:text-slate-100 truncate">
+                  {project?.name}
+                </h1>
+                <Badge size="sm">{project?.role_mode}</Badge>
               </div>
             </div>
-          ) : (
-            <div className="max-w-3xl mx-auto space-y-4">
-              {messages.map((message) => (
-                <ChatMessage
-                  key={message.id}
-                  message={message}
-                  onCitationClick={handleCitationClick}
-                />
-              ))}
+          </div>
 
-              {/* Streaming message */}
-              {isStreaming && streamingContent && (
-                <div className="flex gap-4 p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-100 dark:bg-slate-700">
-                    <Loader2 className="w-4 h-4 text-primary-600 animate-spin" />
-                  </div>
-                  <div className="flex-1 prose text-slate-700 dark:text-slate-300 whitespace-pre-wrap">
-                    {streamingContent}
-                  </div>
-                </div>
-              )}
-
-              {/* Typing indicator */}
-              {isStreaming && !streamingContent && (
-                <div className="flex gap-4 p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-100 dark:bg-slate-700">
-                    <Loader2 className="w-4 h-4 text-primary-600 animate-spin" />
-                  </div>
-                  <div className="typing-indicator pt-3">
-                    <span />
-                    <span />
-                    <span />
-                  </div>
-                </div>
-              )}
-
-              <div ref={messagesEndRef} />
+          {/* Documents Section */}
+          <div className="flex-1 overflow-auto p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                Documents
+              </h2>
+              <span className="text-xs text-slate-500">
+                {documentsData?.total || 0}
+              </span>
             </div>
-          )}
-        </div>
 
-        {/* Follow-up suggestions */}
-        {lastAssistantMessage?.suggested_followups && (
-          <div className="px-4 pb-2">
-            <div className="max-w-3xl mx-auto">
-              <FollowUpSuggestions
-                suggestions={lastAssistantMessage.suggested_followups}
-                onSelect={handleSendMessage}
+            <UploadZone
+              onUpload={handleUpload}
+              isUploading={uploadMutation.isPending}
+              compact
+            />
+
+            <div className="mt-4">
+              <DocumentList
+                documents={documentsData?.documents || []}
+                selectedId={selectedDocument?.id}
+                onSelect={(doc) => {
+                  setSelectedDocument(doc);
+                  setViewerOpen(true);
+                }}
+                onDelete={(doc) => deleteMutation.mutate(doc)}
+                onReprocess={(doc) =>
+                  documentsApi.reprocess(projectId, doc.id).then(() => {
+                    queryClient.invalidateQueries({
+                      queryKey: ['documents', projectId],
+                    });
+                  })
+                }
               />
             </div>
           </div>
-        )}
 
-        {/* Chat Input */}
-        <div className="p-4 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
-          <div className="max-w-3xl mx-auto">
-            <ChatInput
-              onSend={handleSendMessage}
-              isLoading={isStreaming}
-            />
+          {/* Sidebar Footer */}
+          <div className="p-4 border-t border-slate-200 dark:border-slate-700">
+            <Link
+              href={`/projects/${projectId}/compare`}
+              className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
+            >
+              <GitCompare className="w-4 h-4" />
+              Compare Documents
+            </Link>
           </div>
-        </div>
-      </main>
+        </Panel>
+
+        <PanelResizeHandle className="w-1 bg-slate-200 dark:bg-slate-700 hover:bg-blue-500 transition-colors cursor-col-resize" />
+
+        {/* Main Content - Chat */}
+        <Panel defaultSize={isDebugPanelOpen ? "60" : "80"} className="flex flex-col">
+          {/* Top Bar */}
+          <header className="h-14 px-4 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              {/* Conversation selector */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowConversations(!showConversations)}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700"
+                >
+                  <MessageSquare className="w-4 h-4 text-slate-500" />
+                  <span className="text-sm text-slate-700 dark:text-slate-300">
+                    {conversationId ? 'Current Session' : 'New Conversation'}
+                  </span>
+                  <ChevronDown className="w-4 h-4 text-slate-400" />
+                </button>
+
+                {showConversations && (
+                  <div className="absolute top-full left-0 mt-1 w-64 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 py-2 z-10">
+                    <button
+                      onClick={startNewConversation}
+                      className="w-full px-4 py-2 text-sm text-left text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-2"
+                    >
+                      <Plus className="w-4 h-4" />
+                      New Conversation
+                    </button>
+                    <div className="border-t border-slate-200 dark:border-slate-700 my-1" />
+                    {conversationsData?.conversations.map((conv) => (
+                      <button
+                        key={conv.id}
+                        onClick={() => loadConversation(conv)}
+                        className={cn(
+                          'w-full px-4 py-2 text-sm text-left hover:bg-slate-50 dark:hover:bg-slate-700',
+                          conv.id === conversationId
+                            ? 'bg-slate-100 dark:bg-slate-800'
+                            : ''
+                        )}
+                      >
+                        <div className="font-medium text-slate-700 dark:text-slate-300 truncate">
+                          {conv.title || 'Untitled'}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <Link href="/settings">
+                <Button variant="ghost" size="sm">
+                  <Settings className="w-4 h-4" />
+                </Button>
+              </Link>
+            </div>
+          </header>
+
+          {/* Chat Messages */}
+          <div className="flex-1 overflow-auto p-4">
+            {messages.length === 0 && !isStreaming ? (
+              <div className="h-full flex items-center justify-center">
+                <div className="text-center max-w-md">
+                  <div className="w-16 h-16 mx-auto mb-4 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center">
+                    <MessageSquare className="w-8 h-8 text-slate-600 dark:text-slate-400" />
+                  </div>
+                  <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">
+                    Ask a Question
+                  </h2>
+                  <p className="text-slate-500 dark:text-slate-400">
+                    Start by asking a question about your documents. Homora will
+                    analyze them and provide answers with citations.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="max-w-3xl mx-auto space-y-4">
+                {messages.map((message) => (
+                  <ChatMessage
+                    key={message.id}
+                    message={message}
+                    onCitationClick={handleCitationClick}
+                    onInspect={handleInspect}
+                  />
+                ))}
+
+                {/* Streaming message */}
+                {isStreaming && streamingContent && (
+                  <div className="flex gap-4 p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-100 dark:bg-slate-700">
+                      <Loader2 className="w-4 h-4 text-primary-600 animate-spin" />
+                    </div>
+                    <div className="flex-1 prose text-slate-700 dark:text-slate-300 whitespace-pre-wrap">
+                      {streamingContent}
+                    </div>
+                  </div>
+                )}
+
+                {/* Typing indicator */}
+                {isStreaming && !streamingContent && (
+                  <div className="flex gap-4 p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-100 dark:bg-slate-700">
+                      <Loader2 className="w-4 h-4 text-primary-600 animate-spin" />
+                    </div>
+                    <div className="typing-indicator pt-3">
+                      <span />
+                      <span />
+                      <span />
+                    </div>
+                  </div>
+                )}
+
+                <div ref={messagesEndRef} />
+              </div>
+            )}
+          </div>
+
+          {/* Follow-up suggestions */}
+          {lastAssistantMessage?.suggested_followups && (
+            <div className="px-4 pb-2">
+              <div className="max-w-3xl mx-auto">
+                <FollowUpSuggestions
+                  suggestions={lastAssistantMessage.suggested_followups}
+                  onSelect={handleSendMessage}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Chat Input */}
+          <div className="p-4 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+            <div className="max-w-3xl mx-auto">
+              <ChatInput
+                onSend={handleSendMessage}
+                isLoading={isStreaming}
+              />
+            </div>
+          </div>
+        </Panel>
+
+        {/* Right Sidebar - Debug Info */}
+        {isDebugPanelOpen && activeDebugInfo && (
+          <>
+            <PanelResizeHandle className="w-1 bg-slate-200 dark:bg-slate-700 hover:bg-blue-500 transition-colors cursor-col-resize" />
+            <Panel defaultSize="20" minSize="20" maxSize="50">
+              <DebugPanel debugInfo={activeDebugInfo} className="h-full border-l border-slate-200 dark:border-slate-700" />
+            </Panel>
+          </>
+        )}
+      </PanelGroup>
+
+      {/* Modals */}
+      <DebugModal
+        isOpen={!!inspectingDebugInfo}
+        onClose={() => setInspectingDebugInfo(null)}
+        debugInfo={inspectingDebugInfo}
+        onOpenInSidebar={handleOpenInSidebar}
+      />
+
 
       {/* Document Viewer Modal */}
       <DocumentViewer
