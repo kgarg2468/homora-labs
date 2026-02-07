@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Plus,
@@ -119,8 +120,13 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary-100 dark:bg-primary-900/50 rounded-lg">
-                <Building2 className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+              <div className="w-8 h-8 relative">
+                <Image
+                  src="/logo.png"
+                  alt="Homora Logo"
+                  fill
+                  className="object-contain"
+                />
               </div>
               <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">
                 Homora
