@@ -1,6 +1,7 @@
 import uuid
 import os
 from pathlib import Path
+from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, BackgroundTasks
 from fastapi.responses import FileResponse
@@ -69,10 +70,15 @@ async def list_documents(
     project_id: uuid.UUID,
     category: str | None = None,
     status: str | None = None,
+    include_deleted: bool = False,
     db: AsyncSession = Depends(get_db),
 ):
     """List all documents in a project."""
     query = select(Document).where(Document.project_id == project_id)
+    if include_deleted:
+        query = query.where(Document.deleted_at.is_not(None))
+    else:
+        query = query.where(Document.deleted_at.is_(None))
 
     if category:
         query = query.where(Document.category == category)
@@ -104,6 +110,7 @@ async def list_documents(
                 ingestion_progress=doc.ingestion_progress,
                 category=doc.category,
                 error_message=doc.error_message,
+                deleted_at=doc.deleted_at,
                 tags=[DocumentTagResponse(id=t.id, tag=t.tag) for t in tags],
                 created_at=doc.created_at,
             )
@@ -178,6 +185,7 @@ async def upload_document(
         ingestion_progress=document.ingestion_progress,
         category=document.category,
         error_message=document.error_message,
+        deleted_at=document.deleted_at,
         tags=[],
         created_at=document.created_at,
     )
@@ -201,7 +209,9 @@ async def get_document(
     """Get a document by ID."""
     result = await db.execute(
         select(Document).where(
-            Document.id == document_id, Document.project_id == project_id
+            Document.id == document_id,
+            Document.project_id == project_id,
+            Document.deleted_at.is_(None),
         )
     )
     document = result.scalar_one_or_none()
@@ -226,6 +236,7 @@ async def get_document(
         ingestion_progress=document.ingestion_progress,
         category=document.category,
         error_message=document.error_message,
+        deleted_at=document.deleted_at,
         tags=[DocumentTagResponse(id=t.id, tag=t.tag) for t in tags],
         created_at=document.created_at,
     )
@@ -240,7 +251,9 @@ async def download_document(
     """Download the original document file."""
     result = await db.execute(
         select(Document).where(
-            Document.id == document_id, Document.project_id == project_id
+            Document.id == document_id,
+            Document.project_id == project_id,
+            Document.deleted_at.is_(None),
         )
     )
     document = result.scalar_one_or_none()
@@ -263,6 +276,7 @@ async def download_document(
 async def delete_document(
     project_id: uuid.UUID,
     document_id: uuid.UUID,
+    mode: str = "hard",
     db: AsyncSession = Depends(get_db),
 ):
     """Delete a document."""
@@ -276,12 +290,67 @@ async def delete_document(
     if not document:
         raise HTTPException(status_code=404, detail="Document not found")
 
-    # Delete file from disk
+    if mode not in {"soft", "hard"}:
+        raise HTTPException(status_code=400, detail="Invalid mode. Use soft or hard.")
+
+    if mode == "soft":
+        document.deleted_at = datetime.now(timezone.utc)
+    else:
+        if os.path.exists(document.file_path):
+            os.remove(document.file_path)
+        await db.delete(document)
+    await db.commit()
+
+
+@router.post("/{document_id}/restore")
+async def restore_document(
+    project_id: uuid.UUID,
+    document_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+):
+    """Restore a soft-deleted document."""
+    result = await db.execute(
+        select(Document).where(
+            Document.id == document_id,
+            Document.project_id == project_id,
+            Document.deleted_at.is_not(None),
+        )
+    )
+    document = result.scalar_one_or_none()
+
+    if not document:
+        raise HTTPException(status_code=404, detail="Document not found")
+
+    document.deleted_at = None
+    await db.commit()
+    return {"status": "restored"}
+
+
+@router.post("/{document_id}/purge")
+async def purge_document(
+    project_id: uuid.UUID,
+    document_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+):
+    """Permanently delete a soft-deleted document."""
+    result = await db.execute(
+        select(Document).where(
+            Document.id == document_id,
+            Document.project_id == project_id,
+            Document.deleted_at.is_not(None),
+        )
+    )
+    document = result.scalar_one_or_none()
+
+    if not document:
+        raise HTTPException(status_code=404, detail="Document not found")
+
     if os.path.exists(document.file_path):
         os.remove(document.file_path)
 
     await db.delete(document)
     await db.commit()
+    return {"status": "purged"}
 
 
 @router.post("/{document_id}/tags", response_model=DocumentTagResponse)
@@ -294,7 +363,9 @@ async def add_tag(
     """Add a tag to a document."""
     result = await db.execute(
         select(Document).where(
-            Document.id == document_id, Document.project_id == project_id
+            Document.id == document_id,
+            Document.project_id == project_id,
+            Document.deleted_at.is_(None),
         )
     )
     document = result.scalar_one_or_none()
@@ -342,7 +413,9 @@ async def reprocess_document(
     """Reprocess a document (re-run ingestion)."""
     result = await db.execute(
         select(Document).where(
-            Document.id == document_id, Document.project_id == project_id
+            Document.id == document_id,
+            Document.project_id == project_id,
+            Document.deleted_at.is_(None),
         )
     )
     document = result.scalar_one_or_none()

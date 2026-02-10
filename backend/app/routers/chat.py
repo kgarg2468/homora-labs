@@ -3,6 +3,7 @@ import json
 import time
 import math
 import re
+from datetime import datetime, timezone
 from typing import AsyncGenerator
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -21,9 +22,12 @@ from app.schemas.chat import (
     MessageResponse,
     ConversationResponse,
     ConversationListResponse,
+    ConversationBranchMarker,
     Citation,
     DebugInfo,
     RetrievedChunkInfo,
+    EditAndRegenerateRequest,
+    EditAndRegenerateResponse,
 )
 from app.services.retrieval import hybrid_search, format_context_for_llm, RetrievedChunk
 from app.services.embeddings import generate_embeddings
@@ -67,6 +71,7 @@ async def get_llm_config(db: AsyncSession) -> tuple[str, str | None]:
 async def list_conversations(
     project_id: uuid.UUID,
     archived: bool = False,
+    include_deleted: bool = False,
     db: AsyncSession = Depends(get_db),
 ):
     """List conversations in a project."""
@@ -76,6 +81,10 @@ async def list_conversations(
         .where(Conversation.archived == archived)
         .order_by(Conversation.updated_at.desc())
     )
+    if include_deleted:
+        query = query.where(Conversation.deleted_at.is_not(None))
+    else:
+        query = query.where(Conversation.deleted_at.is_(None))
 
     result = await db.execute(query)
     conversations = result.scalars().all()
@@ -86,8 +95,12 @@ async def list_conversations(
             ConversationResponse(
                 id=conv.id,
                 project_id=conv.project_id,
+                parent_conversation_id=conv.parent_conversation_id,
+                branch_from_message_id=conv.branch_from_message_id,
                 title=conv.title,
                 archived=conv.archived,
+                deleted_at=conv.deleted_at,
+                branch_markers=[],
                 messages=[],
                 created_at=conv.created_at,
                 updated_at=conv.updated_at,
@@ -103,15 +116,18 @@ async def list_conversations(
 async def get_conversation(
     project_id: uuid.UUID,
     conversation_id: uuid.UUID,
+    include_deleted: bool = False,
     db: AsyncSession = Depends(get_db),
 ):
     """Get a conversation with all messages."""
-    result = await db.execute(
-        select(Conversation).where(
-            Conversation.id == conversation_id,
-            Conversation.project_id == project_id,
-        )
+    conversation_query = select(Conversation).where(
+        Conversation.id == conversation_id,
+        Conversation.project_id == project_id,
     )
+    if not include_deleted:
+        conversation_query = conversation_query.where(Conversation.deleted_at.is_(None))
+
+    result = await db.execute(conversation_query)
     conversation = result.scalar_one_or_none()
 
     if not conversation:
@@ -125,11 +141,35 @@ async def get_conversation(
     )
     messages = messages_result.scalars().all()
 
+    child_query = select(Conversation).where(
+        Conversation.parent_conversation_id == conversation_id
+    )
+    if not include_deleted:
+        child_query = child_query.where(Conversation.deleted_at.is_(None))
+    child_result = await db.execute(child_query)
+    child_conversations = child_result.scalars().all()
+    markers: dict[uuid.UUID, list[uuid.UUID]] = {}
+    for child in child_conversations:
+        if child.branch_from_message_id is None:
+            continue
+        markers.setdefault(child.branch_from_message_id, []).append(child.id)
+
     return ConversationResponse(
         id=conversation.id,
         project_id=conversation.project_id,
+        parent_conversation_id=conversation.parent_conversation_id,
+        branch_from_message_id=conversation.branch_from_message_id,
         title=conversation.title,
         archived=conversation.archived,
+        deleted_at=conversation.deleted_at,
+        branch_markers=[
+            ConversationBranchMarker(
+                message_id=message_id,
+                branch_conversation_ids=conversation_ids,
+                count=len(conversation_ids),
+            )
+            for message_id, conversation_ids in markers.items()
+        ],
         messages=[
             MessageResponse(
                 id=m.id,
@@ -137,6 +177,7 @@ async def get_conversation(
                 content=m.content,
                 citations=[Citation(**c) for c in (m.citations or [])],
                 suggested_followups=m.suggested_followups,
+                debug_info=DebugInfo(**m.debug_info) if m.debug_info else None,
                 created_at=m.created_at,
             )
             for m in messages
@@ -157,6 +198,7 @@ async def archive_conversation(
         select(Conversation).where(
             Conversation.id == conversation_id,
             Conversation.project_id == project_id,
+            Conversation.deleted_at.is_(None),
         )
     )
     conversation = result.scalar_one_or_none()
@@ -174,6 +216,7 @@ async def archive_conversation(
 async def delete_conversation(
     project_id: uuid.UUID,
     conversation_id: uuid.UUID,
+    mode: str = "hard",
     db: AsyncSession = Depends(get_db),
 ):
     """Delete a conversation."""
@@ -188,8 +231,223 @@ async def delete_conversation(
     if not conversation:
         raise HTTPException(status_code=404, detail="Conversation not found")
 
+    if mode not in {"soft", "hard"}:
+        raise HTTPException(status_code=400, detail="Invalid mode. Use soft or hard.")
+
+    if mode == "soft":
+        conversation.deleted_at = datetime.now(timezone.utc)
+    else:
+        await db.delete(conversation)
+    await db.commit()
+
+
+@router.post("/conversations/{conversation_id}/restore")
+async def restore_conversation(
+    project_id: uuid.UUID,
+    conversation_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+):
+    """Restore a soft-deleted conversation."""
+    result = await db.execute(
+        select(Conversation).where(
+            Conversation.id == conversation_id,
+            Conversation.project_id == project_id,
+            Conversation.deleted_at.is_not(None),
+        )
+    )
+    conversation = result.scalar_one_or_none()
+
+    if not conversation:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+
+    conversation.deleted_at = None
+    await db.commit()
+    return {"status": "restored"}
+
+
+@router.post("/conversations/{conversation_id}/purge")
+async def purge_conversation(
+    project_id: uuid.UUID,
+    conversation_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+):
+    """Permanently delete a soft-deleted conversation."""
+    result = await db.execute(
+        select(Conversation).where(
+            Conversation.id == conversation_id,
+            Conversation.project_id == project_id,
+            Conversation.deleted_at.is_not(None),
+        )
+    )
+    conversation = result.scalar_one_or_none()
+
+    if not conversation:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+
     await db.delete(conversation)
     await db.commit()
+    return {"status": "purged"}
+
+
+@router.post(
+    "/conversations/{conversation_id}/edit-and-regenerate",
+    response_model=EditAndRegenerateResponse,
+)
+async def edit_and_regenerate(
+    project_id: uuid.UUID,
+    conversation_id: uuid.UUID,
+    request: EditAndRegenerateRequest,
+    db: AsyncSession = Depends(get_db),
+):
+    """Create a new conversation branch by editing a past user message."""
+    result = await db.execute(
+        select(Conversation).where(
+            Conversation.id == conversation_id,
+            Conversation.project_id == project_id,
+            Conversation.deleted_at.is_(None),
+        )
+    )
+    source_conversation = result.scalar_one_or_none()
+    if not source_conversation:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+
+    target_result = await db.execute(
+        select(Message).where(
+            Message.id == request.message_id,
+            Message.conversation_id == conversation_id,
+        )
+    )
+    target_message = target_result.scalar_one_or_none()
+    if not target_message:
+        raise HTTPException(status_code=404, detail="Message not found")
+    if target_message.role != MessageRole.user:
+        raise HTTPException(status_code=400, detail="Only user messages can be edited")
+
+    project_result = await db.execute(select(Project).where(Project.id == project_id))
+    project = project_result.scalar_one_or_none()
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    messages_result = await db.execute(
+        select(Message)
+        .where(Message.conversation_id == conversation_id)
+        .order_by(Message.created_at, Message.id)
+    )
+    source_messages = list(messages_result.scalars().all())
+
+    prefix_messages: list[Message] = []
+    found_target = False
+    for message in source_messages:
+        if message.id == target_message.id:
+            found_target = True
+            break
+        prefix_messages.append(message)
+
+    if not found_target:
+        raise HTTPException(status_code=409, detail="Message not found in conversation order")
+
+    branch_conversation = Conversation(
+        project_id=project_id,
+        parent_conversation_id=source_conversation.id,
+        branch_from_message_id=target_message.id,
+        title=request.new_content[:50] + "..." if len(request.new_content) > 50 else request.new_content,
+    )
+    db.add(branch_conversation)
+    await db.flush()
+
+    for message in prefix_messages:
+        copied_message = Message(
+            conversation_id=branch_conversation.id,
+            role=message.role,
+            content=message.content,
+            citations=message.citations,
+            suggested_followups=message.suggested_followups,
+            debug_info=message.debug_info,
+            edited_from_message_id=message.edited_from_message_id,
+        )
+        db.add(copied_message)
+
+    edited_user_message = Message(
+        conversation_id=branch_conversation.id,
+        role=MessageRole.user,
+        content=request.new_content,
+        edited_from_message_id=target_message.id,
+    )
+    db.add(edited_user_message)
+    await db.flush()
+
+    start_time = time.time()
+    chunks = await hybrid_search(db, request.new_content, project_id)
+    history = await get_conversation_history(db, branch_conversation.id)
+    response_content, citations = await generate_response(
+        db=db,
+        project=project,
+        query=request.new_content,
+        chunks=chunks,
+        history=history,
+    )
+    followups = await generate_followups(
+        db=db,
+        query=request.new_content,
+        response=response_content,
+        chunks=chunks,
+    )
+
+    provider_name, _ = await get_llm_config(db)
+    context = format_context_for_llm(chunks)
+    system_prompt = get_system_prompt(project.role_mode.value)
+    user_prompt = f"""Based on the following documents:
+
+{context}
+
+Question: {request.new_content}"""
+    debug_info = DebugInfo(
+        retrieved_chunks=[
+            RetrievedChunkInfo(
+                document_name=c.document_name,
+                page_number=c.page_number,
+                section=c.section,
+                content=c.content[:500],
+                score=c.score,
+                retrieval_relevance=c.retrieval_relevance,
+                answer_support=c.answer_support,
+                retrieval_rank=c.retrieval_rank,
+                cited_in_answer=c.cited_in_answer,
+            )
+            for c in chunks
+        ],
+        execution_time_ms=(time.time() - start_time) * 1000,
+        llm_model=provider_name,
+        system_prompt=system_prompt,
+        user_prompt=user_prompt,
+    )
+
+    assistant_message = Message(
+        conversation_id=branch_conversation.id,
+        role=MessageRole.assistant,
+        content=response_content,
+        citations=[c.model_dump(mode="json") for c in citations],
+        suggested_followups=followups,
+        debug_info=debug_info.model_dump(mode="json"),
+    )
+    db.add(assistant_message)
+    await db.commit()
+    await db.refresh(assistant_message)
+
+    return EditAndRegenerateResponse(
+        source_conversation_id=source_conversation.id,
+        new_conversation_id=branch_conversation.id,
+        branch_from_message_id=target_message.id,
+        message=MessageResponse(
+            id=assistant_message.id,
+            role=assistant_message.role,
+            content=assistant_message.content,
+            citations=citations,
+            suggested_followups=followups,
+            debug_info=debug_info,
+            created_at=assistant_message.created_at,
+        ),
+    )
 
 
 @router.post("/chat", response_model=ChatResponse)
@@ -208,7 +466,11 @@ async def chat(
     # Get or create conversation
     if request.conversation_id:
         result = await db.execute(
-            select(Conversation).where(Conversation.id == request.conversation_id)
+            select(Conversation).where(
+                Conversation.id == request.conversation_id,
+                Conversation.project_id == project_id,
+                Conversation.deleted_at.is_(None),
+            )
         )
         conversation = result.scalar_one_or_none()
         if not conversation:
@@ -231,6 +493,7 @@ async def chat(
     await db.flush()
 
     # Retrieve relevant chunks
+    start_time = time.time()
     chunks = await hybrid_search(db, request.message, project_id)
 
     # Build conversation history
@@ -253,6 +516,35 @@ async def chat(
         chunks=chunks,
     )
 
+    provider_name, _ = await get_llm_config(db)
+    context = format_context_for_llm(chunks)
+    system_prompt = get_system_prompt(project.role_mode.value)
+    user_prompt = f"""Based on the following documents:
+
+{context}
+
+Question: {request.message}"""
+    debug_info = DebugInfo(
+        retrieved_chunks=[
+            RetrievedChunkInfo(
+                document_name=c.document_name,
+                page_number=c.page_number,
+                section=c.section,
+                content=c.content[:500],
+                score=c.score,
+                retrieval_relevance=c.retrieval_relevance,
+                answer_support=c.answer_support,
+                retrieval_rank=c.retrieval_rank,
+                cited_in_answer=c.cited_in_answer,
+            )
+            for c in chunks
+        ],
+        execution_time_ms=(time.time() - start_time) * 1000,
+        llm_model=provider_name,
+        system_prompt=system_prompt,
+        user_prompt=user_prompt,
+    )
+
     # Save assistant message
     assistant_message = Message(
         conversation_id=conversation.id,
@@ -260,6 +552,7 @@ async def chat(
         content=response_content,
         citations=[c.model_dump(mode='json') for c in citations],
         suggested_followups=followups,
+        debug_info=debug_info.model_dump(mode='json'),
     )
     db.add(assistant_message)
     await db.commit()
@@ -272,6 +565,7 @@ async def chat(
             content=assistant_message.content,
             citations=citations,
             suggested_followups=followups,
+            debug_info=debug_info,
             created_at=assistant_message.created_at,
         ),
     )
@@ -293,7 +587,11 @@ async def chat_stream(
     # Get or create conversation
     if request.conversation_id:
         result = await db.execute(
-            select(Conversation).where(Conversation.id == request.conversation_id)
+            select(Conversation).where(
+                Conversation.id == request.conversation_id,
+                Conversation.project_id == project_id,
+                Conversation.deleted_at.is_(None),
+            )
         )
         conversation = result.scalar_one_or_none()
         if not conversation:

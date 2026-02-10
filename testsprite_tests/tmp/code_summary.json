@@ -1,0 +1,114 @@
+{
+    "tech_stack": [
+        "TypeScript",
+        "Next.js 14",
+        "React 18",
+        "TailwindCSS",
+        "Python",
+        "FastAPI",
+        "SQLAlchemy",
+        "Alembic",
+        "PostgreSQL/SQLite"
+    ],
+    "features": [
+        {
+            "name": "Conversation Lifecycle Management",
+            "description": "Soft delete, restore, and purge conversations. Includes trash functionality and history view.",
+            "files": [
+                "frontend/src/app/projects/[id]/page.tsx",
+                "frontend/src/app/projects/[id]/history/page.tsx",
+                "frontend/src/lib/api.ts",
+                "backend/app/routers/chat.py",
+                "backend/app/models/conversation.py"
+            ]
+        },
+        {
+            "name": "Document Lifecycle Management",
+            "description": "Soft delete, restore, and purge documents. Includes trash functionality.",
+            "files": [
+                "frontend/src/app/projects/[id]/page.tsx",
+                "frontend/src/lib/api.ts",
+                "backend/app/routers/documents.py",
+                "backend/app/models/document.py"
+            ]
+        },
+        {
+            "name": "Conversation Branching",
+            "description": "Edit user messages and regenerate responses, creating new conversation branches. Includes branch markers and switch prompts.",
+            "files": [
+                "frontend/src/components/chat/ChatMessage.tsx",
+                "frontend/src/app/projects/[id]/page.tsx",
+                "frontend/src/lib/api.ts",
+                "frontend/src/lib/types.ts",
+                "backend/app/routers/chat.py",
+                "backend/app/models/conversation.py",
+                "backend/app/models/message.py"
+            ]
+        },
+        {
+            "name": "History Page",
+            "description": "Date-grouped timeline view of conversation and document history with restore/purge actions.",
+            "files": [
+                "frontend/src/app/projects/[id]/history/page.tsx"
+            ]
+        },
+        {
+            "name": "Project Trash View",
+            "description": "View and manage trashed conversations and documents within a project.",
+            "files": [
+                "frontend/src/app/projects/[id]/page.tsx",
+                "frontend/src/lib/api.ts",
+                "frontend/src/lib/types.ts",
+                "backend/app/routers/projects.py"
+            ]
+        },
+        {
+            "name": "Chat Interface",
+            "description": "Real-time chat with streaming responses, citations, debug info, and follow-up suggestions.",
+            "files": [
+                "frontend/src/components/chat/ChatMessage.tsx",
+                "frontend/src/components/chat/ChatInput.tsx",
+                "frontend/src/components/chat/DebugPanel.tsx",
+                "frontend/src/components/chat/FollowUpSuggestions.tsx",
+                "frontend/src/app/projects/[id]/page.tsx"
+            ]
+        },
+        {
+            "name": "Document Upload and Management",
+            "description": "Upload PDF and TXT files, view ingestion status, categorize documents, and manage tags.",
+            "files": [
+                "frontend/src/app/projects/[id]/page.tsx",
+                "frontend/src/lib/api.ts",
+                "backend/app/routers/documents.py"
+            ]
+        },
+        {
+            "name": "Project Management",
+            "description": "Create, update, delete projects with role modes and export functionality.",
+            "files": [
+                "frontend/src/app/projects/new/page.tsx",
+                "frontend/src/app/page.tsx",
+                "frontend/src/lib/api.ts",
+                "backend/app/routers/projects.py"
+            ]
+        },
+        {
+            "name": "Search Functionality",
+            "description": "Search across documents and conversations with filtering options.",
+            "files": [
+                "frontend/src/app/search/page.tsx",
+                "frontend/src/lib/api.ts",
+                "backend/app/routers/search.py"
+            ]
+        },
+        {
+            "name": "Settings Management",
+            "description": "Configure LLM provider, model, API keys, and theme preferences.",
+            "files": [
+                "frontend/src/app/settings/page.tsx",
+                "frontend/src/lib/api.ts",
+                "backend/app/routers/settings.py"
+            ]
+        }
+    ]
+}

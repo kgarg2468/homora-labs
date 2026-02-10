@@ -1,6 +1,5 @@
 from datetime import datetime
 from uuid import UUID
-
 from pydantic import BaseModel, Field
 
 from app.models.message import MessageRole
@@ -40,6 +39,17 @@ class ChatRequest(BaseModel):
     conversation_id: UUID | None = None
 
 
+class EditAndRegenerateRequest(BaseModel):
+    message_id: UUID
+    new_content: str = Field(..., min_length=1)
+
+
+class ConversationBranchMarker(BaseModel):
+    message_id: UUID
+    branch_conversation_ids: list[UUID]
+    count: int
+
+
 class MessageResponse(BaseModel):
     id: UUID
     role: MessageRole
@@ -55,8 +65,12 @@ class MessageResponse(BaseModel):
 class ConversationResponse(BaseModel):
     id: UUID
     project_id: UUID
+    parent_conversation_id: UUID | None = None
+    branch_from_message_id: UUID | None = None
     title: str | None
     archived: bool
+    deleted_at: datetime | None = None
+    branch_markers: list[ConversationBranchMarker] = []
     messages: list[MessageResponse] = []
     created_at: datetime
     updated_at: datetime
@@ -71,6 +85,13 @@ class ConversationListResponse(BaseModel):
 
 class ChatResponse(BaseModel):
     conversation_id: UUID
+    message: MessageResponse
+
+
+class EditAndRegenerateResponse(BaseModel):
+    source_conversation_id: UUID
+    new_conversation_id: UUID
+    branch_from_message_id: UUID
     message: MessageResponse
 
 

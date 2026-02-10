@@ -1,0 +1,168 @@
+{
+  "meta": {
+    "project": "Homora Real Estate Intelligence Assistant",
+    "date": "2026-02-06",
+    "prepared_by": "Software Development Manager"
+  },
+  "product_overview": "Homora is a local-first real estate intelligence assistant designed to answer due diligence questions using only ingested documents. It ensures every claim is strictly cited to source documents, avoids hallucinations, and supports multiple projects and document types for real estate deals. The product features advanced search, conversation management, and customizable reporting with a user-friendly chat interface.",
+  "core_goals": [
+    "Provide strict citation-enforced, non-hallucinating AI responses grounded only in uploaded documents.",
+    "Enable comprehensive management of real estate due diligence projects including document ingestion, categorization, and retrieval.",
+    "Support multi-provider LLM integration with runtime switching and streaming response capabilities.",
+    "Deliver a responsive, accessible frontend with real-time chat, document viewing, and robust keyboard shortcuts.",
+    "Ensure data integrity and historical tracking with conversation branching, session archiving, and trash/restore functionality.",
+    "Facilitate advanced diligence workflows including full-text search, document comparison, and customizable PDF reporting."
+  ],
+  "key_features": [
+    "Citation-first AI responses presenting structured answers with evidence, risk flags, unknowns, and next steps sections.",
+    "Multi-source document synthesis with strict no-hallucination policy and uncertainty handling language.",
+    "Document lifecycle management supporting uploads (PDF, TXT, DOCX, XLSX, images), chunking, auto-categorization, tag management, and ingestion progress tracking.",
+    "Conversation lifecycle including creation, soft delete, restore, purge, branching with message edits and regeneration, and session archiving.",
+    "Real-time chat interface with streaming LLM responses, citation linking, debug info, and follow-up question suggestions.",
+    "Project creation wizard with onboarding steps to name projects, upload documents, and monitor ingestion progress.",
+    "Robust search across projects, documents, and conversations with filters by project, date, type, and category.",
+    "Document viewer modal supporting full-screen PDF display, page navigation, search, and jump-to-citation functionality.",
+    "Document comparison with side-by-side diff views and synchronized scrolling.",
+    "Settings management including LLM provider selection, API keys handling, role modes (plain/analytical), and UI theme toggling.",
+    "Project export/import as portable archives including documents, metadata, and chat history.",
+    "Toast and audio notifications for ingestion completions and system events.",
+    "Keyboard shortcuts for global search, new project, document upload, message sending, and modal controls."
+  ],
+  "user_flow_summary": [
+    "User creates a new project through a guided wizard that collects project details and uploads due diligence documents.",
+    "The system ingests documents asynchronously, processes them (chunking, embedding, categorization), and tracks progress with notifications upon completion.",
+    "Users engage in chat sessions per project, entering queries that generate streaming, structured, citation-backed AI responses including follow-up suggestions.",
+    "Conversation messages can be edited and responses regenerated, creating new branches for parallel dialogue paths.",
+    "Users browse and manage project documents, using trash, restore, and purge features for conversation and document lifecycle management.",
+    "Users perform full-text searches filtering by project, date ranges, document types, and categories with snippet previews.",
+    "Document comparisons allow side-by-side viewing and synchronized scrolling for detailed diligence analysis.",
+    "Users generate customizable PDF diligence reports selecting sections and previewing before export.",
+    "Settings enable configuration of LLM providers, API keys, UI theme, and role modes, persisting preferences across sessions."
+  ],
+  "validation_criteria": [
+    "100% of factual claims in AI responses have valid, explicit citations to source documents.",
+    "LLM responses stream live with latency under 1 second for first token and total response under 5 seconds for typical queries.",
+    "Document ingestion supports large files with chunking, progress tracking, and fails gracefully without blocking other uploads.",
+    "Conversation branching functions correctly with message edits generating new response paths and branch markers.",
+    "Search returns relevant results across documents and conversations with correct filtering and snippet context.",
+    "Document viewer modals open correct pages when clicking citations and support full navigation and search within documents.",
+    "Project export and import workflows preserve all documents, metadata, and conversation histories accurately.",
+    "Keyboard shortcuts operate as specified and settings persist correctly across user sessions.",
+    "System handles conflicting document data by prompting clarifications and stores user preferences for conflict resolution.",
+    "Notifications trigger appropriately on ingestion completion and other key events, with both toast and sound alerts."
+  ],
+  "code_summary": {
+    "tech_stack": [
+      "TypeScript",
+      "Next.js 14",
+      "React 18",
+      "TailwindCSS",
+      "Python",
+      "FastAPI",
+      "SQLAlchemy",
+      "Alembic",
+      "PostgreSQL/SQLite"
+    ],
+    "features": [
+      {
+        "name": "Conversation Lifecycle Management",
+        "description": "Soft delete, restore, and purge conversations. Includes trash functionality and history view.",
+        "files": [
+          "frontend/src/app/projects/[id]/page.tsx",
+          "frontend/src/app/projects/[id]/history/page.tsx",
+          "frontend/src/lib/api.ts",
+          "backend/app/routers/chat.py",
+          "backend/app/models/conversation.py"
+        ]
+      },
+      {
+        "name": "Document Lifecycle Management",
+        "description": "Soft delete, restore, and purge documents. Includes trash functionality.",
+        "files": [
+          "frontend/src/app/projects/[id]/page.tsx",
+          "frontend/src/lib/api.ts",
+          "backend/app/routers/documents.py",
+          "backend/app/models/document.py"
+        ]
+      },
+      {
+        "name": "Conversation Branching",
+        "description": "Edit user messages and regenerate responses, creating new conversation branches. Includes branch markers and switch prompts.",
+        "files": [
+          "frontend/src/components/chat/ChatMessage.tsx",
+          "frontend/src/app/projects/[id]/page.tsx",
+          "frontend/src/lib/api.ts",
+          "frontend/src/lib/types.ts",
+          "backend/app/routers/chat.py",
+          "backend/app/models/conversation.py",
+          "backend/app/models/message.py"
+        ]
+      },
+      {
+        "name": "History Page",
+        "description": "Date-grouped timeline view of conversation and document history with restore/purge actions.",
+        "files": [
+          "frontend/src/app/projects/[id]/history/page.tsx"
+        ]
+      },
+      {
+        "name": "Project Trash View",
+        "description": "View and manage trashed conversations and documents within a project.",
+        "files": [
+          "frontend/src/app/projects/[id]/page.tsx",
+          "frontend/src/lib/api.ts",
+          "frontend/src/lib/types.ts",
+          "backend/app/routers/projects.py"
+        ]
+      },
+      {
+        "name": "Chat Interface",
+        "description": "Real-time chat with streaming responses, citations, debug info, and follow-up suggestions.",
+        "files": [
+          "frontend/src/components/chat/ChatMessage.tsx",
+          "frontend/src/components/chat/ChatInput.tsx",
+          "frontend/src/components/chat/DebugPanel.tsx",
+          "frontend/src/components/chat/FollowUpSuggestions.tsx",
+          "frontend/src/app/projects/[id]/page.tsx"
+        ]
+      },
+      {
+        "name": "Document Upload and Management",
+        "description": "Upload PDF and TXT files, view ingestion status, categorize documents, and manage tags.",
+        "files": [
+          "frontend/src/app/projects/[id]/page.tsx",
+          "frontend/src/lib/api.ts",
+          "backend/app/routers/documents.py"
+        ]
+      },
+      {
+        "name": "Project Management",
+        "description": "Create, update, delete projects with role modes and export functionality.",
+        "files": [
+          "frontend/src/app/projects/new/page.tsx",
+          "frontend/src/app/page.tsx",
+          "frontend/src/lib/api.ts",
+          "backend/app/routers/projects.py"
+        ]
+      },
+      {
+        "name": "Search Functionality",
+        "description": "Search across documents and conversations with filtering options.",
+        "files": [
+          "frontend/src/app/search/page.tsx",
+          "frontend/src/lib/api.ts",
+          "backend/app/routers/search.py"
+        ]
+      },
+      {
+        "name": "Settings Management",
+        "description": "Configure LLM provider, model, API keys, and theme preferences.",
+        "files": [
+          "frontend/src/app/settings/page.tsx",
+          "frontend/src/lib/api.ts",
+          "backend/app/routers/settings.py"
+        ]
+      }
+    ]
+  }
+}

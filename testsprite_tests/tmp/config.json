@@ -1,0 +1,21 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:3000",
+  "executionArgs": {
+    "projectName": "homora-labs",
+    "projectPath": "/Users/krishgarg/Documents/Projects/homora-labs",
+    "testIds": [
+      "TC006",
+      "TC007",
+      "TC008"
+    ],
+    "additionalInstruction": "Focus on testing the conversation and document lifecycle features: soft delete, restore, purge, and conversation branching via message editing. These are the key changes from the last development session.",
+    "envs": {
+      "API_KEY": "sk-user-8ihUBXMtiHUGq6wrfv9vniGL6zk1nDLEZIF8BBleHJxMNf2Q5WtIbd3Vdg7vygasqsadtNnzepr2YyBKR6lEF3q8LcItg8frio3PvZjvmnU-ce5SjLdzeqICK0d3qG4b1LU"
+    }
+  },
+  "serverPort": 63556,
+  "proxy": "http://d6796743-48e3-462a-aaa6-06a2cfe3c28b:3lMuYFiXjwAKmXzq3UEy2Y9VvtvWDckC@tun.testsprite.com:8080"
+}

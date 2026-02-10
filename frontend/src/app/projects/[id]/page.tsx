@@ -1,21 +1,21 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   ArrowLeft,
   Building2,
   Settings,
-  FileText,
+  Trash2,
   MessageSquare,
   ChevronDown,
-  Archive,
   Plus,
   Loader2,
-  Download,
   GitCompare,
+  History,
+  GitBranch,
 } from 'lucide-react';
 import { projectsApi, documentsApi, chatApi } from '@/lib/api';
 import { ChatMessage } from '@/components/chat/ChatMessage';
@@ -38,6 +38,7 @@ import { DebugPanel } from '@/components/chat/DebugPanel';
 
 export default function ProjectPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const projectId = params.id as string;
   const queryClient = useQueryClient();
@@ -47,12 +48,18 @@ export default function ProjectPage() {
   // State
   const [messages, setMessages] = useState<Message[]>([]);
   const [conversationId, setConversationId] = useState<string | null>(null);
+  const [currentConversation, setCurrentConversation] = useState<Conversation | null>(null);
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamingContent, setStreamingContent] = useState('');
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
   const [viewerOpen, setViewerOpen] = useState(false);
   const [viewerPage, setViewerPage] = useState(1);
   const [showConversations, setShowConversations] = useState(false);
+  const [isGeneratingBranch, setIsGeneratingBranch] = useState(false);
+  const [pendingBranchSwitch, setPendingBranchSwitch] = useState<{
+    conversationId: string;
+    title: string;
+  } | null>(null);
 
   // Debug UI State
   const [inspectingDebugInfo, setInspectingDebugInfo] = useState<DebugInfo | null>(null);
@@ -98,10 +105,15 @@ export default function ProjectPage() {
 
   // Delete document mutation
   const deleteMutation = useMutation({
-    mutationFn: (doc: Document) => documentsApi.delete(projectId, doc.id),
+    mutationFn: ({ doc, mode }: { doc: Document; mode: 'soft' | 'hard' }) =>
+      documentsApi.delete(projectId, doc.id, mode),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['documents', projectId] });
+      queryClient.invalidateQueries({ queryKey: ['project', projectId] });
       notifySuccess('Document deleted');
+    },
+    onError: (error) => {
+      notifyError(error instanceof Error ? error.message : 'Failed to delete document');
     },
   });
 
@@ -255,15 +267,78 @@ export default function ProjectPage() {
     setConversationId(conv.id);
     const fullConv = await chatApi.getConversation(projectId, conv.id);
     setMessages(fullConv.messages);
+    setCurrentConversation(fullConv);
     setShowConversations(false);
+    setPendingBranchSwitch(null);
   };
 
   // Start new conversation
   const startNewConversation = () => {
     setConversationId(null);
     setMessages([]);
+    setCurrentConversation(null);
     setShowConversations(false);
+    setPendingBranchSwitch(null);
   };
+
+  const handleDeleteConversation = async (
+    conv: Conversation,
+    mode: 'soft' | 'hard'
+  ) => {
+    try {
+      await chatApi.deleteConversation(projectId, conv.id, mode);
+      if (conversationId === conv.id) {
+        setConversationId(null);
+        setMessages([]);
+      }
+      queryClient.invalidateQueries({ queryKey: ['conversations', projectId] });
+      notifySuccess(
+        mode === 'soft' ? 'Conversation moved to trash' : 'Conversation deleted'
+      );
+    } catch (error) {
+      notifyError(
+        error instanceof Error ? error.message : 'Failed to delete conversation'
+      );
+    }
+  };
+
+  const handleEditUserMessage = async (messageId: string, newContent: string) => {
+    if (!conversationId) return;
+    setIsGeneratingBranch(true);
+    try {
+      const result = await chatApi.editAndRegenerate(
+        projectId,
+        conversationId,
+        messageId,
+        newContent
+      );
+      queryClient.invalidateQueries({ queryKey: ['conversations', projectId] });
+      setPendingBranchSwitch({
+        conversationId: result.new_conversation_id,
+        title: 'Edited continuation',
+      });
+      notifySuccess('New branch generated. Switch when ready.');
+    } catch (error) {
+      notifyError(
+        error instanceof Error ? error.message : 'Failed to regenerate branch'
+      );
+      throw error;
+    } finally {
+      setIsGeneratingBranch(false);
+    }
+  };
+
+  useEffect(() => {
+    const requestedConversation = searchParams.get('conversation');
+    if (!requestedConversation || !conversationsData?.conversations.length) return;
+    if (conversationId === requestedConversation) return;
+
+    const conv = conversationsData.conversations.find((c) => c.id === requestedConversation);
+    if (!conv) return;
+    loadConversation(conv).catch(() => {
+      notifyError('Unable to load requested conversation');
+    });
+  }, [searchParams, conversationsData, conversationId]);
 
   // Get last message's suggestions
   const lastAssistantMessage = [...messages]
@@ -343,7 +418,7 @@ export default function ProjectPage() {
                   setSelectedDocument(doc);
                   setViewerOpen(true);
                 }}
-                onDelete={(doc) => deleteMutation.mutate(doc)}
+                onDelete={(doc, mode) => deleteMutation.mutate({ doc, mode })}
                 onReprocess={(doc) =>
                   documentsApi.reprocess(projectId, doc.id).then(() => {
                     queryClient.invalidateQueries({
@@ -356,7 +431,21 @@ export default function ProjectPage() {
           </div>
 
           {/* Sidebar Footer */}
-          <div className="p-4 border-t border-[var(--border)]">
+          <div className="p-4 border-t border-[var(--border)] space-y-2">
+            <Link
+              href={`/projects/${projectId}/history?view=trash`}
+              className="flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-accent-600 dark:hover:text-accent-400 transition-colors"
+            >
+              <Trash2 className="w-4 h-4" />
+              Trash
+            </Link>
+            <Link
+              href={`/projects/${projectId}/history`}
+              className="flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-accent-600 dark:hover:text-accent-400 transition-colors"
+            >
+              <History className="w-4 h-4" />
+              History
+            </Link>
             <Link
               href={`/projects/${projectId}/compare`}
               className="flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-accent-600 dark:hover:text-accent-400 transition-colors"
@@ -377,6 +466,7 @@ export default function ProjectPage() {
               {/* Conversation selector */}
               <div className="relative">
                 <button
+                  type="button"
                   onClick={() => setShowConversations(!showConversations)}
                   className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-900 transition-colors"
                 >
@@ -388,8 +478,9 @@ export default function ProjectPage() {
                 </button>
 
                 {showConversations && (
-                  <div className="absolute top-full left-0 mt-1 w-64 bg-[var(--surface)] rounded-lg shadow-warm-lg border border-[var(--border)] py-2 z-10">
+                  <div className="absolute top-full left-0 mt-1 w-80 max-h-[420px] overflow-auto bg-[var(--surface)] rounded-lg shadow-warm-lg border border-[var(--border)] py-2 z-10">
                     <button
+                      type="button"
                       onClick={startNewConversation}
                       className="w-full px-4 py-2 text-sm text-left text-accent-600 dark:text-accent-400 hover:bg-stone-100 dark:hover:bg-stone-900 flex items-center gap-2 transition-colors"
                     >
@@ -398,20 +489,46 @@ export default function ProjectPage() {
                     </button>
                     <div className="border-t border-[var(--border)] my-1" />
                     {conversationsData?.conversations.map((conv) => (
-                      <button
+                      <div
                         key={conv.id}
-                        onClick={() => loadConversation(conv)}
                         className={cn(
-                          'w-full px-4 py-2 text-sm text-left hover:bg-stone-100 dark:hover:bg-stone-900 transition-colors',
+                          'px-3 py-2',
                           conv.id === conversationId
                             ? 'bg-accent-50 dark:bg-accent-950/20'
                             : ''
                         )}
                       >
-                        <div className="font-medium text-[var(--text-secondary)] truncate">
-                          {conv.title || 'Untitled'}
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => loadConversation(conv)}
+                            className="flex-1 min-w-0 text-left rounded-md px-2 py-1 hover:bg-stone-100 dark:hover:bg-stone-900 transition-colors"
+                          >
+                            <div className="font-medium text-[var(--text-secondary)] truncate text-sm">
+                              {conv.title || 'Untitled'}
+                            </div>
+                            <div className="text-[11px] text-[var(--text-muted)]">
+                              {new Date(conv.updated_at).toLocaleString()}
+                            </div>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteConversation(conv, 'soft')}
+                            className="px-2 py-1 rounded-md text-xs text-[var(--text-muted)] hover:text-accent-600 hover:bg-stone-100 dark:hover:bg-stone-900 transition-colors"
+                            title="Move to trash"
+                          >
+                            Trash
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteConversation(conv, 'hard')}
+                            className="px-2 py-1 rounded-md text-xs text-[var(--text-muted)] hover:text-[#B85450] hover:bg-[#B85450]/5 transition-colors"
+                            title="Delete permanently"
+                          >
+                            Delete
+                          </button>
                         </div>
-                      </button>
+                      </div>
                     ))}
                   </div>
                 )}
@@ -430,6 +547,53 @@ export default function ProjectPage() {
 
           {/* Chat Messages */}
           <div className="flex-1 overflow-auto p-4">
+            {isGeneratingBranch && (
+              <div className="max-w-3xl mx-auto mb-4 p-3 rounded-lg border border-[var(--border)] bg-[var(--surface)] flex items-center gap-2 text-sm text-[var(--text-secondary)]">
+                <Loader2 className="w-4 h-4 animate-spin text-accent-500" />
+                Generating new branch from your edit...
+              </div>
+            )}
+
+            {pendingBranchSwitch && (
+              <div className="max-w-3xl mx-auto mb-4 p-3 rounded-lg border border-accent-300 bg-accent-50 dark:bg-accent-950/15 flex items-center justify-between gap-3">
+                <div className="text-sm text-[var(--text-secondary)]">
+                  New continuation generated from your edit.
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      const conv = conversationsData?.conversations.find(
+                        (item) => item.id === pendingBranchSwitch.conversationId
+                      );
+                      if (conv) {
+                        await loadConversation(conv);
+                      } else {
+                        const fullConv = await chatApi.getConversation(
+                          projectId,
+                          pendingBranchSwitch.conversationId
+                        );
+                        setConversationId(fullConv.id);
+                        setCurrentConversation(fullConv);
+                        setMessages(fullConv.messages);
+                      }
+                      setPendingBranchSwitch(null);
+                    }}
+                    className="px-2 py-1 text-xs rounded-md bg-accent-600 text-white hover:bg-accent-700"
+                  >
+                    Switch
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPendingBranchSwitch(null)}
+                    className="px-2 py-1 text-xs rounded-md border border-[var(--border)] hover:bg-stone-100 dark:hover:bg-stone-900"
+                  >
+                    Dismiss
+                  </button>
+                </div>
+              </div>
+            )}
+
             {messages.length === 0 && !isStreaming ? (
               <div className="h-full flex items-center justify-center">
                 <div className="text-center max-w-md">
@@ -447,14 +611,45 @@ export default function ProjectPage() {
               </div>
             ) : (
               <div className="max-w-3xl mx-auto space-y-4">
-                {messages.map((message) => (
-                  <ChatMessage
-                    key={message.id}
-                    message={message}
-                    onCitationClick={handleCitationClick}
-                    onInspect={handleInspect}
-                  />
-                ))}
+                {messages.map((message) => {
+                  const branchMarker = currentConversation?.branch_markers?.find(
+                    (marker) => marker.message_id === message.id
+                  );
+
+                  return (
+                    <div key={message.id} className="space-y-2">
+                      <ChatMessage
+                        message={message}
+                        onCitationClick={handleCitationClick}
+                        onInspect={handleInspect}
+                        onEditUserMessage={handleEditUserMessage}
+                        isEditingDisabled={isStreaming || isGeneratingBranch}
+                      />
+                      {branchMarker && (
+                        <div className="ml-12 inline-flex items-center gap-2 text-xs text-[var(--text-muted)] px-2 py-1 rounded-md border border-[var(--border)] bg-[var(--surface)]">
+                          <GitBranch className="w-3.5 h-3.5" />
+                          <span>{branchMarker.count} alternate continuations</span>
+                          {branchMarker.branch_conversation_ids[0] && (
+                            <button
+                              type="button"
+                              onClick={async () => {
+                                const conv = conversationsData?.conversations.find(
+                                  (item) => item.id === branchMarker.branch_conversation_ids[0]
+                                );
+                                if (conv) {
+                                  await loadConversation(conv);
+                                }
+                              }}
+                              className="text-accent-600 hover:underline"
+                            >
+                              Open
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
 
                 {/* Streaming message */}
                 {isStreaming && streamingContent && (
@@ -504,7 +699,7 @@ export default function ProjectPage() {
             <div className="max-w-3xl mx-auto">
               <ChatInput
                 onSend={handleSendMessage}
-                isLoading={isStreaming}
+                isLoading={isStreaming || isGeneratingBranch}
               />
             </div>
           </div>

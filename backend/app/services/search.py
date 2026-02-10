@@ -63,6 +63,7 @@ async def search_documents(
         )
         .join(Document, Chunk.document_id == Document.id)
         .join(Project, Document.project_id == Project.id)
+        .where(Document.deleted_at.is_(None))
     )
 
     # Apply filters
@@ -134,6 +135,7 @@ async def search_conversations(
         )
         .join(Conversation, Message.conversation_id == Conversation.id)
         .join(Project, Conversation.project_id == Project.id)
+        .where(Conversation.deleted_at.is_(None))
     )
 
     # Apply filters

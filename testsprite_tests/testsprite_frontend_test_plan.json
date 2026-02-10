@@ -1,0 +1,453 @@
+[
+  {
+    "id": "TC001",
+    "title": "Create New Project Successfully",
+    "description": "Verify that a user can create a new project by completing the onboarding wizard with valid inputs and document uploads.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to new project creation wizard"
+      },
+      {
+        "type": "action",
+        "description": "Input a valid project name"
+      },
+      {
+        "type": "action",
+        "description": "Upload valid due diligence documents (PDF, TXT, DOCX)"
+      },
+      {
+        "type": "action",
+        "description": "Complete onboarding steps and submit"
+      },
+      {
+        "type": "assertion",
+        "description": "Project is created successfully and listed in projects overview"
+      },
+      {
+        "type": "assertion",
+        "description": "Document ingestion starts and shows progress status"
+      }
+    ]
+  },
+  {
+    "id": "TC002",
+    "title": "Document Ingestion with Chunking and Progress Tracking",
+    "description": "Verify that large documents are ingested with chunking, progress is tracked and displayed accurately, and ingestion completes successfully.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Upload a large due diligence document (e.g. large PDF)"
+      },
+      {
+        "type": "assertion",
+        "description": "Document ingestion process starts with progress visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Document is processed with chunking and categorization"
+      },
+      {
+        "type": "assertion",
+        "description": "Ingestion completes successfully with a toast notification and audio alert"
+      }
+    ]
+  },
+  {
+    "id": "TC003",
+    "title": "Document Ingestion Failure Handling",
+    "description": "Verify the system handles failures gracefully during document ingestion without blocking other uploads.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Upload a corrupted or unsupported document"
+      },
+      {
+        "type": "assertion",
+        "description": "Ingestion process reports failure for the corrupted document"
+      },
+      {
+        "type": "assertion",
+        "description": "Other document uploads continue without interruption"
+      },
+      {
+        "type": "assertion",
+        "description": "User is notified about the failure by toast and/or UI message"
+      }
+    ]
+  },
+  {
+    "id": "TC004",
+    "title": "Perform Full-Text Search with Filters",
+    "description": "Verify that the search functionality returns relevant results filtered correctly by project, date range, document type, and category, including snippet previews.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Enter a query term in the global search bar"
+      },
+      {
+        "type": "action",
+        "description": "Apply filters: select a project, date range, document type, and category"
+      },
+      {
+        "type": "assertion",
+        "description": "Search results display relevant documents and conversations matching filters"
+      },
+      {
+        "type": "assertion",
+        "description": "Snippets showing query context are shown in results"
+      }
+    ]
+  },
+  {
+    "id": "TC005",
+    "title": "Chat with Citation-First AI Response Streaming",
+    "description": "Verify that users can ask real-time questions in a chat session and receive streaming AI responses with explicit citations, risk flags, unknowns, and next steps sections.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open an existing project and start a new chat session"
+      },
+      {
+        "type": "action",
+        "description": "Input a complex due diligence query"
+      },
+      {
+        "type": "assertion",
+        "description": "AI response streams within 1 second for first token"
+      },
+      {
+        "type": "assertion",
+        "description": "Complete response received within 5 seconds"
+      },
+      {
+        "type": "assertion",
+        "description": "Response includes structured sections: evidence, risk flags, unknowns, next steps"
+      },
+      {
+        "type": "assertion",
+        "description": "Every factual claim has valid source citations linking to documents"
+      }
+    ]
+  },
+  {
+    "id": "TC006",
+    "title": "Conversation Message Edit and Branching",
+    "description": "Verify that editing a user message and regenerating a response creates a new conversation branch with proper branch markers and switch prompts.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open a chat session with existing conversation"
+      },
+      {
+        "type": "action",
+        "description": "Edit a previously sent user message"
+      },
+      {
+        "type": "action",
+        "description": "Request regeneration of AI response"
+      },
+      {
+        "type": "assertion",
+        "description": "A new conversation branch is created with distinct branch markers"
+      },
+      {
+        "type": "assertion",
+        "description": "User can switch between conversation branches"
+      }
+    ]
+  },
+  {
+    "id": "TC007",
+    "title": "Soft Delete, Restore, and Purge Conversations",
+    "description": "Verify conversation lifecycle features including soft delete to trash, restore from trash, and permanent purge functionality.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Select a conversation and soft delete it"
+      },
+      {
+        "type": "assertion",
+        "description": "Conversation moves to trash view"
+      },
+      {
+        "type": "action",
+        "description": "Restore the conversation from trash"
+      },
+      {
+        "type": "assertion",
+        "description": "Conversation is restored to active list"
+      },
+      {
+        "type": "action",
+        "description": "Permanently purge the conversation from trash"
+      },
+      {
+        "type": "assertion",
+        "description": "Conversation is removed permanently and not recoverable"
+      }
+    ]
+  },
+  {
+    "id": "TC008",
+    "title": "Soft Delete, Restore, and Purge Documents",
+    "description": "Verify document lifecycle features including soft delete to trash, restore from trash, and permanent purge functionality.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Select a document and soft delete it"
+      },
+      {
+        "type": "assertion",
+        "description": "Document moves to trash view"
+      },
+      {
+        "type": "action",
+        "description": "Restore the document from trash"
+      },
+      {
+        "type": "assertion",
+        "description": "Document is restored to active documents list"
+      },
+      {
+        "type": "action",
+        "description": "Permanently purge the document from trash"
+      },
+      {
+        "type": "assertion",
+        "description": "Document is removed permanently and not recoverable"
+      }
+    ]
+  },
+  {
+    "id": "TC009",
+    "title": "Document Viewer Modal Navigation and Search",
+    "description": "Verify that the document viewer modal opens the correct page, supports full-screen PDF display, page navigation, in-document search, and jump-to-citation functionality.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open a document from project documents list"
+      },
+      {
+        "type": "assertion",
+        "description": "Document viewer modal opens with correct document and default page"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to a different page using viewer controls"
+      },
+      {
+        "type": "assertion",
+        "description": "Page changes accordingly without errors"
+      },
+      {
+        "type": "action",
+        "description": "Perform search within the document via viewer search input"
+      },
+      {
+        "type": "assertion",
+        "description": "Search results highlight matching text within the document"
+      },
+      {
+        "type": "action",
+        "description": "Click a citation link in chat to jump to cited location in document viewer"
+      },
+      {
+        "type": "assertion",
+        "description": "Document viewer navigates to correct page and highlights citation"
+      }
+    ]
+  },
+  {
+    "id": "TC010",
+    "title": "Document Comparison Side-by-Side with Synced Scrolling",
+    "description": "Verify that users can view two documents side-by-side with synchronized vertical scrolling for detailed diligence analysis.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Select two documents for comparison"
+      },
+      {
+        "type": "assertion",
+        "description": "Document comparison modal opens with documents side-by-side"
+      },
+      {
+        "type": "action",
+        "description": "Scroll vertically in one document pane"
+      },
+      {
+        "type": "assertion",
+        "description": "Other document pane scrolls synchronously"
+      }
+    ]
+  },
+  {
+    "id": "TC011",
+    "title": "Export and Import Project Archives",
+    "description": "Verify that entire projects including documents, metadata, and chat history can be exported as a portable archive and successfully imported restoring all data accurately.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Select a project and export it as an archive"
+      },
+      {
+        "type": "assertion",
+        "description": "Export archive contains all relevant documents, metadata, and conversation histories"
+      },
+      {
+        "type": "action",
+        "description": "Import the exported archive as a new project"
+      },
+      {
+        "type": "assertion",
+        "description": "Project, documents, and conversation histories appear identical to original"
+      }
+    ]
+  },
+  {
+    "id": "TC012",
+    "title": "Settings Management Persistence",
+    "description": "Verify that user settings for LLM provider, API keys, UI theme, and role modes can be configured and persist correctly across user sessions.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open settings page"
+      },
+      {
+        "type": "action",
+        "description": "Change LLM provider and API keys"
+      },
+      {
+        "type": "action",
+        "description": "Toggle between UI themes and role modes"
+      },
+      {
+        "type": "action",
+        "description": "Save settings and reload the application"
+      },
+      {
+        "type": "assertion",
+        "description": "Settings persist correctly and are applied on reload"
+      }
+    ]
+  },
+  {
+    "id": "TC013",
+    "title": "Toast and Audio Notifications for Ingestion Completion",
+    "description": "Verify that the system triggers toast and audio notifications accurately upon document ingestion completion and other key events.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Upload documents to start ingestion"
+      },
+      {
+        "type": "assertion",
+        "description": "Toast notification appears on ingestion completion"
+      },
+      {
+        "type": "assertion",
+        "description": "Audio notification sounds on ingestion completion"
+      }
+    ]
+  },
+  {
+    "id": "TC014",
+    "title": "Keyboard Shortcuts Operational Verification",
+    "description": "Verify that all specified global keyboard shortcuts function correctly including for search, new project creation, document upload, message sending, and modal controls.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Use keyboard shortcut to open global search"
+      },
+      {
+        "type": "assertion",
+        "description": "Global search modal opens"
+      },
+      {
+        "type": "action",
+        "description": "Use keyboard shortcut to start new project creation"
+      },
+      {
+        "type": "assertion",
+        "description": "New project wizard launches"
+      },
+      {
+        "type": "action",
+        "description": "Use keyboard shortcut to open document upload dialog"
+      },
+      {
+        "type": "assertion",
+        "description": "Document upload modal opens"
+      },
+      {
+        "type": "action",
+        "description": "Type message and use keyboard shortcut to send it in chat"
+      },
+      {
+        "type": "assertion",
+        "description": "Message is sent and response begins streaming"
+      },
+      {
+        "type": "action",
+        "description": "Use keyboard shortcut to close modals"
+      },
+      {
+        "type": "assertion",
+        "description": "Active modal closes"
+      }
+    ]
+  },
+  {
+    "id": "TC015",
+    "title": "Conflicting Document Data Handling with User Preference Storage",
+    "description": "Verify the system detects conflicting data in ingested documents, prompts the user for clarifications, and stores user preferences for conflict resolution.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Ingest documents containing conflicting information"
+      },
+      {
+        "type": "assertion",
+        "description": "System detects conflicts and prompts user with clarification UI"
+      },
+      {
+        "type": "action",
+        "description": "User selects preferred source or resolution option"
+      },
+      {
+        "type": "assertion",
+        "description": "User preference is stored and reflected in future query responses"
+      }
+    ]
+  }
+]

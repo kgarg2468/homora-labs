@@ -6,12 +6,14 @@ from sqlalchemy import select, func
 from app.database import get_db
 from app.models.project import Project
 from app.models.document import Document
+from app.models.conversation import Conversation
 from app.schemas.project import (
     ProjectCreate,
     ProjectUpdate,
     ProjectResponse,
     ProjectListResponse,
 )
+from app.schemas.trash import TrashListResponse, TrashItem
 from app.services.export import export_project, import_project
 
 router = APIRouter(prefix="/projects", tags=["projects"])
@@ -24,7 +26,7 @@ async def list_projects(db: AsyncSession = Depends(get_db)):
     query = (
         select(
             Project,
-            func.count(Document.id).label("doc_count"),
+            func.count(Document.id).filter(Document.deleted_at.is_(None)).label("doc_count"),
         )
         .outerjoin(Document, Project.id == Document.project_id)
         .group_by(Project.id)
@@ -88,7 +90,7 @@ async def get_project(
     query = (
         select(
             Project,
-            func.count(Document.id).label("doc_count"),
+            func.count(Document.id).filter(Document.deleted_at.is_(None)).label("doc_count"),
         )
         .outerjoin(Document, Project.id == Document.project_id)
         .where(Project.id == project_id)
@@ -140,7 +142,10 @@ async def update_project(
 
     # Get document count
     count_result = await db.execute(
-        select(func.count(Document.id)).where(Document.project_id == project_id)
+        select(func.count(Document.id)).where(
+            Document.project_id == project_id,
+            Document.deleted_at.is_(None),
+        )
     )
     doc_count = count_result.scalar() or 0
 
@@ -205,3 +210,59 @@ async def import_project_archive(
         return await get_project(project_id, db)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.get("/{project_id}/trash", response_model=TrashListResponse)
+async def list_project_trash(
+    project_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+):
+    """List deleted conversations and documents for a project."""
+    project_result = await db.execute(select(Project).where(Project.id == project_id))
+    if not project_result.scalar_one_or_none():
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    conversations_result = await db.execute(
+        select(Conversation).where(
+            Conversation.project_id == project_id,
+            Conversation.deleted_at.is_not(None),
+        )
+    )
+    documents_result = await db.execute(
+        select(Document).where(
+            Document.project_id == project_id,
+            Document.deleted_at.is_not(None),
+        )
+    )
+
+    items: list[TrashItem] = []
+    for conversation in conversations_result.scalars().all():
+        if not conversation.deleted_at:
+            continue
+        items.append(
+            TrashItem(
+                id=conversation.id,
+                type="conversation",
+                title=conversation.title or "Untitled conversation",
+                project_id=conversation.project_id,
+                deleted_at=conversation.deleted_at,
+                created_at=conversation.created_at,
+            )
+        )
+
+    for document in documents_result.scalars().all():
+        if not document.deleted_at:
+            continue
+        items.append(
+            TrashItem(
+                id=document.id,
+                type="document",
+                title=document.filename,
+                project_id=document.project_id,
+                deleted_at=document.deleted_at,
+                created_at=document.created_at,
+            )
+        )
+
+    items.sort(key=lambda item: item.deleted_at, reverse=True)
+    return TrashListResponse(items=items, total=len(items))

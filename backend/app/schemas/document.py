@@ -34,6 +34,7 @@ class DocumentResponse(BaseModel):
     ingestion_progress: int
     category: DocumentCategory
     error_message: str | None
+    deleted_at: datetime | None = None
     tags: list[DocumentTagResponse] = []
     created_at: datetime
 
