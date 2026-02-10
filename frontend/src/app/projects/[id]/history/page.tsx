@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, FileText, MessageSquare, Trash2, RotateCcw } from 'lucide-react';
+import { ArrowLeft, FileText, MessageSquare, Trash2, RotateCcw, CheckSquare, Square } from 'lucide-react';
 import { projectsApi, chatApi, documentsApi } from '@/lib/api';
 import type { Conversation, Document, TrashItem } from '@/lib/types';
 import { Button } from '@/components/ui/Button';
@@ -40,6 +40,12 @@ export default function ProjectHistoryPage() {
   // State for tracking pending mutations and confirmation dialog
   const [pendingItemId, setPendingItemId] = useState<string | null>(null);
   const [confirmPurge, setConfirmPurge] = useState<{ id: string; kind: 'conversation' | 'document'; title: string } | null>(null);
+
+  // Bulk actions state
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
+  const [isBulkRestoring, setIsBulkRestoring] = useState(false);
+  const [isBulkPurging, setIsBulkPurging] = useState(false);
+  const [confirmEmptyTrash, setConfirmEmptyTrash] = useState(false);
 
   const { data: project } = useQuery({
     queryKey: ['project', projectId],
@@ -139,6 +145,99 @@ export default function ProjectHistoryPage() {
     },
   });
 
+  // Compute trash items for bulk actions
+  const trashItems = useMemo(() => {
+    return (trashData?.items || []).map((trashItem: TrashItem) => ({
+      kind: trashItem.type as 'conversation' | 'document',
+      id: trashItem.id,
+      title: trashItem.title,
+    }));
+  }, [trashData]);
+
+  // Bulk action handlers
+  const toggleSelectItem = (id: string) => {
+    setSelectedItems(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedItems.size === trashItems.length) {
+      setSelectedItems(new Set());
+    } else {
+      setSelectedItems(new Set(trashItems.map(item => item.id)));
+    }
+  };
+
+  const handleBulkRestore = async () => {
+    if (selectedItems.size === 0) return;
+    setIsBulkRestoring(true);
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const id of Array.from(selectedItems)) {
+      const item = trashItems.find(t => t.id === id);
+      if (!item) continue;
+      try {
+        if (item.kind === 'conversation') {
+          await chatApi.restoreConversation(projectId, id);
+        } else {
+          await documentsApi.restore(projectId, id);
+        }
+        successCount++;
+      } catch {
+        errorCount++;
+      }
+    }
+
+    queryClient.invalidateQueries({ queryKey: ['trash', projectId] });
+    queryClient.invalidateQueries({ queryKey: ['conversations', projectId] });
+    queryClient.invalidateQueries({ queryKey: ['conversations', projectId, 'history'] });
+    queryClient.invalidateQueries({ queryKey: ['documents', projectId] });
+    queryClient.invalidateQueries({ queryKey: ['documents', projectId, 'history'] });
+    queryClient.invalidateQueries({ queryKey: ['project', projectId] });
+
+    if (successCount > 0) notifySuccess(`${successCount} item${successCount > 1 ? 's' : ''} restored`);
+    if (errorCount > 0) notifyError(`Failed to restore ${errorCount} item${errorCount > 1 ? 's' : ''}`);
+    setSelectedItems(new Set());
+    setIsBulkRestoring(false);
+  };
+
+  const handleEmptyTrash = async () => {
+    setIsBulkPurging(true);
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const item of trashItems) {
+      try {
+        if (item.kind === 'conversation') {
+          await chatApi.purgeConversation(projectId, item.id);
+        } else {
+          await documentsApi.purge(projectId, item.id);
+        }
+        successCount++;
+      } catch {
+        errorCount++;
+      }
+    }
+
+    queryClient.invalidateQueries({ queryKey: ['trash', projectId] });
+    queryClient.invalidateQueries({ queryKey: ['conversations', projectId] });
+    queryClient.invalidateQueries({ queryKey: ['conversations', projectId, 'history'] });
+    queryClient.invalidateQueries({ queryKey: ['documents', projectId] });
+    queryClient.invalidateQueries({ queryKey: ['documents', projectId, 'history'] });
+    queryClient.invalidateQueries({ queryKey: ['project', projectId] });
+
+    if (successCount > 0) notifySuccess(`${successCount} item${successCount > 1 ? 's' : ''} permanently deleted`);
+    if (errorCount > 0) notifyError(`Failed to delete ${errorCount} item${errorCount > 1 ? 's' : ''}`);
+    setSelectedItems(new Set());
+    setIsBulkPurging(false);
+    setConfirmEmptyTrash(false);
+  };
+
   const timeline = useMemo(() => {
     const items: TimelineItem[] = [];
 
@@ -228,6 +327,51 @@ export default function ProjectHistoryPage() {
           </div>
         </div>
 
+        {/* Bulk actions toolbar - only in trash view when items exist */}
+        {trashOnly && trashItems.length > 0 && (
+          <div className="flex items-center justify-between gap-3 mb-4 p-3 rounded-lg bg-[var(--surface)] border border-[var(--border)]">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={toggleSelectAll}
+                className="flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                disabled={isBulkRestoring || isBulkPurging}
+              >
+                {selectedItems.size === trashItems.length ? (
+                  <CheckSquare className="w-4 h-4 text-accent-600" />
+                ) : (
+                  <Square className="w-4 h-4" />
+                )}
+                {selectedItems.size > 0
+                  ? `${selectedItems.size} of ${trashItems.length} selected`
+                  : `Select all (${trashItems.length})`}
+              </button>
+            </div>
+            <div className="flex items-center gap-2">
+              {selectedItems.size > 0 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleBulkRestore}
+                  leftIcon={<RotateCcw className="w-4 h-4" />}
+                  isLoading={isBulkRestoring}
+                  disabled={isBulkPurging}
+                >
+                  Restore Selected ({selectedItems.size})
+                </Button>
+              )}
+              <Button
+                variant="danger"
+                size="sm"
+                onClick={() => setConfirmEmptyTrash(true)}
+                leftIcon={<Trash2 className="w-4 h-4" />}
+                disabled={isBulkRestoring || isBulkPurging}
+              >
+                Empty Trash
+              </Button>
+            </div>
+          </div>
+        )}
+
         <div className="space-y-6">
           {groupOrder.map((group) => {
             const items = groupedItems[group] || [];
@@ -257,27 +401,43 @@ export default function ProjectHistoryPage() {
                             <span className="text-sm text-[var(--text-muted)]">Processing...</span>
                           </div>
                         )}
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-2">
-                            {item.kind === 'conversation' ? (
-                              <MessageSquare className="w-4 h-4 text-[var(--text-muted)]" />
-                            ) : (
-                              <FileText className="w-4 h-4 text-[var(--text-muted)]" />
-                            )}
-                            <span className="text-sm font-medium text-[var(--text-primary)] truncate">
-                              {item.title}
-                            </span>
-                            {isDeleted && (
-                              <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#B85450]/15 text-[#B85450]">
-                                Deleted
+                        <div className="flex items-center gap-3 min-w-0">
+                          {/* Checkbox for trash items */}
+                          {trashOnly && isDeleted && (
+                            <button
+                              onClick={() => toggleSelectItem(item.id)}
+                              className="flex-shrink-0 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                              disabled={isBulkRestoring || isBulkPurging}
+                            >
+                              {selectedItems.has(item.id) ? (
+                                <CheckSquare className="w-4 h-4 text-accent-600" />
+                              ) : (
+                                <Square className="w-4 h-4" />
+                              )}
+                            </button>
+                          )}
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2">
+                              {item.kind === 'conversation' ? (
+                                <MessageSquare className="w-4 h-4 text-[var(--text-muted)]" />
+                              ) : (
+                                <FileText className="w-4 h-4 text-[var(--text-muted)]" />
+                              )}
+                              <span className="text-sm font-medium text-[var(--text-primary)] truncate">
+                                {item.title}
                               </span>
-                            )}
+                              {isDeleted && (
+                                <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#B85450]/15 text-[#B85450]">
+                                  Deleted
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-xs text-[var(--text-muted)] mt-1">
+                              {isDeleted
+                                ? `Deleted ${new Date(item.deletedAt!).toLocaleString()}`
+                                : `Created ${new Date(item.createdAt).toLocaleString()}`}
+                            </p>
                           </div>
-                          <p className="text-xs text-[var(--text-muted)] mt-1">
-                            {isDeleted
-                              ? `Deleted ${new Date(item.deletedAt!).toLocaleString()}`
-                              : `Created ${new Date(item.createdAt).toLocaleString()}`}
-                          </p>
                         </div>
                         <div className="flex items-center gap-2">
                           {!isDeleted && item.kind === 'conversation' && (
@@ -356,6 +516,19 @@ export default function ProjectHistoryPage() {
         cancelText="Cancel"
         variant="danger"
         isLoading={purgeConversationMutation.isPending || purgeDocumentMutation.isPending}
+      />
+
+      {/* Confirmation Dialog for Empty Trash */}
+      <ConfirmDialog
+        open={confirmEmptyTrash}
+        onClose={() => setConfirmEmptyTrash(false)}
+        onConfirm={handleEmptyTrash}
+        title="Empty Trash?"
+        description={`All ${trashItems.length} item${trashItems.length !== 1 ? 's' : ''} in trash will be permanently deleted. This action cannot be undone.`}
+        confirmText="Empty Trash"
+        cancelText="Cancel"
+        variant="danger"
+        isLoading={isBulkPurging}
       />
     </div>
   );
