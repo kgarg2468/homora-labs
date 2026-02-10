@@ -170,6 +170,80 @@ describe('ProjectHistoryPage - Trash View', () => {
             expect(documentsApi.restore).toHaveBeenCalledWith('test-project-id', 'doc-1');
         });
     });
+
+    it('toggles selection when checkbox is clicked', async () => {
+        render(<ProjectHistoryPage />, { wrapper: createWrapper() });
+
+        await waitFor(() => {
+            expect(screen.getByText('Report.pdf')).toBeInTheDocument();
+        });
+
+        // Individual item checkboxes are buttons with JUST an svg, no text
+        const itemCheckboxes = screen.getAllByRole('button').filter(btn =>
+            btn.querySelector('svg') && btn.textContent === ''
+        );
+
+        // Click first item checkbox
+        fireEvent.click(itemCheckboxes[0]);
+
+        await waitFor(() => {
+            expect(screen.getByText('1 of 2 selected')).toBeInTheDocument();
+            expect(screen.getByText('Restore Selected (1)')).toBeInTheDocument();
+        });
+
+        // Click again to deselect
+        fireEvent.click(itemCheckboxes[0]);
+
+        await waitFor(() => {
+            expect(screen.queryByText('1 of 2 selected')).not.toBeInTheDocument();
+            expect(screen.queryByText(/Restore Selected/)).not.toBeInTheDocument();
+        });
+    });
+
+    it('toggles Select All correctly', async () => {
+        render(<ProjectHistoryPage />, { wrapper: createWrapper() });
+
+        await waitFor(() => {
+            expect(screen.getByText(/Select all/)).toBeInTheDocument();
+        });
+
+        const selectAllButton = screen.getByText(/Select all/).closest('button');
+        fireEvent.click(selectAllButton!);
+
+        await waitFor(() => {
+            expect(screen.getByText('2 of 2 selected')).toBeInTheDocument();
+            expect(screen.getByText('Restore Selected (2)')).toBeInTheDocument();
+        });
+
+        fireEvent.click(screen.getByText('2 of 2 selected').closest('button')!);
+
+        await waitFor(() => {
+            expect(screen.queryByText(/of 2 selected/)).not.toBeInTheDocument();
+            expect(screen.getByText(/Select all/)).toBeInTheDocument();
+        });
+    });
+
+    it('calls multiple API endpoints during bulk restore', async () => {
+        const { documentsApi, chatApi } = await import('@/lib/api');
+        render(<ProjectHistoryPage />, { wrapper: createWrapper() });
+
+        await waitFor(() => {
+            expect(screen.getByText(/Select all/)).toBeInTheDocument();
+        });
+
+        fireEvent.click(screen.getByText(/Select all/).closest('button')!);
+
+        await waitFor(() => {
+            expect(screen.getByText('Restore Selected (2)')).toBeInTheDocument();
+        });
+
+        fireEvent.click(screen.getByText('Restore Selected (2)'));
+
+        await waitFor(() => {
+            expect(documentsApi.restore).toHaveBeenCalledWith('test-project-id', 'doc-1');
+            expect(chatApi.restoreConversation).toHaveBeenCalledWith('test-project-id', 'conv-1');
+        });
+    });
 });
 
 describe('ProjectHistoryPage - All View', () => {
